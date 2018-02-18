@@ -1,0 +1,12 @@
+menu_options_01:Play
+menu_options_02:History
+menu_options_03:Settings
+menu_options_04:Exit
+settings_options_01:sound
+settings_options_02:music
+settings_options_03:language
+settings_options_04:back
+game_options_01:single player
+game_options_02:co-op
+game_options_03:back
+Higuchi_dying:I'm sorry for this, but, unfortuly... i was not enough for this...
