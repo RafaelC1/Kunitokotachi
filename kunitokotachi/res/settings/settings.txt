@@ -1,3 +1,0 @@
-song_volum:100
-music_volum:100
-language:PT

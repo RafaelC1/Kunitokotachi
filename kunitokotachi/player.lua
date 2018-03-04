@@ -1,197 +1,50 @@
-require "position_helpers"
-require "helpers"
+require "ship"
 
 Player = {}
 
-function Player.new(args)
-    local self =
-    {
-        player = 1, -- determinate if its player one or two
-        keys =      --determinate keys of this players
-        {
-            up = '',
-            down = '',
-            left = '',
-            right = '',
-            shoot = ''
-        },
-        body =
-        {
-            radio = 1,
-            x = 0,
-            y = 0
-        },
-        shootDelay =
-        {
-            currentDelay = 0,   -- current time of shoot
-            delay = 0.1         -- minimum time that currentDelay should reach before player shoot
-        },
-        powerLevel =
-        {
-            "playerLevel01",
-            "playerLevel02",
-            "playerLevel03",
-            "playerLevel04",
-            "playerLevel05"
-        },
-        currentPowerLevel = 1,
-        powerPerLevelUp = 100,
-        power = 1,
-        sprite = {},
-        speed = 0,
-        hp = 100,
-        defense = 30,
-        lives = 3,
-        selfController = true,      -- variable to block user to move character
-        invulnerableTime = 2,       -- max time of ivulnerability
-        currentShip = 1,            -- ship of player
-        currentSprite = 1,          -- current position of ship (left, right or normal)
-        currentBlinkTime = 0,       -- time to blink
-        blinkTime = 0.02,           -- time betwen blinks
-        blink = false
-    }
-    self.player = args.player or 1
-    self.selfController = true
+function Player.new(player, keys, levels_of_player_settings)
+  local self = {}
+  self.player = 1
+  self.name = 'rafael'
+  self.lives = 3
+  self.score = 0
+  self.ship = {}
+  self.keys = keys
+  self.ship_model = ship_model or 'ship01'
+  self.player = player
+  self.level_settings = levels_of_player_settings or {}
 
-    self.keys = args.keys
+  -- add score
+  function self.create_ship()
+    local ship_model = game_controller.ship_models[self.ship_model]
+    self.ship = Ship.new{radio=ship_model.radio, speed=ship_model.speed, sprites=ship_sprites, keys=self.keys, owner=self, self_controller=true}
+  end
+  function self.destroy_ship()
+    self.ship = {}
+  end
+  function self.earn_points(score)
+    score = score or 1
+    self.score = self.score + score
+  end
+  -- perform a death
+  function self.die()
+    self.lives = self.lives-1
+    if self.lives <= 0 then
+    end
+  end
+  function self.level_exist(level)
+    if self.level_settings[string.format("level%02d", level)] == nil then
+      return false
+    else
+      return true
+    end
+  end
+  function self.update(dt)
+    self.ship.update(dt)
+  end
+  function self.draw()
+    self.ship.draw()
+  end
 
-    self.body.x = args.x or 400
-    self.body.y = args.y or 900
-    self.body.radio = args.radio or 10
-
-    self.lives = args.lives or 3
-    self.speed = args.speed or 100
-    self.sprite = args.sprites or {}
-    -- mover character up
-    function self.up(dt)
-        local y = -self.speed*dt
-        self.vertical_move(y)
-    end
-    -- move character down
-    function self.down(dt)
-        local y = self.speed*dt
-        self.vertical_move(y)
-    end
-    -- move character left
-    function self.left(dt)
-        local x = -self.speed*dt
-        self.horizontal_move(x)
-    end
-    -- move character right
-    function self.right(dt)
-        local x = self.speed*dt
-        self.horizontal_move(x)
-    end
-    -- perform horizontal move
-    function self.horizontal_move(x)
-        if inside_screen_width(x+self.body.x) or self.selfController then self.body.x = self.body.x + x end
-    end
-    -- perform vertical move
-    function self.vertical_move(y)
-        if inside_screen_height(y+self.body.y) or self.selfController then self.body.y = self.body.y + y end
-    end
-    -- create a bullet as a shoot
-    function self.shoot()
-        if self.can_shoot() then
-            bulletsController.create_bullet{x=self.body.x, y=self.body.y-self.body.radio, xv=0, yv=-700, type=self.current_ammo()}
-            self.shootDelay.currentDelay = self.shootDelay.delay
-        end
-    end
-    -- after player die or respawn all his stats are reseted
-    function self.reset()
-        self.selfController = true
-        self.invulnerableTime = 2
-        self.currentPowerLevel = 1
-        self.lives = self.lives - 1
-        self.power = 1
-        self.hp = 100
-    end
-    -- check if player can shoot
-    function self.can_shoot()
-        if self.shootDelay.currentDelay > 0 then return false
-        else return true end
-    end
-    -- return the current player ammo, based on it's level
-    function self.current_ammo()
-        return self.powerLevel[self.currentPowerLevel]
-    end
-    -- change the player's ammo to a high ammo
-    function self.increase_power_level(amountOfLevels)
-        self.currentPowerLevel = self.currentPowerLevel + amountOfLevels
-        if self.currentPowerLevel > #self.powerLevel then
-            self.currentPowerLevel = #self.powerLevel
-        end
-    end
-    -- draim player life
-    function self.apply_damage(damage)
-        if self.invulnerableTime > 0 then return end
-        self.hp = self.hp - (damage/100)*(100-self.defense)
-    end
-    -- collect power ups and give it to players power cell
-    function self.collect_power_up(extraPower)
-        self.power = self.power + extraPower
-        if self.power >= self.powerPerLevelUp then
-            local amount = self.power/self.powerPerLevelUp
-            self.increase_power_level(around(amount))
-            self.power = 0
-        end
-    end
-    -- return the current player sprite besed on it's current moviment
-    function self.current_sprite()
-        return self.sprite[self.currentShip][self.currentSprite]
-    end
-    -- controll keys of character
-    function self.control(dt)
-        if self.selfController then return end
-        if love.keyboard.isDown(self.keys.up) then self.up(dt) end
-        if love.keyboard.isDown(self.keys.down) then self.down(dt) end
-        if love.keyboard.isDown(self.keys.left) then self.left(dt) end
-        if love.keyboard.isDown(self.keys.right) then self.right(dt) end
-        if love.keyboard.isDown(self.keys.shoot) then self.shoot() end
-    end
-    function self.is_alive()
-        if self.hp > 0 then
-            return true
-        else
-            return false
-        end
-    end
-    -- perform a death
-    function self.die()
-        if self.lives <= 0 then
-        end
-    end
-    -- update player logic
-    function self.update(dt)
-        self.control(dt)
-        if self.shootDelay.currentDelay > 0 then
-            self.shootDelay.currentDelay = self.shootDelay.currentDelay - 1*dt
-        end
-        -- blink to show ivulnerability
-        if self.invulnerableTime > 0 then
-            self.invulnerableTime = self.invulnerableTime -1*dt
-            self.currentBlinkTime = self.currentBlinkTime + 1*dt
-            if self.currentBlinkTime >= self.blinkTime then
-                self.blinkTime = self.blinkTime + 0.005
-                self.currentBlinkTime = 0
-                self.blink = not self.blink
-            end
-        else
-            self.blink = false
-        end
-    end
-    -- draw player
-    function self.draw()
-        if self.blink then return end
-        love.graphics.draw(self.current_sprite(), self.body.x-self.body.radio, self.body.y-self.body.radio)
-    end
-    -- reset player position
-    function self.reset_position_to(x, y)
-        local newX = x or 100
-        local newY = y or 100
-        self.body.x = newY
-        self.body.x = newX
-    end
-
-    return self
+  return self
 end

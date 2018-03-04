@@ -2,3 +2,4 @@ external libs used on project:
 
 -suit       git: https://github.com/vrld/suit.git           ~>GUI interface
 -Möan.lua   git: https://github.com/twentytwoo/Moan.lua.git ~>chat box
+-kson.lua   git: https://github.com/rxi/json.lua.git        ~>json with lia

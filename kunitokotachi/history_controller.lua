@@ -2,11 +2,11 @@
 HistoryController = {}
 
 function HistoryController.new()
-    local self =
-    {
-    }
+  local self =
+  {
+  }
 
-    function self.start_history()
-        moan.
-    end
+  function self.start_history()
+    moan.
+  end
 end
