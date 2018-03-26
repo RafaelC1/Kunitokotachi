@@ -1,21 +1,30 @@
 require "enemy"
+require "helpers"
 require "position_helpers"
 
 EnemiesController = {}
 
 function EnemiesController.new()
-  local self =
-  {
-    enemies = {}
-  }
+  local self = {}
+  self.enemies = {}
+  self.asteroids = {}
 
-  function self.create_enemy(x, y, enemy_type)
+  self.enemies_characteristics = json_to_table(read_from('res/settings/enemies_characteristics.json'))
+  self.asteroids_characteristics =  json_to_table(read_from('res/settings/asteroids_characteristics.json'))
+
+  self.enemies_behaviours = json_to_table(read_from('res/settings/enemies_behaviours.json'))
+
+  function self.create_enemy(x, y, enemy_type, behaviour)
     x = x or 100
     y = y or 100
     enemy_type = enemy_type or "eye"
-    -- local sprite = self.sprite_of_bullet_type(args.type)
-    local enemy = Enemy.new{x=x, y=y, speed=400}
+    local enemy_model = self.enemies_characteristics.enemy[enemy_type]
+    local enemy_behaviour = self.enemies_behaviours[behaviour]
+    local enemy = Enemy.new{x=x, y=y, speed=enemy_model.speed, max_hp=enemy_model.max_hp, defense=enemy_model.defense, behaviour=enemy_behaviour, bullet_type=enemy_model.bullet_name}
     table.insert(self.enemies, enemy)
+  end
+  function self.create_asteroid(x, y, asteroid_type)
+    
   end
   function self.enemy_on_screen(enemy)
     if inside_screen_width(enemy.body.x) and inside_screen_height(enemy.body.y) then
@@ -40,7 +49,12 @@ function EnemiesController.new()
   function self.destroy_all_enemies()
     self.enemies = {}
   end
-
+  function self.has_enemies()
+    return #self.enemies > 0
+  end
+  function self.all_enemy_names()
+    return self.enemies_characteristics.enemy_names
+  end
   function self.update(dt)
     for i, enemy in ipairs(self.enemies) do
       enemy.update(dt)

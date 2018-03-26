@@ -8,22 +8,16 @@ GameController = {}
 function GameController.new()
   local self = {}
   self.players = {}
-  self.cenary_speed = 5
   self.back_menu_time = 0
-  self.current_level = 1
   self.levels_settings = {}
-  self.current_level_settings =
-  {
-    level_speed = 5,
-    current_position = 0,
-    enemy_spawn_points =
-    {
-      x=0,
-      y=0
-    }
-  }
-  self.ship_models = {}
-  self.levels_of_player_settings = {}
+
+  self.levels_settings = json_to_table(read_from('res/settings/levels_script.json'))
+
+  self.cenary_speed = 5
+  self.current_level = 1
+  self.current_level_settings = {}
+
+  self.ship_models = json_to_table(read_from('res/settings/ships.json'))
 
   self.spawn_pos = {}
   self.spawn_pos.player1 = {}
@@ -42,8 +36,50 @@ function GameController.new()
   self.player_gui_pos.player2.x = WIDTH - 85
   self.player_gui_pos.player2.y = HEIGHT - 150
 
+  self.levels_of_player_settings = json_to_table(read_from('res/settings/player_levels_settings.json'))
 
+-- go to next level
+  function self.nex_level()
+    if self.current_level+1 < #self.levels_settings.levels_names then
+      self.current_level = self.current_level + 1
+    else
+      print('you reach the last level')
+    end
+  end
+  -- update current_level_settings informations based on current level 
+  function self.update_current_level()
+    self.current_level_settings = {}
+    self.current_level_settings.name = self.levels_settings.levels_names[self.current_level]
+    self.current_level_settings.current_script = self.levels_settings[self.current_level_settings.name]
+    self.current_level_settings.current_position = HEIGHT - level_background_images[self.current_level_settings.name]:getHeight()
+    -- reset all events to they become unwsed
+    for i, script in ipairs(self.current_level_settings.current_script.triggers) do
+      script[6] = false
+    end
+  end
+-- this method check if in the current position controller should spawn something
+  function self.check_level_script()
+    local correct_position = level_background_images[self.current_level_settings.name]:getHeight() + self.current_level_settings.current_position
+    -- print(correct_position)
+    for i, script in ipairs(self.current_level_settings.current_script.triggers) do
+      -- if the iteration get a line with a posiiton trigget highets than the current, stop iteration
+      if script[1] > correct_position then return end
+        -- check if event was not actived already
+        if not script[6] then
+          local names = enemies_controller.all_enemy_names()
+        -- check if event name is to spawn a enemy based on event secound value wich, if its a spawn of a enemy, will be its name
+          if array_include_value(names, script[2]) then
+            enemies_controller.create_enemy(script[3], script[4], script[2], script[5])
+            -- check if event name is to spawn soem asteroid
+          elseif false then
 
+          else
+            print("event dont identified")
+          end
+        script[6] = true
+      end
+    end
+  end
   -- this method check if some bullet from a bullet list hit some object from a object list
   function self.check_bullet_hit(bullets, objects)
     for i, object in ipairs(objects) do
@@ -57,36 +93,33 @@ function GameController.new()
       end
     end
   end
-  -- TERMINAR ISSO
-  function self.check_player_hit(player, objects)
-    for i, object in ipairs(objects) do
-      if can_touch(object, player) then
-        if touch_each_other(object, player) then
-          -- self.object_hit_a_bullet()
-          object.apply_damage{damage=player.hp, aggressor=player}
-          player.apply_damage{damage=object.current_hp}
+  -- this method check if a list of objects collider againsts another one
+  function self.objects_collide_against(objects_1, objects_2)
+    for i, object_1 in ipairs(objects_1) do
+      for j, object_2 in ipairs(objects_2) do
+        if touch_each_other(object_1, object_2) and not object_1.invulnerable and not object_2.invulnerable then
+          object_1.apply_damage{damage=object_2.current_hp}
+          object_2.apply_damage{damage=object_1.current_hp}
         end
       end
     end
   end
+  -- this method check if player collected(touched) some power up and collect it
   function self.check_collect_power_up(player, power_ups)
     for i, power_up in ipairs(power_ups) do
-      if touch_each_other(object, player) then
-        -- self.object_hit_a_bullet()
-        object.apply_damage{damage=player.hp, aggressor=player}
-        player.apply_damage{damage=object.current_hp}
+      if touch_each_other(player, power_up) then
+        player.collect_power_up(power_up.power)
+        power_ups_controller.destroy_power_up(i)
+        i = i-1
       end
     end
   end
+  -- check of some object hitted a bullet
   function self.object_hit_a_bullet(object, bullet_hitted)
+    if object.invulnerable then return end
     object.apply_damage{damage=bullet_hitted.damage, agressor=bullet_hitted.owner}
   end
-  function self.object_hit_another_object(object1, object2)
-    local owner1 = object1.owner or {}
-    local owner2 = object2.owner or {}
-    object1.apply_damage{damage=object2.current_hp, agressor=owner2}
-    object2.apply_damage{damage=object1.current_hp, agressor=owner1}
-  end
+  -- check if a object hitted a power up
   function self.object_hit_a_power_up(object1, power_up)
     player_ship.self.collect_power_up(power_up.power)
   end
@@ -100,7 +133,7 @@ function GameController.new()
   end
   -- generate players
   function self.create_player(player, args)
-    local keys = settings['playersSettings']['player'..player]
+    local keys = settings['players_settings']['player'..player]
     local x = self.spawn_pos['player'..player].x
     local y = self.spawn_pos['player'..player].y
     local character = Player.new(player, keys, self.levels_of_player_settings)
@@ -116,31 +149,25 @@ function GameController.new()
   end
   -- start a game
   function self.start_game(amountOfPlayers)
+    -- reset controllers
+    enemies_controller.destroy_all_enemies()
+    bullets_controller.destroy_all_bullets()
+
+    self.current_level = 1
+    self.update_current_level()
     -- when game is started anything most be reseted
     for i=1, amountOfPlayers do
       self.create_player(i, {x=self.spawn_pos[string.format("player%d",i)].x, y=self.spawn_pos[string.format("player%d",i)].y})
     end
     -- self.current_level_settings = self.levels_settings[string.format("level%02d",self.current_level)]
-    self.current_level_settings.current_position = HEIGHT - level_background_images[string.format("level%02d",self.current_level)]:getHeight()
   end
   -- end a game
   function self.end_game()
     -- when game is ended, all players must be destroyed and yours scores saved
     -- after this method be called, should be show players score
   end
-  function self.load_player_level_settings()
-    self.levels_of_player_settings = read_values_from('res/settings/player_levels_settings.json')
-  end
-  -- load ships models
-  function self.load_ships_settings()
-    self.ship_models = read_values_from('res/settings/ships.json')
-  end
-  -- read all levels configurations
-  function self.load_levels_settings()
-    self.levels_settings = read_values_from('res/settings/levels.json')
-  end
   function self.go_to_menu()
-    current_screen = 2
+    CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
   end
   function self.lose_message()
     moan.speak('Higuchi',
@@ -154,44 +181,55 @@ function GameController.new()
   end
   -- move map
   function self.inscrease_position(dt)
-    self.current_level_settings.current_position = self.current_level_settings.current_position + self.current_level_settings.level_speed*dt
+    self.current_level_settings.current_position = self.current_level_settings.current_position + self.cenary_speed*dt
   end
   function self.update(dt)
     local ships = {}
+    local anyone_alive = false
     for i, player in ipairs(self.players) do
       player.update(dt)
-      -- controll ship when it just spawned
-      if player.ship.self_controller then
-        self.controll_player(player, dt)
-      end
-      -- check if player is alive
-      if not player.ship.is_alive() then
-        player.die()
-        -- if player has no lives any more, destroy ship not respawn
-        if player.lives <= 0 then
-          self.destroy_player(i)
-        else
-          -- if player has some live, respawn ship
-          player.ship.reset()
-          self.teleport_player_to_spawn_pos(player)
+      -- check if player is alive to make logic
+      if player.ship_is_alive() then
+        ships[#ships+1] = player.ship
+        if player.ship.self_controller then
+          self.controll_player(player, dt)
         end
+        if power_ups_controller.has_power_ups then
+          self.check_collect_power_up(player.ship, power_ups_controller.power_ups)
+        end
+      elseif next(player.ship) then
+        player.die()
       end
-      ships[i] = player.ship
+      if player.has_extra_lives() then
+        anyone_alive = true
+      end
     end
 
     bullets_controller.update(dt)
     enemies_controller.update(dt)
     power_ups_controller.update(dt)
 
-    self.check_bullet_hit(bullets_controller.bullets.player, enemies_controller.enemies)
-    -- self.bullet_hit(ships)
+    if bullets_controller.has_player_bullets() then
+      self.check_bullet_hit(bullets_controller.bullets.player, enemies_controller.enemies)
+    end
+    if bullets_controller.has_enemy_bullets() then
+      self.check_bullet_hit(bullets_controller.bullets.enemy, ships)
+    end
+    if enemies_controller.has_enemies() and #ships > 0 then
+      self.objects_collide_against(ships, enemies_controller.enemies)
+    end
     if self.current_level_settings.current_position <= 0 then
       self.inscrease_position(dt)
     end
+    if not anyone_alive then
+      self.go_to_menu()
+    end
+
+    self.check_level_script()
   end
   function self.draw()
     -- draw background
-    love.graphics.draw(level_background_images[string.format("level%02d",self.current_level)] , 0, self.current_level_settings.current_position)
+    -- love.graphics.draw(level_background_images[self.current_level_settings.name] , 0, self.current_level_settings.current_position)
     enemies_controller.draw()
     bullets_controller.draw()
     power_ups_controller.draw()
@@ -202,7 +240,7 @@ function GameController.new()
 
       local screenDistance = 25
       local pos = self.player_gui_pos['player'..player.player]
-      local text = 'power:'..player.ship.power
+      local text = 'power:'..(player.ship.power or 0)
       love.graphics.print(text, pos.x+screenDistance*(i-1), HEIGHT-60)
       -- draw lives on bottom of screen
       for i=1, player.lives do
@@ -214,10 +252,6 @@ function GameController.new()
       love.graphics.draw(text, screenDistance, screenDistance)
     end
   end
-
-  self.load_player_level_settings()
-  self.load_levels_settings()
-  self.load_ships_settings()
 
   return self
 end

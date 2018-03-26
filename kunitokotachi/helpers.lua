@@ -3,31 +3,47 @@
 function close_game()
   love.event.quit()
 end
+-- this method around values
 function around(value)
     return tonumber(string.format("%.0f", value))
 end
-function file_exist(filePath)
-    local exist = love.filesystem.exists(filePath)
-    return exist
-end
---read file and give key values back
-function read_values_from(path)
-  local codedText = ""
-  for line in love.filesystem.lines(path) do
-    codedText = codedText..line
+-- this mehod check if value is in array
+function array_include_value(array, value)
+  for i, a in ipairs(array) do
+    if a == value then
+      return true
+    end
   end
-  local decodedText = json.decode(codedText)
-  return decodedText
-end
--- calculate damage
-function calculate_damage(damage, defense)
-  if defense >= 100 then defense = 99 end
-  return damage-(damage/100)*defense
+  return false
 end
 -- return the current distance of 2 points
 function distance(x1, x2, y1, y2)
   return math.sqrt((x1 - x2)^2 + (y1 - y2)^2)
 end
+function calculate_damage(damage, defense)
+  if defense >= 100 then defense = 99 end
+  return damage-(damage/100)*defense
+end
+function file_exist(file_name)
+  return love.filesystem.exists(file_name)
+end
+--read file and give key values back
+function json_to_table(j)
+  return json.decode(j)
+end
+function table_to_json(t)
+  return json.encode(t)
+end
+function read_from(file_name)
+  return love.filesystem.read(file_name)
+end
+function write_values_to(file_name, value)
+  love.filesystem.write(file_name, value)
+end
+function translation_of_key(key)
+  return translations[settings.apllication_settings.language][key] or ''
+end
+-- calculate damage
 -- check if some object has authorization to touch another
 function can_touch(target, projectile)
   if target ~= projectile.owner then

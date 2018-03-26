@@ -31,6 +31,12 @@ function Sprite.new(image, x, y, w, h, size, fps)
 
   self.quad = love.graphics.newQuad(self.x, self.y, self.w, self.h, self.image:getDimensions())
 
+  function self.sprite_height()
+    return self.h
+  end
+  function self.sprite_width()
+    return self.w
+  end
   function self.set_y(y)
     -- self.y = self.y + y
     print(self.y)

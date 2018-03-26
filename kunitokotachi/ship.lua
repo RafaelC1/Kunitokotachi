@@ -10,7 +10,6 @@ function Ship.new(args)
   self.self_controller = args.self_controller or true      -- variable to block user to move character
 
   self.invulnerable_time = 2       -- max time of ivulnerability
-  self.lives = args.lives or 3
 
   self.current_power_level = 1      -- current level of power according collected power ups
   self.power = 1
@@ -23,8 +22,10 @@ function Ship.new(args)
 
   self.keys = args.keys
 
+  self.power = 1
   self.power_level = {}            -- level of power ups collected
   self.power_per_level_up = 100      -- for each time of power_level reach this amount of power, rise current_power_level by one
+  self.current_power_level = 1
   
   self.current_blink_time = 0       -- time to blink
   self.default_blink_time = 0.02
@@ -33,6 +34,8 @@ function Ship.new(args)
 
   self.current_ship = 1            -- ship of ship
   self.current_ship_sprite = 1          -- current position of ship (left, right or normal)
+
+  self.self_controller = true
 
   -- perform horizontal move
   function self.horizontal_move(x)
@@ -46,18 +49,9 @@ function Ship.new(args)
       self.body.y = self.body.y + y
     end
   end
-  -- after ship die or respawn all his stats are reseted
-  function self.reset()
-    self.blink_time = self.default_blink_time  
-    self.self_controller = true
-    self.invulnerable_time = 2
-    self.current_power_level = 1
-    self.power = 1
-    self.current_hp = self.max_hp
-  end
   -- return the current ship ammo, based on it's level
   function self.current_ammo()
-    return self.owner.level_settings[string.format("level%02d", self.current_power_level)]
+    return self.owner.level_settings[string.format("level_%02d", self.current_power_level)]
   end
   -- check if ship can shoot
   function self.can_shoot()
@@ -67,8 +61,7 @@ function Ship.new(args)
   -- create a bullet as a shoot
   function self.shoot()
     if self.can_shoot() then
-      bullets_controller.create_bullet(self.body.x,
-        self.body.y-self.body.radio/3, 0, -1, 'player', self.current_ammo().bullet, self.owner)
+      bullets_controller.create_bullet(self.body.x, self.body.y-self.body.radio/3, 0, -1, 'player', self.current_ammo().bullet, self.owner)
       self.shoot_delay.current_delay = self.current_ammo().delay
     end
   end
@@ -138,6 +131,7 @@ function Ship.new(args)
      if self.invulnerable_time > 0 then
         self.invulnerable_time = self.invulnerable_time -1*dt
         self.current_blink_time = self.current_blink_time + 1*dt
+        self.invulnerable = true
       if self.current_blink_time >= self.blink_time then
         self.blink_time = self.blink_time + 0.005
         self.current_blink_time = 0
@@ -145,12 +139,16 @@ function Ship.new(args)
       end
     else
       self.blink = false
+      self.invulnerable = false
     end
   end
   -- draw ship
   function self.draw()
+    self.draw_test()
     if self.blink then return end
-    love.graphics.draw(self.current_sprite(), self.body.x-self.body.radio, self.body.y-self.body.radio)
+    local width = self.current_sprite():getWidth()/2
+    local height = self.current_sprite():getHeight()/2
+    love.graphics.draw(self.current_sprite(), self.body.x-width, self.body.y-height)
   end
 
   return self

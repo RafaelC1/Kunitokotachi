@@ -19,12 +19,12 @@ function BulletsController.new()
     }
   }
   function self.load_bullets_settings()
-    self.bullets_settings.player = read_values_from('res/settings/player_bullets_settings.json')
+    self.bullets_settings.player = json_to_table(read_from('res/settings/bullets_characteristics.json'))
     -- bullets_settings.enemy = read_values_from('res/settings/enemyBullets.json')
   end
     -- spawm a bullet
   function self.create_bullet(x, y, xv, yv, characterName, bulletType, owner)
-    local bullet_settings = self.bullets_settings[characterName][bulletType]
+    local bullet_settings = self.bullets_settings['player'][bulletType]
     x = x or 100
     y = y or 100
     xv = xv*bullet_settings.speed
@@ -43,8 +43,15 @@ function BulletsController.new()
     for i, bullet in ipairs(bullets) do
       if not inside_screen_width(bullet.body.x) or not inside_screen_width(bullet.body.y) then
         self.destroy_bullet(bullets, i, true)
+        i = i-1
       end
     end
+  end
+  function self.has_player_bullets()
+    return #self.bullets.player > 0
+  end
+  function self.has_enemy_bullets()
+    return #self.bullets.enemy > 0
   end
     -- destroy a bullet by id
   function self.destroy_bullet(bullets, bulletID, force)
@@ -61,6 +68,7 @@ function BulletsController.new()
     for i, bullet in ipairs(bullets) do
       if bullet.owner == owner then
         self.destroy_bullet(bullets, i, true)
+        i = i-1
       end
     end
   end

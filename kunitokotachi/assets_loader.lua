@@ -5,8 +5,9 @@ require "helpers"
 require "sprite"
 
 --images
+
 risoto_tomate_icon = {}
-back_ground_sprite = {}
+
 bullets_image = {}
 power_ups_images =
 {
@@ -14,21 +15,10 @@ power_ups_images =
 }
 level_background_images =
 {
-  ['level01'] = {},
-  ['level02'] = {}
+  ['level_01'] = {},
+  ['level_02'] = {}
 }
-bullets_sprites =
-{
-  playerLevel01 = {},
-  playerLevel02 = {},
-  playerLevel03 = {},
-  playerLevel04 = {},
-  playerLevel05 = {}
-}
-
-default_sprite = {}
-ship_sprites = {}
-profile_pics =
+profile_image =
 {
   higuchi = {},
   himiko = {},
@@ -37,8 +27,23 @@ profile_pics =
   secretary = {},
   tomoe = {}
 }
-
 life_image = {}
+explosion_image = {}
+
+-- sprites
+
+bullets_sprites =
+{
+  player_level_01_sprite = {},
+  player_level_02_sprite = {},
+  player_level_03_sprite = {},
+  player_level_04_sprite = {},
+  player_level_05_sprite = {}
+}
+default_sprite = {}
+ship_sprites = {}
+explosion_sprites = {}
+
 
 -- fonts
 fonts =
@@ -56,11 +61,14 @@ function load_all_sprites()
   --load bullets
   bullets_image = love.graphics.newImage('res/assets/bullets/bullets1.png')
   -- load level background image
-  level_background_images.level01 = love.graphics.newImage('res/assets/back_ground/BACKGROUNDONE.jpg')
+  level_background_images.level_01 = love.graphics.newImage('res/assets/back_ground/BACKGROUNDONE.jpg')
+
 
   --load players
   local path = "res/assets/HUD/01.png"
+
   default_sprite = love.graphics.newImage(path)
+
   for i, folder in ipairs({"one", "two", "three"}) do
     ship_sprites[i] = {}
     for j = 1, 5 do
@@ -71,16 +79,21 @@ function load_all_sprites()
 
   path = 'res/assets/portraits/profile/'
 
-  profile_pics.higuchi = love.graphics.newImage(path..'higuchi01.png')
-  profile_pics.himiko = love.graphics.newImage(path..'himiko01.png')
-  profile_pics.major = love.graphics.newImage(path..'major01.png')
-  profile_pics.nosinalenus = love.graphics.newImage(path..'nosignal.png')
-  profile_pics.secretary = love.graphics.newImage(path..'secretary.png')
-  profile_pics.tomoe = love.graphics.newImage(path..'tomoe01.png')
+  profile_image.higuchi = love.graphics.newImage(path..'higuchi01.png')
+  profile_image.himiko = love.graphics.newImage(path..'himiko01.png')
+  profile_image.major = love.graphics.newImage(path..'major01.png')
+  profile_image.nosinalenus = love.graphics.newImage(path..'nosignal.png')
+  profile_image.secretary = love.graphics.newImage(path..'secretary.png')
+  profile_image.tomoe = love.graphics.newImage(path..'tomoe01.png')
 
   life_image = love.graphics.newImage('res/assets/HUD/01.png')
 
+  explosion_image = love.graphics.newImage('res/assets/fx/explosion.png')
+
   define_all_sprites()
+
+  CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
+
 end
 
 function update(dt)
@@ -91,13 +104,14 @@ function draw()
 end
 
 function define_all_sprites()
-  bullets_sprites.playerLevel01 = Sprite.new(bullets_image, 0, 0, 150, 50, 50, 8)
-  bullets_sprites.playerLevel02 = Sprite.new(bullets_image, 0, 50, 150, 50, 50, 8)
-  bullets_sprites.playerLevel03 = Sprite.new(bullets_image, 0, 100, 150, 50, 50, 8)
-  bullets_sprites.playerLevel04 = Sprite.new(bullets_image, 0, 150, 150, 50, 50, 8)
-  bullets_sprites.playerLevel05 = Sprite.new(bullets_image, 0, 200, 150, 50, 50, 10)
+  bullets_sprites.player_level01_sprite = Sprite.new(bullets_image, 0, 0, 150, 50, 50, 8)
+  bullets_sprites.player_level02_sprite = Sprite.new(bullets_image, 0, 50, 150, 50, 50, 8)
+  bullets_sprites.player_level03_sprite = Sprite.new(bullets_image, 0, 100, 150, 50, 50, 8)
+  bullets_sprites.player_level04_sprite = Sprite.new(bullets_image, 0, 150, 150, 50, 50, 8)
+  bullets_sprites.player_level05_sprite = Sprite.new(bullets_image, 0, 200, 150, 50, 50, 10)
+
+  explosion_sprites = Sprite.new(explosion_image, 0, 0, 100, 100, 100, 4)
   -- PROBLEMAS COM O SPRITE DO BACKGROUND
-  -- back_ground_sprite = Sprite.new(backGroundImage, 0, 0, 800, 600, 600, 0)
 end
 
 -- load all fonts
