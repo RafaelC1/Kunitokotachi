@@ -14,7 +14,7 @@ function PowerUpsController.new()
   function self.create_power_up(x, y, power_up_type)
     power_up_type = 'power'
     local power_up_settings = self.power_ups_settings[power_up_type]
-    local power_up = PowerUp.new{x=x, y=y, power=power_up_settings.charge_power, power_type='power', radio=30, vanish_on_time=3, speed=200}
+    local power_up = PowerUp.new{x=x, y=y, power=power_up_settings.charge_power, power_type='power', radio=30, vanish_on_time=3, speed=50}
     table.insert(self.power_ups, power_up)
   end
   function self.destroy_power_up(power_up_id)

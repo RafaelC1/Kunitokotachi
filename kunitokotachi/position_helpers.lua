@@ -13,7 +13,21 @@ function inside_screen_width(x)
   end
 end
 function inside_screen_height(y)
-  if 0 < y and y < HEIGHT then
+  if below_top(y) and above_bottom(y) then
+    return true
+  else
+    return false
+  end
+end
+function below_top(y)
+  if y > 0 then
+    return true
+  else
+    return false
+  end
+end
+function above_bottom(y)
+  if y < HEIGHT then
     return true
   else
     return false

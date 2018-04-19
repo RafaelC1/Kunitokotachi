@@ -4,7 +4,11 @@ Bullet = {}
 
 function Bullet.new(args)
   local self = Object.new(args)
-  
+
+  self.r = 255
+  self.g = 0
+  self.b = 0
+
   self.owner = args.owner or nil                    -- who shoot this bullet
   self.xv = args.xv or 10                           -- horizontal moviment -1=left, 1=right
   self.yv = args.yv or 10                           -- vertical moviment -1=up, 1=down
@@ -17,13 +21,15 @@ function Bullet.new(args)
     local current_y = 0
     current_y = self.yv*dt
     -- this configuration is for move bullet according its owner if this bullet shoud move according it
-    if self.follow_owner then
+    if self.follow_owner and self.owner.ship.body then
       if self.owner.keys ~= nil and self.follow_owner then
-        if love.keyboard.isDown(self.owner.keys.up) then
-          current_y = current_y - self.owner.ship.speed*dt
-        end
-        if love.keyboard.isDown(self.owner.keys.down) then
-          current_y = current_y + self.owner.ship.speed*dt
+        if self.owner.ship.speed then
+          if love.keyboard.isDown(self.owner.keys.up) then
+            current_y = current_y - self.owner.ship.speed*dt
+          end
+          if love.keyboard.isDown(self.owner.keys.down) then
+            current_y = current_y + self.owner.ship.speed*dt
+          end
         end
       end
       self.body.x = self.owner.ship.body.x + self.xv*dt

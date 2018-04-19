@@ -1,11 +1,18 @@
 require "object"
 require "position_helpers"
 require "helpers"
+require "assets_loader"
 
 Ship = {}
 
 function Ship.new(args)
   local self = Object.new(args)
+
+
+  self.r = 0
+  self.g = 0
+  self.b = 255
+
   self.owner = args.owner or self
   self.self_controller = args.self_controller or true      -- variable to block user to move character
 

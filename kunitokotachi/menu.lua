@@ -6,7 +6,7 @@ Menu = {}
 
 local buttonHeigh = 30
 local buttonsWidth = 100
-local buttonSpace = 5
+local button_space = 5
 
 function Menu.new(args)
   local self = {}
@@ -45,11 +45,11 @@ function Menu.new(args)
     widget.text = translation_of_key(widget.key)
   end
   function self.update()
-    local button_heigh = 30
-    local buttons_width = 100
-    local buttonSpace = 5
-    local x = self.x - (buttonsWidth/2)
-    local y = self.y - ((buttonHeigh*#self.options)/2)
+    local button_heigh = 40
+    local buttons_width = 120
+    local button_space = 5
+    local x = self.x - (buttons_width/2)
+    local y = self.y - ((button_heigh*#self.options)/2)
     for i, option in ipairs(self.options) do
       if option.type == 'button' then
         if self.ui:Button(option.text, x, y, buttons_width, button_heigh).hit then
@@ -60,14 +60,14 @@ function Menu.new(args)
       elseif option.type == 'slider' then
         local status = self.ui:Slider(option, x, y, buttons_width, button_heigh)
         if option.text ~= '' then
-          local temp_text = option.text..': '..option.value
+          local temp_text = option.text..': '..around(option.value)
           self.ui:Label(temp_text, x+buttons_width, y, buttons_width, button_heigh)
         end
         if status.changed and option.method then
           option.method(option.value)
         end
       end
-      y = y + buttonHeigh + buttonSpace
+      y = y + button_heigh + button_space
     end
   end
   function self.draw()

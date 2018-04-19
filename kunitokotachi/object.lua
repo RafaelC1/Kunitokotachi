@@ -16,6 +16,11 @@ function Object.new(args)
   self.defense = args.defense or 10
   self.invulnerable = false or args.invulnerable
 
+  -- colors for tests
+  self.r = 255
+  self.g = 255
+  self.b = 255
+
   function self.apply_damage(args)
     -- real damage that will be inflicted on enemy after calculate it based 
     self.current_hp = self.current_hp - calculate_damage(args.damage, self.defense)
@@ -64,11 +69,13 @@ function Object.new(args)
     end
   end
   function self.draw_test()
+    love.graphics.setColor(self.r, self.g, self.b)
     love.graphics.circle("fill", self.body.x, self.body.y, self.body.radio)
   end
   function self.draw()
     self.draw_test()
   end
+
 
   return self
 end

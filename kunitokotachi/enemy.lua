@@ -6,6 +6,10 @@ Enemy = {}
 function Enemy.new(args)
   local self = Object.new(args)
 
+  self.r = 255
+  self.g = 255
+  self.b = 0
+
   self.kill_points = 100 -- points for kill this enemy
   self.drop = args.drop or 'power'
   self.IA = -- this is the positions that enemy shoud perform during it's life circle
@@ -57,14 +61,6 @@ function Enemy.new(args)
   function self.shoot()
     bullets_controller.create_bullet(self.body.x, self.body.y, 0, 1, 'enemy', self.bullet_type, self)
     -- bullets_controller.create_bullet(self.body.x, self.body.y-self.body.radio/3, 0, -1, 'player', self.current_ammo().bullet, self.owner)
-  end
-  -- die and spawm some gift
-  function self.is_alive()
-    if self.current_hp > 0 then
-      return true
-    else
-      return false
-    end
   end
   function self.update(dt)
     self.move(dt)

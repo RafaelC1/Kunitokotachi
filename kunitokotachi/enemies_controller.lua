@@ -1,4 +1,5 @@
 require "enemy"
+require "asteroid"
 require "helpers"
 require "position_helpers"
 
@@ -16,15 +17,20 @@ function EnemiesController.new()
 
   function self.create_enemy(x, y, enemy_type, behaviour)
     x = x or 100
-    y = y or 100
-    enemy_type = enemy_type or "eye"
+    y = y or -30
+    enemy_type = enemy_type or 'eye'
     local enemy_model = self.enemies_characteristics.enemy[enemy_type]
     local enemy_behaviour = self.enemies_behaviours[behaviour]
     local enemy = Enemy.new{x=x, y=y, speed=enemy_model.speed, max_hp=enemy_model.max_hp, defense=enemy_model.defense, behaviour=enemy_behaviour, bullet_type=enemy_model.bullet_name}
     table.insert(self.enemies, enemy)
   end
   function self.create_asteroid(x, y, asteroid_type)
-    
+    x = x or 100
+    y = y or -30
+    asteroid_type = asteroid_type or 'asteroid_01'
+    local asteroid_model = self.asteroids_characteristics.asteroid[asteroid_type]
+    local asteroid = Asteroid.new{x=x, y=y, speed=asteroid_model.speed, radio=asteroid_model.radio, max_hp=asteroid_model.max_hp, defense=asteroid_model.defense}
+    table.insert(self.asteroids, asteroid)
   end
   function self.enemy_on_screen(enemy)
     if inside_screen_width(enemy.body.x) and inside_screen_height(enemy.body.y) then
@@ -43,17 +49,30 @@ function EnemiesController.new()
   end
   -- destroy an enemy by id
   function self.destroy_enemy(enemy_id)
+    explosions_controller.create_explosion(self.enemies[enemy_id].body.x, self.enemies[enemy_id].body.y)
     table.remove(self.enemies, enemy_id)
+  end
+  function self.destroy_asteroid(asteroid_id)
+    table.remove(self.asteroids, asteroid_id)
   end
   -- destroy all enemies on list
   function self.destroy_all_enemies()
     self.enemies = {}
   end
+  function self.destroy_all_asteroids()
+    self.asteroids = {}
+  end
   function self.has_enemies()
     return #self.enemies > 0
   end
+  function self.has_asteroids()
+    return #self.asteroids > 0
+  end
   function self.all_enemy_names()
     return self.enemies_characteristics.enemy_names
+  end
+  function self.all_asteroid_names()
+    return self.asteroids_characteristics.asteroid_names
   end
   function self.update(dt)
     for i, enemy in ipairs(self.enemies) do
@@ -62,14 +81,26 @@ function EnemiesController.new()
         self.spawn_power_up(i)
         self.destroy_enemy(i)
       end
-      if not on_screen(enemy.body.x, enemy.body.y) then
+      if not above_bottom(enemy.body.y) then
         self.destroy_enemy(i)
+      end
+    end
+    for i, asteroid in ipairs(self.asteroids) do
+      asteroid.update(dt)
+      if not asteroid.is_alive() then
+        self.destroy_asteroid(i)
+      end
+      if not above_bottom(asteroid.body.y) then
+        self.destroy_asteroid(i)
       end
     end
   end
   function self.draw()
     for i, enemy in ipairs(self.enemies) do
       enemy.draw()
+    end
+    for i, asteroid in ipairs(self.asteroids) do
+      asteroid.draw()
     end
   end
 

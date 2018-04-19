@@ -4,14 +4,13 @@ Player = {}
 
 function Player.new(player, keys, levels_of_player_settings)
   local self = {}
-  self.player = 1
   self.name = 'rafael'
   self.lives = 3
   self.score = 0
   self.ship = {}
   self.keys = keys
   self.ship_model = ship_model or 'ship01'
-  self.player = player
+  self.player = player or 1
   self.level_settings = levels_of_player_settings or {}
 
   -- add score
@@ -31,6 +30,7 @@ function Player.new(player, keys, levels_of_player_settings)
   end
   -- perform a death
   function self.die()
+    explosions_controller.create_explosion(self.ship.body.x, self.ship.body.y)
     self.lives = self.lives-1
     self.ship = {}
     -- if player have extra lives available, respawn his ship

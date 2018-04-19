@@ -1,3 +1,4 @@
+game_started = false
 player_two = false
 settings = {} -- game configurations
 translations = {} -- manager all translations
@@ -8,6 +9,7 @@ game_controller = {}
 bullets_controller = {}
 enemies_controller = {}
 power_ups_controller = {}
+explosions_controller = {}
 
 --window settings
 WIDTH = 800
@@ -28,7 +30,7 @@ SCREENS =
   SCORE_SCREEN            = 8
 }
 
-CURRENT_SCREEN = SCREENS.LOAD_SCREEN
+CURRENT_SCREEN = SCREENS.SPLASH_SCREEN
 
 function love.conf(t)
   t.window.width = WIDTH

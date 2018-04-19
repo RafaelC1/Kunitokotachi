@@ -66,18 +66,19 @@ function GameController.new()
       if script[1] > correct_position then return end
         -- check if event was not actived already
         if not script[6] then
-          local names = enemies_controller.all_enemy_names()
+          local enemy_names = enemies_controller.all_enemy_names()
+          local asteroid_names = enemies_controller.all_asteroid_names()
         -- check if event name is to spawn a enemy based on event secound value wich, if its a spawn of a enemy, will be its name
-          if array_include_value(names, script[2]) then
+          if array_include_value(enemy_names, script[2]) then
             enemies_controller.create_enemy(script[3], script[4], script[2], script[5])
-            -- check if event name is to spawn soem asteroid
-          elseif false then
-
+            -- check if event name is to spawn some asteroid
+          elseif array_include_value(asteroid_names, script[2]) then
+            enemies_controller.create_asteroid(script[3], script[4], script[2])
           else
             print("event dont identified")
           end
-        script[6] = true
       end
+      script[6] = true
     end
   end
   -- this method check if some bullet from a bullet list hit some object from a object list
@@ -150,7 +151,9 @@ function GameController.new()
   -- start a game
   function self.start_game(amountOfPlayers)
     -- reset controllers
+     self.lose_message()
     enemies_controller.destroy_all_enemies()
+    enemies_controller.destroy_all_asteroids()
     bullets_controller.destroy_all_bullets()
 
     self.current_level = 1
@@ -170,14 +173,13 @@ function GameController.new()
     CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
   end
   function self.lose_message()
-    moan.speak('Higuchi',
-        {
-          translations.translation_of('Higuchi_dying_message_01'),
-          translations.translation_of('Higuchi_dying_message_02'),
-          translations.translation_of('Higuchi_dying_message_03')
-        },
-        {x=10, y=10, image=profile_pics.higuchi, oncomplete=self.go_to_menu}
-        )
+    messages =
+    {
+      translation_of_key('Higuchi_dying_message_01'),
+      translation_of_key('Higuchi_dying_message_02'),
+      translation_of_key('Higuchi_dying_message_03')
+    }
+    show_dialog{name='Higuchi', messages=messages, action=self.go_to_menu}
   end
   -- move map
   function self.inscrease_position(dt)
@@ -208,20 +210,38 @@ function GameController.new()
     bullets_controller.update(dt)
     enemies_controller.update(dt)
     power_ups_controller.update(dt)
+    explosions_controller.update(dt)
 
+    -- player against bullet
     if bullets_controller.has_player_bullets() then
       self.check_bullet_hit(bullets_controller.bullets.player, enemies_controller.enemies)
     end
+    -- enemy against bullet
     if bullets_controller.has_enemy_bullets() then
       self.check_bullet_hit(bullets_controller.bullets.enemy, ships)
     end
+    -- ship agains enemy
     if enemies_controller.has_enemies() and #ships > 0 then
       self.objects_collide_against(ships, enemies_controller.enemies)
     end
+    -- player against asteroid
+    if enemies_controller.has_asteroids and #ships > 0 then
+      self.objects_collide_against(ships, enemies_controller.asteroids)
+    end
+    -- player bullets against asteroid
+    if enemies_controller.has_asteroids and bullets_controller.has_player_bullets then
+      self.check_bullet_hit(bullets_controller.bullets.player, enemies_controller.asteroids)
+    end
+    -- enemy bullet against asteroid
+    if enemies_controller.has_asteroids and bullets_controller.has_enemy_bullets then
+      self.check_bullet_hit(bullets_controller.bullets.enemy, enemies_controller.asteroids)
+    end
+
     if self.current_level_settings.current_position <= 0 then
       self.inscrease_position(dt)
     end
     if not anyone_alive then
+      explosions_controller.destroy_all_explosions()
       self.go_to_menu()
     end
 
@@ -233,6 +253,7 @@ function GameController.new()
     enemies_controller.draw()
     bullets_controller.draw()
     power_ups_controller.draw()
+    explosions_controller.draw()
     -- draw player GUI
     for i, player in ipairs(self.players) do
       -- draw player
@@ -244,7 +265,7 @@ function GameController.new()
       love.graphics.print(text, pos.x+screenDistance*(i-1), HEIGHT-60)
       -- draw lives on bottom of screen
       for i=1, player.lives do
-        love.graphics.draw(life_image, pos.x+screenDistance*(i-1), HEIGHT-35)
+        -- love.graphics.draw(life_image, pos.x+screenDistance*(i-1), HEIGHT-35)
       end
       -- draw player score
       local scoreText = string.format("%s score: %010d", player.name, player.score)

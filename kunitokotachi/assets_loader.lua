@@ -3,10 +3,12 @@
 
 require "helpers"
 require "sprite"
+require "animation"
 
 --images
 
 risoto_tomate_icon = {}
+game_logo = {}
 
 bullets_image = {}
 power_ups_images =
@@ -53,7 +55,7 @@ fonts =
   thin = {}
 }
 
--- load images and sprites
+-- load images and sprites OLD
 function load_all_sprites()
   love.graphics.setDefaultFilter('nearest', 'nearest')
   -- load icons
@@ -92,7 +94,8 @@ function load_all_sprites()
 
   define_all_sprites()
 
-  CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
+  -- CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
+  return true
 
 end
 
@@ -120,4 +123,43 @@ function load_all_fonts()
   fonts.normal = love.graphics.newFont(path..'roboto-regular.ttf')
   fonts.black = love.graphics.newFont(path..'roboto-black.ttf')
   fonts.thin = love.graphics.newFont(path..'roboto-thin.ttf')
+end
+
+-- images
+explosion_image = {}
+
+-- sprites
+explosion_sprite =
+{
+  quad_01 = {},
+  quad_02 = {},
+  quad_03 = {},
+  quad_04 = {}
+}
+
+-- load images and sprites NEW
+
+-- method taht load all image files
+function load_all_images()
+  explosion_image = love.graphics.newImage('res/assets/fx/explosion.png')
+end
+
+-- method that create all sprites using quads
+function define_sprites()
+  explosion_sprite.quad_01 = Sprite.new(explosion_image, 0, 0, 100, 100)
+  explosion_sprite.quad_02 = Sprite.new(explosion_image, 100, 0, 100, 100)
+  explosion_sprite.quad_03 = Sprite.new(explosion_image, 200, 0, 100, 100)
+  explosion_sprite.quad_04 = Sprite.new(explosion_image, 300, 0, 100, 100)
+end
+
+-- from here are defined all methods to create animations
+function new_explosion_animation()
+  local sprites =
+  {
+    explosion_sprite.quad_01,
+    explosion_sprite.quad_02,
+    explosion_sprite.quad_03,
+    explosion_sprite.quad_04
+  }
+  return Animation.new(sprites, 0.2)
 end
