@@ -32,13 +32,16 @@ function love.load()
   load_all_images()
   define_sprites()
 
+-- define game icon on top window
+  love.window.setIcon(risoto_tomate_icon)
+
   --load settings
   settings = Settings.new()
 
   -- load list of translations
-  translations['pt'] = json_to_table(read_from('res/translations/all_pt.json'))
-  translations['eng'] = json_to_table(read_from('res/translations/all_eng.json'))
-  translations['esp'] = json_to_table(read_from('res/translations/all_esp.json'))
+  translations.pt = json_to_table(read_from('res/translations/all_pt.json'))
+  translations.eng = json_to_table(read_from('res/translations/all_eng.json'))
+  translations.esp = json_to_table(read_from('res/translations/all_esp.json'))
 
   -- load controllers
   game_controller = GameController.new()

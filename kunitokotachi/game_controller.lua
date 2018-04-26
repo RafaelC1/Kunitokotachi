@@ -99,8 +99,8 @@ function GameController.new()
     for i, object_1 in ipairs(objects_1) do
       for j, object_2 in ipairs(objects_2) do
         if touch_each_other(object_1, object_2) and not object_1.invulnerable and not object_2.invulnerable then
-          object_1.apply_damage{damage=object_2.current_hp}
-          object_2.apply_damage{damage=object_1.current_hp}
+          object_1.apply_damage(object_2.current_hp)
+          object_2.apply_damage(object_1.current_hp)
         end
       end
     end
@@ -117,12 +117,12 @@ function GameController.new()
   end
   -- check of some object hitted a bullet
   function self.object_hit_a_bullet(object, bullet_hitted)
-    if object.invulnerable then return end
-    object.apply_damage{damage=bullet_hitted.damage, agressor=bullet_hitted.owner}
-  end
-  -- check if a object hitted a power up
-  function self.object_hit_a_power_up(object1, power_up)
-    player_ship.self.collect_power_up(power_up.power)
+    if not object.invulnerable then
+      object.apply_damage(bullet_hitted.damage)
+      if not object.is_alive() and object.give_bonus and bullet_hitted.owner ~= nil then
+        bullet_hitted.who_shooted().earn_points(object.give_bonus())
+      end
+    end
   end
   -- controll player on its spawn
   function self.controll_player(player, dt)
@@ -151,7 +151,6 @@ function GameController.new()
   -- start a game
   function self.start_game(amountOfPlayers)
     -- reset controllers
-     self.lose_message()
     enemies_controller.destroy_all_enemies()
     enemies_controller.destroy_all_asteroids()
     bullets_controller.destroy_all_bullets()

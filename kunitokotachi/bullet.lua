@@ -1,21 +1,35 @@
-require "object"
+require "class"
+require "body"
 
 Bullet = {}
 
 function Bullet.new(args)
-  local self = Object.new(args)
+  local self = Class.new()
+
+  self.inherit(Body.new(args))
+  self.animation = args.animation
+
+  self.title = 'bullet'
 
   self.r = 255
   self.g = 0
   self.b = 0
 
   self.owner = args.owner or nil                    -- who shoot this bullet
+
+  self.damage = args.damage or 20                   -- damage that it inflict on target
+
   self.xv = args.xv or 10                           -- horizontal moviment -1=left, 1=right
   self.yv = args.yv or 10                           -- vertical moviment -1=up, 1=down
-  self.damage = args.damage or 20                   -- damage that it inflict on target
+
   self.follow_owner = args.follow_owner  or false   -- this bullet shoud follow owner movements?
   self.destroyable = args.destroy_on_impact -- check if bullet destroy it self if touch comething
-  self.sprite_scala = args.sprite_scala or 1  
+
+  self.sprite_scala = args.sprite_scala or 1
+
+  function self.who_shooted()
+    return self.owner
+  end
 
   function self.update(dt)
     local current_y = 0
@@ -35,13 +49,15 @@ function Bullet.new(args)
       self.body.x = self.owner.ship.body.x + self.xv*dt
     end
     self.body.y = self.body.y + current_y
-    -- self.sprite.update(dt)
+    self.animation.update(dt)
   end
   function self.draw()
     local scala = 1.5 -- self.body.radio
     self.draw_test()
-    -- self.sprite.draw{x=self.body.x-self.sprite.size*scala/2, y=self.body.y-self.sprite.size*scala/2, scala=scala}
+    self.animation.draw{x=self.body.x, y=self.body.y, x_scala=2, y_scala=1, rot=0}
   end
+
+  self.animation.start()
 
   return self
 end

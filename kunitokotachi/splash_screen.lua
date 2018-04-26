@@ -38,7 +38,7 @@ function SplashScreen.new()
   end
 
   self.calculate_position()
-  self.loaded = load_all_sprites()
+  self.loaded = load_all_images() and define_sprites()
 
   return self
 end

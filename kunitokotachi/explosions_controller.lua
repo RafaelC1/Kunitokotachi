@@ -7,7 +7,6 @@ function ExplosionsController.new()
   local self = {}
   self.explosions = {}
   self.explosion_speed = 200
-  self.size_of_explosion_sprite = 100
 
   function self.destroy_explosion(explosion_id)
     table.remove(self.explosions, explosion_id)
@@ -19,7 +18,7 @@ function ExplosionsController.new()
 
   function self.create_explosion(x, y)
     local animation = new_explosion_animation()
-    local explosion = Explosion.new(animation, x-self.size_of_explosion_sprite/2, y-self.size_of_explosion_sprite/2, self.explosion_speed)
+    local explosion = Explosion.new(animation, x, y, self.explosion_speed)
     table.insert(self.explosions, explosion)
   end
 

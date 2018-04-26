@@ -1,31 +1,27 @@
-require "object"
-require "position_helpers"
-require "helpers"
 require "assets_loader"
+require "body"
+require "class"
+require "health"
+require "helpers"
+require "position_helpers"
+require "weapons_manager"
 
 Ship = {}
 
 function Ship.new(args)
-  local self = Object.new(args)
+  local self = Class.new()
 
+  self.inherit(Body.new(args))
+  self.inherit(Health.new(args))
+  self.inherit(WeaponsManager.new())
 
-  self.r = 0
-  self.g = 0
-  self.b = 255
+  self.title = 'player'
 
   self.owner = args.owner or self
   self.self_controller = args.self_controller or true      -- variable to block user to move character
 
-  self.invulnerable_time = 2       -- max time of ivulnerability
-
   self.current_power_level = 1      -- current level of power according collected power ups
   self.power = 1
-
-  self.shoot_delay =
-  {
-    current_delay = 0,   -- current time of shoot
-    delay = 0.05         -- minimum time that current_delay should reach before ship shoot
-  }
 
   self.keys = args.keys
 
@@ -40,7 +36,7 @@ function Ship.new(args)
   self.blink = false
 
   self.current_ship = 1            -- ship of ship
-  self.current_ship_sprite = 1          -- current position of ship (left, right or normal)
+  self.current_ship_position = 1          -- current position of ship (left, right or normal)
 
   self.self_controller = true
 
@@ -60,18 +56,6 @@ function Ship.new(args)
   function self.current_ammo()
     return self.owner.level_settings[string.format("level_%02d", self.current_power_level)]
   end
-  -- check if ship can shoot
-  function self.can_shoot()
-    if self.shoot_delay.current_delay > 0 then return false
-    else return true end
-  end
-  -- create a bullet as a shoot
-  function self.shoot()
-    if self.can_shoot() then
-      bullets_controller.create_bullet(self.body.x, self.body.y-self.body.radio/3, 0, -1, 'player', self.current_ammo().bullet, self.owner)
-      self.shoot_delay.current_delay = self.current_ammo().delay
-    end
-  end
   -- collect power ups and give it to ships power cell
   function self.collect_power_up(collected_power)
     if not self.owner.level_exist(self.current_power_level+1) then return end
@@ -80,6 +64,10 @@ function Ship.new(args)
       local amount_of_extra_levels = self.power/self.power_per_level_up
       self.increase_power_level(around(amount_of_extra_levels))
       self.power = 0
+      -- update all weapons with the new ammo
+      for _, weapon in ipairs(self.weapons) do
+        weapon.change_ammo_to(self.current_ammo())
+    end
     end
   end
   -- change the ship's ammo to a high ammo
@@ -92,7 +80,7 @@ function Ship.new(args)
   end
   -- return the current ship sprite besed on it's current moviment
   function self.current_sprite()
-    return self.sprite[self.current_ship][self.current_ship_sprite]
+    return self.sprites[self.current_ship][self.current_ship_position]
   end
   -- update ship logic
   function self.update(dt)
@@ -113,11 +101,11 @@ function Ship.new(args)
         current_x = self.speed*dt
       end
       if love.keyboard.isDown(self.keys.shoot) then
-        self.shoot()
+        self:shoot_every_weapon()
       else
         -- if current ammo is the laser, when player press up shoot button, laser shoud stop to work on the same time
         if #bullets_controller.bullets.player > 0 then
-          if bullets_controller.bullets_settings.player[self.current_ammo().bullet].follow_owner then
+          if bullets_controller.bullets_settings[self.current_ammo().bullet_name].follow_owner then
             bullets_controller.destroy_all_bullets_by_owner(bullets_controller.bullets.player, self.owner)
           end
         end
@@ -131,9 +119,6 @@ function Ship.new(args)
     self.horizontal_move(current_x)
     self.vertical_move(current_y)
 
-    if self.shoot_delay.current_delay > 0 then
-      self.shoot_delay.current_delay = self.shoot_delay.current_delay - 1*dt
-    end
     -- blink to show ivulnerability
      if self.invulnerable_time > 0 then
         self.invulnerable_time = self.invulnerable_time -1*dt
@@ -148,15 +133,27 @@ function Ship.new(args)
       self.blink = false
       self.invulnerable = false
     end
+
+    -- update weapons status
+    for _, weapon in ipairs(self.weapons) do
+      weapon.update(dt)
+    end
   end
   -- draw ship
   function self.draw()
     self.draw_test()
-    if self.blink then return end
-    local width = self.current_sprite():getWidth()/2
-    local height = self.current_sprite():getHeight()/2
-    love.graphics.draw(self.current_sprite(), self.body.x-width, self.body.y-height)
+    if self.blink then
+    else
+      self.current_sprite().draw{x=self.body.x, y=self.body.y, scala_x=1, scala_y=1, rot=0}
+    end
   end
+
+  self.add_weapon{ammo_name=self.current_ammo().bullet_name,
+                  delay=self.current_ammo().delay,
+                  relative_x=0,
+                  relative_y=-30,
+                  direction_x=0,
+                  direction_y=-1}
 
   return self
 end

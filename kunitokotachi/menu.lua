@@ -23,11 +23,13 @@ function Menu.new(args)
     self.update_text(button)
     table.insert(self.options, button)
   end
+
   function self.add_label(key)
     label = { type='label', text='', key=key }
     self.update_text(label)
     table.insert(self.options, label)
   end
+
   function self.add_slider(min, max, value, step, ...)
     local args = {...}
     args = unpack(args)
@@ -36,20 +38,24 @@ function Menu.new(args)
     self.update_text(slider)
     table.insert(self.options, slider)
   end
+
   function self.update_all()
     for i, option in ipairs(self.options) do
       self.update_text(option)
     end
   end
+
   function self.update_text(widget)
     widget.text = translation_of_key(widget.key)
   end
+
   function self.update()
     local button_heigh = 40
     local buttons_width = 120
     local button_space = 5
     local x = self.x - (buttons_width/2)
     local y = self.y - ((button_heigh*#self.options)/2)
+
     for i, option in ipairs(self.options) do
       if option.type == 'button' then
         if self.ui:Button(option.text, x, y, buttons_width, button_heigh).hit then
@@ -70,6 +76,7 @@ function Menu.new(args)
       y = y + button_heigh + button_space
     end
   end
+
   function self.draw()
     self.ui:draw()
   end

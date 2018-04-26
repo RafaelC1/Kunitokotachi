@@ -7,11 +7,7 @@ BulletsController = {}
 function BulletsController.new()
   local self =
   {
-    bullets_settings =
-    {
-      player = {},
-      enemy = {}
-    },
+    bullets_settings = {},
     bullets =
     {
       player = {},
@@ -19,25 +15,39 @@ function BulletsController.new()
     }
   }
   function self.load_bullets_settings()
-    self.bullets_settings.player = json_to_table(read_from('res/settings/bullets_characteristics.json'))
+    self.bullets_settings = json_to_table(read_from('res/settings/bullets_characteristics.json'))
     -- bullets_settings.enemy = read_values_from('res/settings/enemyBullets.json')
   end
     -- spawm a bullet
-  function self.create_bullet(x, y, xv, yv, characterName, bulletType, owner)
-    local bullet_settings = self.bullets_settings['player'][bulletType]
-    x = x or 100
-    y = y or 100
-    xv = xv*bullet_settings.speed
-    yv = yv*bullet_settings.speed
+  function self.create_bullet(x_position,
+                              y_position,
+                              x_direction,
+                              y_direction,
+                              bullet_name,
+                              owner,
+                              owner_title)
+    local bullet_settings = self.bullets_settings[bullet_name]
+
+    x_position = x_position or 100
+    y_position = y_position or 100
+    x_direction = x_direction*bullet_settings.speed
+    y_direction = y_direction*bullet_settings.speed
+
     local scala = 1.5
-    local sprite = self.sprite_of_bullet_type(bullet_settings.sprite)
-    local bullet = Bullet.new{sprites=sprite, x=x, y=y, xv=xv, yv=yv, damage=bullet_settings.damage, radio=bullet_settings.radio, owner=owner, follow_owner=bullet_settings.follow_owner, destroy_on_impact=bullet_settings.destroyable, sprite_scala=scala}
-    table.insert(self.bullets[characterName], bullet)
+    local bullet = Bullet.new{sprites=sprite,
+                              x=x_position,
+                              y=y_position,
+                              xv=x_direction,
+                              yv=y_direction,
+                              damage=bullet_settings.damage,
+                              radio=bullet_settings.radio,
+                              owner=owner,
+                              follow_owner=bullet_settings.follow_owner,
+                              destroy_on_impact=bullet_settings.destroyable,
+                              sprite_scala=scala,
+                              animation=new_bullet_animation(1, 1)}
+    table.insert(self.bullets[owner_title], bullet)
     end
-    -- return the correct sprite of some bullet to spawn it
-  function self.sprite_of_bullet_type(bulletType)
-    return bullets_sprites[bulletType]
-  end
   -- check each bullet it it is out of screen so delete it
   function self.check_bullets_position(bullets)
     for i, bullet in ipairs(bullets) do

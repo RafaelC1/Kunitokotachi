@@ -16,7 +16,6 @@ function Explosion.new(animation, x, y, down_speed)
     self.move_down(dt)
     self.animation.update(dt)
     self.finished = self.animation.ended
-    print(self.finished)
   end
   function self.draw()
     self.animation.draw{x=self.x, y=self.y, scala_x=1, scala_y=1, rot=0}

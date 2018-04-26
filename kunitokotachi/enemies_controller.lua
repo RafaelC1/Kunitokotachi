@@ -21,7 +21,14 @@ function EnemiesController.new()
     enemy_type = enemy_type or 'eye'
     local enemy_model = self.enemies_characteristics.enemy[enemy_type]
     local enemy_behaviour = self.enemies_behaviours[behaviour]
-    local enemy = Enemy.new{x=x, y=y, speed=enemy_model.speed, max_hp=enemy_model.max_hp, defense=enemy_model.defense, behaviour=enemy_behaviour, bullet_type=enemy_model.bullet_name}
+    local enemy = Enemy.new{x=x,
+                            y=y,
+                            speed=enemy_model.speed,
+                            max_hp=enemy_model.max_hp,
+                            defense=enemy_model.defense,
+                            behaviour=enemy_behaviour,
+                            ammo_name=enemy_model.bullet_name,
+                            owner=self}
     table.insert(self.enemies, enemy)
   end
   function self.create_asteroid(x, y, asteroid_type)
