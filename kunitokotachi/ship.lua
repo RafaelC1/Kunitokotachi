@@ -36,9 +36,41 @@ function Ship.new(args)
   self.blink = false
 
   self.current_ship = 1            -- ship of ship
-  self.current_ship_position = 1          -- current position of ship (left, right or normal)
+  self.current_ship_position = 'center'          -- current position of ship (left, right or normal)
+  self.time_turning = 1
+  self.current_time_turning = 0
 
   self.self_controller = true
+
+  function self.max_time_to_extra_turn()
+    return self.current_time_turning >= self.time_turning
+  end
+
+  -- this metho count the time that player is turning the ship to change the sprite
+  function self.count_time_turning_to_change_sprite(dt)
+    print(self.current_time_turning)
+    if not self.max_time_to_extra_turn() then
+      self.current_time_turning = self.current_time_turning + dt
+    end
+  end
+  -- set the correct sprite of position
+  function self.correct_position_sprite(side)
+    if side == 0 then
+      self.current_ship_position = 'center'
+    elseif side < 0 then
+      if self.max_time_to_extra_turn() then
+        self.current_ship_position = 'extra_left'
+      else
+        self.current_ship_position = 'left'
+      end
+    elseif 0 > side then
+      if self.max_time_to_extra_turn() then
+        self.current_ship_position = 'extra_right'
+      else
+        self.current_ship_position = 'right'
+      end
+    end
+  end
 
   -- perform horizontal move
   function self.horizontal_move(x)
@@ -80,13 +112,17 @@ function Ship.new(args)
   end
   -- return the current ship sprite besed on it's current moviment
   function self.current_sprite()
-    return self.sprites[self.current_ship][self.current_ship_position]
+    return self.sprites['ship_0'..self.current_ship][self.current_ship_position]
   end
   -- update ship logic
   function self.update(dt)
     local current_x = 0
     local current_y = 0
+    local horizontal_keys_pressend = false
 
+    self.correct_position_sprite(0)
+
+-- controller of the keys of ship
     if not self.self_controller then
       if love.keyboard.isDown(self.keys.up) then
         current_y = -self.speed*dt
@@ -95,9 +131,13 @@ function Ship.new(args)
         current_y = self.speed*dt
       end
       if love.keyboard.isDown(self.keys.left) then
+        self.correct_position_sprite(-1)
+        horizontal_keys_pressend = true
         current_x = -self.speed*dt
       end
       if love.keyboard.isDown(self.keys.right) then
+        self.correct_position_sprite(1)
+        horizontal_keys_pressend = true
         current_x = self.speed*dt
       end
       if love.keyboard.isDown(self.keys.shoot) then
@@ -114,7 +154,13 @@ function Ship.new(args)
       if love.keyboard.isDown(string.format('1')) then
         self.collect_power_up(10)
       end
-    end 
+    end
+
+    if horizontal_keys_pressend then
+      self.count_time_turning_to_change_sprite(dt)
+    else
+      self.current_time_turning = 0
+    end
 
     self.horizontal_move(current_x)
     self.vertical_move(current_y)
@@ -144,7 +190,11 @@ function Ship.new(args)
     self.draw_test()
     if self.blink then
     else
-      self.current_sprite().draw{x=self.body.x, y=self.body.y, scala_x=1, scala_y=1, rot=0}
+      self.current_sprite().draw{x=self.body.x,
+                                      y=self.body.y,
+                                      scala_x=1,
+                                      scala_y=1,
+                                      rot=0}
     end
   end
 

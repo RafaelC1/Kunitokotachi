@@ -52,6 +52,30 @@ function Body.new(args)
     self.body.y = y
   end
 
+  function self.direction_of(x, y)
+    if x == 0 and y == 0 then
+      return 0
+    elseif x == 0 and y == -1 then
+      return 0
+    elseif x == 1 and y == -1 then
+      return 45
+    elseif x == 1 and y == 0 then
+      return 90
+    elseif x == 1 and y == 1 then
+      return 135
+    elseif x == 0 and y == 1 then
+      return 180
+    elseif x == -1 and y == 1 then
+      return 225
+    elseif x == -1 and y == 0 then
+      return 270
+    elseif x == -1 and y == -1 then
+      return 315
+    else
+      return 360
+    end
+  end
+
   function self.draw_test()
     love.graphics.setColor(self.r, self.g, self.b)
     love.graphics.circle("fill", self.body.x, self.body.y, self.body.radio)

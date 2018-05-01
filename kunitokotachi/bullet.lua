@@ -33,7 +33,9 @@ function Bullet.new(args)
 
   function self.update(dt)
     local current_y = 0
-    current_y = self.yv*dt
+    local current_x = 0
+    current_x = self.xv * self.speed * dt
+    current_y = self.yv * self.speed * dt
     -- this configuration is for move bullet according its owner if this bullet shoud move according it
     if self.follow_owner and self.owner.ship.body then
       if self.owner.keys ~= nil and self.follow_owner then
@@ -48,13 +50,15 @@ function Bullet.new(args)
       end
       self.body.x = self.owner.ship.body.x + self.xv*dt
     end
+    self.body.x = self.body.x + current_x
     self.body.y = self.body.y + current_y
     self.animation.update(dt)
   end
   function self.draw()
-    local scala = 1.5 -- self.body.radio
-    self.draw_test()
-    self.animation.draw{x=self.body.x, y=self.body.y, x_scala=2, y_scala=1, rot=0}
+    -- self.draw_test()
+    local rot = self.direction_of(self.xv, self.yv)
+    -- print(self.xv, self.yv)
+    self.animation.draw{x=self.body.x, y=self.body.y, x_scala=1, y_scala=1, rot=0}
   end
 
   self.animation.start()

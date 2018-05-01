@@ -30,8 +30,9 @@ function BulletsController.new()
 
     x_position = x_position or 100
     y_position = y_position or 100
-    x_direction = x_direction*bullet_settings.speed
-    y_direction = y_direction*bullet_settings.speed
+    x_direction = x_direction
+    y_direction = y_direction
+    speed = bullet_settings.speed
 
     local scala = 1.5
     local bullet = Bullet.new{sprites=sprite,
@@ -39,6 +40,7 @@ function BulletsController.new()
                               y=y_position,
                               xv=x_direction,
                               yv=y_direction,
+                              speed=speed,
                               damage=bullet_settings.damage,
                               radio=bullet_settings.radio,
                               owner=owner,
