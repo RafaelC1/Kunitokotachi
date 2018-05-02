@@ -17,9 +17,9 @@ function ExplosionsController.new()
   end
 
   function self.create_explosion(x, y)
-    local animation = new_explosion_animation()
-    local explosion = Explosion.new(animation, x, y, self.explosion_speed)
-    table.insert(self.explosions, explosion)
+    local animation = new_explosion_animation() --explosion_animation.copy()
+    local new_explosion = Explosion.new(animation, x, y, self.explosion_speed)
+    table.insert(self.explosions, new_explosion)
   end
 
   function self.update(dt)

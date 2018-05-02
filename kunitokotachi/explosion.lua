@@ -1,7 +1,7 @@
 Explosion = {}
 
 function Explosion.new(animation, x, y, down_speed)
-  local self = {}
+  local self = Class.new()
   self.animation = animation
   self.finished = false
   self.speed = down_speed

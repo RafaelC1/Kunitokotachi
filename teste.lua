@@ -1,36 +1,22 @@
-pai = {}
-mae = {}
-filho = {}
+require "kunitokotachi/class"
 
-function pai.new()
-  local self = {}
-  self.a = 10
+teste = {}
+
+function teste.new()
+  local self = Class.new()
+
+  self.a = {}
+  self.a.b = 10
 
   return self
 end
 
-function mae.new()
-  local self = {}
-  function self:teste()
-    print(self.a)
-  end
-  return self
-end
+original = teste.new()
 
-function filho.new()
-  local self = {}
-  function self.inherit(o)
-    for k, v in pairs(o) do
-      print(k, v)
-      self[k] = v
-    end
-  end
-  self.inherit(pai.new())
-  self.inherit(mae.new())
-  return self
-end
+copia = original.copy()
 
-f = filho.new()
+copia.a.b = 20
 
-print(f.a)
-f:teste()
+print(copia.a.b)
+print(original.a.b)
+

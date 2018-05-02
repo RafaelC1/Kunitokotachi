@@ -37,7 +37,7 @@ function Ship.new(args)
 
   self.current_ship = 1            -- ship of ship
   self.current_ship_position = 'center'          -- current position of ship (left, right or normal)
-  self.time_turning = 1
+  self.time_turning = 0.2
   self.current_time_turning = 0
 
   self.self_controller = true
@@ -48,28 +48,25 @@ function Ship.new(args)
 
   -- this metho count the time that player is turning the ship to change the sprite
   function self.count_time_turning_to_change_sprite(dt)
-    print(self.current_time_turning)
     if not self.max_time_to_extra_turn() then
       self.current_time_turning = self.current_time_turning + dt
     end
   end
   -- set the correct sprite of position
   function self.correct_position_sprite(side)
-    if side == 0 then
-      self.current_ship_position = 'center'
-    elseif side < 0 then
+    local position = 'center'
+    if side < 0 then
+        position = 'left'
       if self.max_time_to_extra_turn() then
-        self.current_ship_position = 'extra_left'
-      else
-        self.current_ship_position = 'left'
+        position = 'extra_left'
       end
-    elseif 0 > side then
+    elseif side > 0 then
+        position = 'right'
       if self.max_time_to_extra_turn() then
-        self.current_ship_position = 'extra_right'
-      else
-        self.current_ship_position = 'right'
+        position = 'extra_right'
       end
     end
+    self.current_ship_position = position
   end
 
   -- perform horizontal move

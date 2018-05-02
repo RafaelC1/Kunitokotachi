@@ -11,6 +11,21 @@ function Class.new()
       self[k] = v
     end
   end
+  -- this method give a perfect copy of this table
+  function self.copy(table)
+    local self_copy = {}
+    if table == nil then
+      table = self
+    end
+    for k, v in pairs(table) do
+      local temp = v
+      if type(v) == table then
+        temp = self.copy(v)
+      end
+      self_copy[k] = temp
+    end
+    return self_copy
+  end
   -- this calss return a list of attributes of this calss
   function self.attributes()
     return self.list_of_characteristics('attributes')

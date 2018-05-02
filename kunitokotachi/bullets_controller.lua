@@ -53,7 +53,7 @@ function BulletsController.new()
   -- check each bullet it it is out of screen so delete it
   function self.check_bullets_position(bullets)
     for i, bullet in ipairs(bullets) do
-      if not inside_screen_width(bullet.body.x) or not inside_screen_width(bullet.body.y) then
+      if not inside_screen_width(bullet.body.x) or not inside_screen_height(bullet.body.y) then
         self.destroy_bullet(bullets, i, true)
         i = i-1
       end
@@ -84,19 +84,22 @@ function BulletsController.new()
       end
     end
   end
+
   function self.update(dt)
     if #self.bullets.player > 0 then
       for i, bullet in ipairs(self.bullets.player) do
         bullet.update(dt)
       end
+      self.check_bullets_position(self.bullets.player)
     end
     if #self.bullets.enemy > 0 then
       for i, bullet in ipairs(self.bullets.enemy) do
         bullet.update(dt)
       end
+      self.check_bullets_position(self.bullets.enemys)
     end
-    self.check_bullets_position(self.bullets)
   end
+
   function self.draw()
     if #self.bullets.player > 0 then
       for i, bullet in ipairs(self.bullets.player) do

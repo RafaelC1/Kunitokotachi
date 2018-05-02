@@ -1,10 +1,12 @@
+require "class"
+
 Animation = {}
 
 function Animation.new(sprites, frame_per_sec)
 
   frame_per_sec = frame_per_sec or 1
 
-  local self = {}
+  local self = Class.new()
   self.sprites = sprites
   self.sprite = 1
   self.time_for_each_frame = frame_per_sec
