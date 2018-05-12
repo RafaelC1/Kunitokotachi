@@ -46,7 +46,7 @@ function GameController.new()
       print('you reach the last level')
     end
   end
-  -- update current_level_settings informations based on current level 
+  -- update current_level_settings informations based on current level
   function self.update_current_level()
     self.current_level_settings = {}
     self.current_level_settings.name = self.levels_settings.levels_names[self.current_level]
@@ -258,13 +258,15 @@ function GameController.new()
       -- draw player
       player.draw()
 
-      local screenDistance = 25
+      local screen_distance = 25
       local pos = self.player_gui_pos['player'..player.player]
       local text = 'power:'..(player.ship.power or 0)
-      love.graphics.print(text, pos.x+screenDistance*(i-1), HEIGHT-60)
+      love.graphics.print(text, pos.x+screen_distance*(i-1), HEIGHT-60)
       -- draw lives on bottom of screen
       for i=1, player.lives do
-        -- love.graphics.draw(life_image, pos.x+screenDistance*(i-1), HEIGHT-35)
+        print((pos.x+screen_distance*(i-1)))
+        life_sprite.draw{x=(pos.x+screen_distance*(i-1)),
+                         y=HEIGHT-35}
       end
       -- draw player score
       local scoreText = string.format("%s score: %010d", player.name, player.score)

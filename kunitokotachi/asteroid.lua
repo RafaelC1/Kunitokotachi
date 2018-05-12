@@ -9,11 +9,7 @@ function Asteroid.new(args)
   self.inherit(Body.new(args))
   self.inherit(Health.new(args))
 
-  self.title = 'enemy'
-
-  self.r = 66
-  self.g = 49
-  self.b = 30
+  self.title = 'enemy'  
 
   function self.update(dt)
     self.down(dt)

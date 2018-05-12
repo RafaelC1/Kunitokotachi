@@ -6,7 +6,7 @@ require "sprite"
 require "animation"
 
 -- fonts
-fonts = 
+fonts =
 {
   normal = {},
   black = {},
@@ -72,6 +72,7 @@ ship_sprites =
     extra_right = {}
   },
 }
+
 player_bullets_sprites =
 {
   player_level_01_sprites =
@@ -114,57 +115,112 @@ player_bullets_sprites =
 
 eye_enemy_sprites =
 {
-  attack = 
+  attack =
   {
     quad_01 = {},
     quad_02 = {}
   },
-  normal = 
+  normal =
   {
     quad_01 = {},
     quad_02 = {}
   },
-  die = 
+  die =
   {
     quad_01 = {},
     quad_02 = {}
-  },
+  }
 }
+
+angel_enemy_sprite =
+{
+  attack =
+  {
+    quad_01 = {}
+  },
+  normal =
+  {
+    quad_01 = {},
+    quad_02 = {}
+  },
+  die =
+  {
+    quad_01 = {}
+  }
+}
+
+head_enemy_sprite =
+{
+  attack =
+  {
+    quad_01 = {},
+    quad_02 = {},
+    quad_03 = {}
+  },
+  normal =
+  {
+    quad_01 = {}
+  },
+  die =
+  {
+    quad_01 = {}
+  }
+}
+
+lung_enemy_sprite =
+{
+  attack =
+  {
+    quad_01 = {}
+  },
+  normal =
+  {
+    quad_01 = {},
+    quad_02 = {},
+    quad_03 = {},
+    quad_04 = {}
+  }
+}
+
+life_sprite = {}
 
 -- animations
 explosion_animation = {}
 
 -- load images and sprites
+local function load_image(path)
+  return love.graphics.newImage(path)
+end
 
 -- method taht load all image files
 function load_all_images()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  -- load gui images
+  life_image = load_image('res/assets/HUD/life_image.png')
+
 -- loading game icon
   risoto_tomate_icon = love.image.newImageData('res/assets/risototomate_icon.png')
 
 -- loading explosion image
-  explosion_image = love.graphics.newImage('res/assets/fx/explosion.png')
+  explosion_image = load_image('res/assets/fx/explosion.png')
 
 -- loading ships images
-  ship_images.ship_01 = love.graphics.newImage('res/assets/ships/shipone.png')
-  ship_images.ship_02 = love.graphics.newImage('res/assets/ships/shiptwo.png')
-  ship_images.ship_03 = love.graphics.newImage('res/assets/ships/shipthree.png')
+  ship_images.ship_01 = load_image('res/assets/ships/shipone.png')
+  ship_images.ship_02 = load_image('res/assets/ships/shiptwo.png')
+  ship_images.ship_03 = load_image('res/assets/ships/shipthree.png')
 
-  level_background_images.level_01 = love.graphics.newImage('res/assets/back_ground/BACKGROUNDONE.jpg')
-  -- level_background_images.level_01 = love.graphics.newImage('res/assets/back_ground/BACKGROUNDONE.jpg')
+  level_background_images.level_01 = load_image('res/assets/back_ground/BACKGROUNDONE.jpg')
+  -- level_background_images.level_01 = load_image('res/assets/back_ground/BACKGROUNDONE.jpg')
 
   -- load all bulet images
-  player_bullets_image = love.graphics.newImage('res/assets/bullets/player_bullets.png')
-
--- loading image of life
-  life_image = love.graphics.newImage('res/assets/HUD/01.png')
+  player_bullets_image = load_image('res/assets/bullets/player_bullets.png')
 
   -- loading image of enemies
-  eye_enemy_image = love.graphics.newImage('res/assets/enemies/eye.png')
-  angel_enemy_image = love.graphics.newImage('res/assets/enemies/angel.png')
-  head_enemy_image = love.graphics.newImage('res/assets/enemies/head.png')
-  lung_enemy_image = love.graphics.newImage('res/assets/enemies/lung.png')
+  eye_enemy_image = load_image('res/assets/enemies/eye.png')
+  angel_enemy_image = load_image('res/assets/enemies/angel.png')
+  head_enemy_image = load_image('res/assets/enemies/head.png')
+  lung_enemy_image = load_image('res/assets/enemies/lung.png')
 
   return true
 end
@@ -177,97 +233,129 @@ function define_sprites()
   local x = 0
   local y = 0
 
-  explosion_sprite.quad_01 = Sprite.new(explosion_image, 0, 0, 100, 100)
-  explosion_sprite.quad_02 = Sprite.new(explosion_image, 100, 0, 100, 100)
-  explosion_sprite.quad_03 = Sprite.new(explosion_image, 200, 0, 100, 100)
-  explosion_sprite.quad_04 = Sprite.new(explosion_image, 300, 0, 100, 100)
+  -- life sprites
+  width = 25
+  height = 25
+  x = 0
+  y = 0
+  life_sprite = Sprite.new(life_image, x, y, width, height)
+
+  -- explosion sprites
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  explosion_sprite.quad_01 = Sprite.new(explosion_image, 0, y, width, height)
+  explosion_sprite.quad_02 = Sprite.new(explosion_image, 100, y, width, height)
+  explosion_sprite.quad_03 = Sprite.new(explosion_image, 200, y, width, height)
+  explosion_sprite.quad_04 = Sprite.new(explosion_image, 300, y, width, height)
 
   -- bullets sprite
+  width = 50
+  height = 50
+  x = 0
+  y = 0
   player_bullets_sprites.player_level_01_sprites.quad_01 = Sprite.new(player_bullets_image, 0, y, width, height)
   player_bullets_sprites.player_level_01_sprites.quad_02 = Sprite.new(player_bullets_image, 50, y, width, height)
   player_bullets_sprites.player_level_01_sprites.quad_03 = Sprite.new(player_bullets_image, 100, y, width, height)
-  
-  y = y + 50
+  y = y + height
   player_bullets_sprites.player_level_02_sprites.quad_01 = Sprite.new(player_bullets_image, 0, y, width, height)
   player_bullets_sprites.player_level_02_sprites.quad_02 = Sprite.new(player_bullets_image, 50, y, width, height)
   player_bullets_sprites.player_level_02_sprites.quad_03 = Sprite.new(player_bullets_image, 100, y, width, 35)
-  
-  y = y + 50
+  y = y + height
   player_bullets_sprites.player_level_03_sprites.quad_01 = Sprite.new(player_bullets_image, 0, y, width, height)
   player_bullets_sprites.player_level_03_sprites.quad_02 = Sprite.new(player_bullets_image, 50, y, width, height)
   player_bullets_sprites.player_level_03_sprites.quad_03 = Sprite.new(player_bullets_image, 100, y, width, height)
-  
-  y = y + 50
+  y = y + height
   player_bullets_sprites.player_level_04_sprites.quad_01 = Sprite.new(player_bullets_image, 0, y, width, height)
   player_bullets_sprites.player_level_04_sprites.quad_02 = Sprite.new(player_bullets_image, 50, y, width, height)
   player_bullets_sprites.player_level_04_sprites.quad_03 = Sprite.new(player_bullets_image, 100, y, width, height)
-  
-  y = y + 50
+  y = y + height
   player_bullets_sprites.player_level_05_sprites.quad_01 = Sprite.new(player_bullets_image, 0, y, width, height)
   player_bullets_sprites.player_level_05_sprites.quad_02 = Sprite.new(player_bullets_image, 50, y, width, height)
   player_bullets_sprites.player_level_05_sprites.quad_03 = Sprite.new(player_bullets_image, 100, y, width, height)
-  y = y + 50
+  y = y + height
   player_bullets_sprites.player_level_05_sprites.quad_04 = Sprite.new(player_bullets_image, 0, y, width, height)
   player_bullets_sprites.player_level_05_sprites.quad_05 = Sprite.new(player_bullets_image, 50, y, width, height)
   player_bullets_sprites.player_level_05_sprites.quad_06 = Sprite.new(player_bullets_image, 100, y, width , height)
-  
-  y = y + 50
+
+  y = y + height
   player_bullets_sprites.player_level_06_sprites.quad_01 = Sprite.new(player_bullets_image, 0, y, width, height)
 
 -- ship sprites
-  ship_sprites.ship_01.extra_left  = Sprite.new(ship_images.ship_01, 0, 0, 150, 150)
-  ship_sprites.ship_01.left        = Sprite.new(ship_images.ship_01, 150, 0, 150, 150)
-  ship_sprites.ship_01.center      = Sprite.new(ship_images.ship_01, 285, 0, 150, 150)
-  ship_sprites.ship_01.right       = Sprite.new(ship_images.ship_01, 425, 0, 150, 150)
-  ship_sprites.ship_01.extra_right = Sprite.new(ship_images.ship_01, 575, 0, 150, 150)
+  width = 150
+  height = 150
+  x = nil
+  y = 0
+  ship_sprites.ship_01.extra_left  = Sprite.new(ship_images.ship_01, 0, y, width, height)
+  ship_sprites.ship_01.left        = Sprite.new(ship_images.ship_01, 150, y, width, height)
+  ship_sprites.ship_01.center      = Sprite.new(ship_images.ship_01, 285, y, width, height)
+  ship_sprites.ship_01.right       = Sprite.new(ship_images.ship_01, 425, y, width, height)
+  ship_sprites.ship_01.extra_right = Sprite.new(ship_images.ship_01, 575, y, width, height)
 
-  ship_sprites.ship_02.extra_left  = Sprite.new(ship_images.ship_02, 0, 0, 150, 150)
-  ship_sprites.ship_02.left        = Sprite.new(ship_images.ship_02, 150, 0, 150, 150)
-  ship_sprites.ship_02.center      = Sprite.new(ship_images.ship_02, 285, 0, 150, 150)
-  ship_sprites.ship_02.right       = Sprite.new(ship_images.ship_02, 425, 0, 150, 150)
-  ship_sprites.ship_02.extra_right = Sprite.new(ship_images.ship_02, 575, 0, 150, 150)
+  ship_sprites.ship_02.extra_left  = Sprite.new(ship_images.ship_02, 0, y, width, height)
+  ship_sprites.ship_02.left        = Sprite.new(ship_images.ship_02, 150, y, width, height)
+  ship_sprites.ship_02.center      = Sprite.new(ship_images.ship_02, 285, y, width, height)
+  ship_sprites.ship_02.right       = Sprite.new(ship_images.ship_02, 425, y, width, height)
+  ship_sprites.ship_02.extra_right = Sprite.new(ship_images.ship_02, 575, y, width, height)
 
-  ship_sprites.ship_03.extra_left  = Sprite.new(ship_images.ship_03, 0, 0, 150, 150)
-  ship_sprites.ship_03.left        = Sprite.new(ship_images.ship_03, 150, 0, 150, 150)
-  ship_sprites.ship_03.center      = Sprite.new(ship_images.ship_03, 285, 0, 150, 150)
-  ship_sprites.ship_03.right       = Sprite.new(ship_images.ship_03, 425, 0, 150, 150)
-  ship_sprites.ship_03.extra_right = Sprite.new(ship_images.ship_03, 575, 0, 150, 150)
+  ship_sprites.ship_03.extra_left  = Sprite.new(ship_images.ship_03, 0, y, width, height)
+  ship_sprites.ship_03.left        = Sprite.new(ship_images.ship_03, 150, y, width, height)
+  ship_sprites.ship_03.center      = Sprite.new(ship_images.ship_03, 285, y, width, height)
+  ship_sprites.ship_03.right       = Sprite.new(ship_images.ship_03, 425, y, width, height)
+  ship_sprites.ship_03.extra_right = Sprite.new(ship_images.ship_03, 575, y, width, height)
 
   -- enemies sprites
   -- eye
-  eye_enemy_sprites.normal.quad_01 = Sprite.new(eye_enemy_image, 0, 0, 40, 100)
-  eye_enemy_sprites.normal.quad_02 = Sprite.new(eye_enemy_image, 40, 0, 40, 100)
-
-  eye_enemy_sprites.attack.quad_01 = Sprite.new(eye_enemy_image, 0, 100, 40, 100)
-  eye_enemy_sprites.attack.quad_02 = Sprite.new(eye_enemy_image, 40, 100, 40, 100)
-
-  eye_enemy_sprites.die.quad_01 = Sprite.new(eye_enemy_image, 0, 100, 40, 100)
-  eye_enemy_sprites.die.quad_02 = Sprite.new(eye_enemy_image, 40, 100, 40, 100)
+  width = 40
+  height = 100
+  x = nil
+  y = 0
+  eye_enemy_sprites.normal.quad_01 = Sprite.new(eye_enemy_image, 0, 0, width, height)
+  eye_enemy_sprites.normal.quad_02 = Sprite.new(eye_enemy_image, 40, 0, width, height)
+  y = y + height
+  eye_enemy_sprites.attack.quad_01 = Sprite.new(eye_enemy_image, 0, y, width, height)
+  eye_enemy_sprites.attack.quad_02 = Sprite.new(eye_enemy_image, 40, y, width, height)
+  y = y + height
+  eye_enemy_sprites.die.quad_01 = Sprite.new(eye_enemy_image, 0, y, width, height)
+  eye_enemy_sprites.die.quad_02 = Sprite.new(eye_enemy_image, 40, y, width, height)
 
 -- angel
---   angel_enemy_image.normal.quad_01
-
---   angel_enemy_image.attack.quad_01
---   angel_enemy_image.attack.quad_02
-
---   angel_enemy_image.die.quad_01
+  width = 75
+  height = 75
+  x = nil
+  y = 0
+  angel_enemy_sprite.normal.quad_01 = Sprite.new(angel_enemy_image, 0, y, width, height)
+  y = y + height
+  angel_enemy_sprite.attack.quad_01 = Sprite.new(angel_enemy_image, 0, y, width, height)
+  angel_enemy_sprite.attack.quad_02 = Sprite.new(angel_enemy_image, 75, y, width, height)
+  y = y + height
+  angel_enemy_sprite.die.quad_01 = Sprite.new(angel_enemy_image, 0, y, width, height)
 
 -- -- head
---   head_enemy_image.normal.quad_01
---   head_enemy_image.normal.quad_02
---   head_enemy_image.normal.quad_03
-
---   head_enemy_image.attack.quad_01
-
---   head_enemy_image.die.quad_01
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  head_enemy_sprite.normal.quad_01 = Sprite.new(head_enemy_image, 0, y, width, height)
+  head_enemy_sprite.normal.quad_02 = Sprite.new(head_enemy_image, 100, y, width, height)
+  head_enemy_sprite.normal.quad_03 = Sprite.new(head_enemy_image, 200, y, width, height)
+  y = y + height
+  head_enemy_sprite.attack.quad_01 = Sprite.new(head_enemy_image, 0, y, width, height)
+  y = y + height
+  head_enemy_sprite.die.quad_01 = Sprite.new(head_enemy_image, 0, y, width, height)
 
 -- -- lung
---   lung_enemy_image.normal.quad_01
---   lung_enemy_image.normal.quad_02
---   lung_enemy_image.normal.quad_03
---   lung_enemy_image.normal.quad_04
-
---   lung_enemy_image.attack.quad_01
+  width = 90
+  height = 75
+  x = 0
+  y = 0
+  lung_enemy_sprite.normal.quad_01 = Sprite.new(lung_enemy_image, 0, y, width, height)
+  lung_enemy_sprite.normal.quad_02 = Sprite.new(lung_enemy_image, 100, y, width, height)
+  lung_enemy_sprite.normal.quad_03 = Sprite.new(lung_enemy_image, 200, y, width, height)
+  lung_enemy_sprite.normal.quad_04 = Sprite.new(lung_enemy_image, 300, y, width, height)
+  y = y + height
+  lung_enemy_sprite.attack.quad_01 = Sprite.new(lung_enemy_image, 0, y, width, height)
 
   return true
 end
@@ -315,12 +403,16 @@ function new_angel_animations()
   local all_animations = {}
   local normal_sprites =
   {
+    angel_enemy_sprite.normal.quad_01
   }
   local attack_sprites =
   {
+    angel_enemy_sprite.attack.quad_01,
+    angel_enemy_sprite.attack.quad_02
   }
   local die_sprites =
   {
+    angel_enemy_sprite.die.quad_01
   }
   all_animations.normal = Animation.new(normal_sprites, 0.1)
   all_animations.attack = Animation.new(attack_sprites, 0.1)
@@ -333,12 +425,17 @@ function new_head_animations()
   local all_animations = {}
   local normal_sprites =
   {
+    head_enemy_sprite.normal.quad_01,
+    head_enemy_sprite.normal.quad_02,
+    head_enemy_sprite.normal.quad_03
   }
   local attack_sprites =
   {
+    head_enemy_sprite.attack.quad_01
   }
   local die_sprites =
   {
+    head_enemy_sprite.die.quad_01
   }
   all_animations.normal = Animation.new(normal_sprites, 0.1)
   all_animations.attack = Animation.new(attack_sprites, 0.1)
@@ -351,16 +448,20 @@ function new_lung_animations()
   local all_animations = {}
   local normal_sprites =
   {
+    lung_enemy_sprite.normal.quad_01,
+    lung_enemy_sprite.normal.quad_02,
+    lung_enemy_sprite.normal.quad_03,
+    lung_enemy_sprite.normal.quad_04
   }
   local attack_sprites =
   {
+    lung_enemy_sprite.attack.quad_01
   }
-  local die_sprites =
-  {
-  }
-  all_animations.normal = Animation.new(normal_sprites, 0.1)
-  all_animations.attack = Animation.new(attack_sprites, 0.1)
-  all_animations.die = Animation.new(die_sprites, 0.1)
+  local die_sprites = nil
+
+  all_animations.normal = Animation.new(normal_sprites, 0.15)
+  all_animations.attack = Animation.new(attack_sprites, 0.15)
+  all_animations.die = nil
 
   return all_animations
 end

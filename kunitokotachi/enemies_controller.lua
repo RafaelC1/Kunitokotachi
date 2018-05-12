@@ -18,7 +18,7 @@ function EnemiesController.new()
   function self.create_enemy(x, y, enemy_type, behaviour)
     x = x or 100
     y = y or -30
-    local animations = new_eye_animations()
+    local animations = new_lung_animations()
     enemy_type = enemy_type or 'eye'
     local enemy_model = self.enemies_characteristics.enemy[enemy_type]
     local enemy_behaviour = self.enemies_behaviours[behaviour]
