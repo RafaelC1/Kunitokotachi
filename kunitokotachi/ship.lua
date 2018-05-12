@@ -37,8 +37,10 @@ function Ship.new(args)
 
   self.current_ship = 1            -- ship of ship
   self.current_ship_position = 'center'          -- current position of ship (left, right or normal)
-  self.time_turning = 0.2
+  self.time_turning = 0.08
   self.current_time_turning = 0
+
+  self.sprites = args.sprites or nil
 
   self.self_controller = true
 
@@ -94,9 +96,8 @@ function Ship.new(args)
       self.increase_power_level(around(amount_of_extra_levels))
       self.power = 0
       -- update all weapons with the new ammo
-      for _, weapon in ipairs(self.weapons) do
-        weapon.change_ammo_to(self.current_ammo())
-    end
+      self.change_ammo_of_all_weapons(self.current_ammo().bullet_name)
+      self.change_delay_of_all_weapons(self.current_ammo().delay)
     end
   end
   -- change the ship's ammo to a high ammo
@@ -113,6 +114,7 @@ function Ship.new(args)
   end
   -- update ship logic
   function self.update(dt)
+    print(self.current_power_level)
     local current_x = 0
     local current_y = 0
     local horizontal_keys_pressend = false
@@ -201,6 +203,9 @@ function Ship.new(args)
                   relative_y=-30,
                   direction_x=0,
                   direction_y=-1}
+
+  self.change_ammo_of_all_weapons(self.current_ammo().bullet_name)
+  self.change_delay_of_all_weapons(self.current_ammo().delay)
 
   return self
 end

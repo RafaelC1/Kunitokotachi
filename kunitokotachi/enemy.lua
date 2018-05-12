@@ -31,15 +31,53 @@ function Enemy.new(args)
   self.IA.behaviour = args.behaviour or nil
   self.bullet_type = args.bullet_type or 'enemy_bullet_01'
 
+  self.animations = args.animations or nil
+  self.current_animation = self.animations.normal or nil
+
+  function self.change_normal_animation()
+    self.change_animation('normal')
+  end
+
+  function self.change_attack_animation()
+    self.change_animation('attack')
+  end
+
+  function self.change_die_animation()
+    self.change_animation('die')
+  end
+
+  function self.current_animation_ended()
+    return self.current_animation.ended
+  end
+
+-- this method change to the animation sended as parameter
+  function self.change_animation(new_animation)
+    if self.animations[new_animation] ~= nil then
+      self.current_animation = self.animations[new_animation]
+    else
+      self.current_animation = self.animations.normal
+    end
+    self.current_animation.start()
+  end
+
   -- this method give enemy bonur for kill but make it to zero to prevent double gain
   function self.give_bonus()
     local bonus = self.kill_points
     self.kill_points = 0
     return bonus
   end
+  -- enemy need to overwrite this method since it can only die when animation of dying over
+  function self.is_alive()
+    if self.current_animation == self.animations.die then
+      if self.current_animation_ended() then
+        return self.current_hp > 0
+      end
+    end
+    return true
+  end
   -- move enemy acording IA
   function self.move(dt)
-    if self.IA.behaviour == nil or self.IA.current_position > #self.IA.behaviour then
+    if self.IA.behaviour == nil or self.IA.current_position > #self.IA.behaviour or self.current_hp <= 0 then
       self.down(dt)
       return
     end
@@ -68,6 +106,7 @@ function Enemy.new(args)
     if onX and onY then
       if self.IA.behaviour[self.IA.current_position].action == "shoot" then
         self:shoot_every_weapon()
+        self.change_attack_animation()
       end
       if self.IA.behaviour[self.IA.current_position].action == "repeat" then
         self.IA.current_position = 1
@@ -79,8 +118,23 @@ function Enemy.new(args)
 
   function self.update(dt)
     self.move(dt)
+    if self.current_animation ~= nil then
+      self.current_animation.update(dt)
+      if self.current_animation_ended() then
+        self.current_animation = self.animations.normal
+      end
+    end
   end
 
+  function self.draw()
+    self.draw_test()
+    if self.current_animation ~= nil then
+      self.current_animation.draw{x=self.body.x, y=self.body.y, scala_x=1, scala_y=1, rot=0}
+    end
+  end
+
+  self.current_animation.start()
+  self.current_animation.repeat_on_end() -- turn only the normal animation to keep repeting
   self.add_weapon{ammo_name=args.ammo_name,
                   delay=0,
                   relative_x=0,

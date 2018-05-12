@@ -18,16 +18,19 @@ function EnemiesController.new()
   function self.create_enemy(x, y, enemy_type, behaviour)
     x = x or 100
     y = y or -30
+    local animations = new_eye_animations()
     enemy_type = enemy_type or 'eye'
     local enemy_model = self.enemies_characteristics.enemy[enemy_type]
     local enemy_behaviour = self.enemies_behaviours[behaviour]
     local enemy = Enemy.new{x=x,
                             y=y,
+                            radio=enemy_model.radio,
                             speed=enemy_model.speed,
                             max_hp=enemy_model.max_hp,
                             defense=enemy_model.defense,
                             behaviour=enemy_behaviour,
                             ammo_name=enemy_model.bullet_name,
+                            animations=animations,
                             owner=self}
     table.insert(self.enemies, enemy)
   end

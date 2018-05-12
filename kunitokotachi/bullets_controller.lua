@@ -35,6 +35,7 @@ function BulletsController.new()
     speed = bullet_settings.speed
 
     local scala = 1.5
+    local animation = bullet_animations['new_'..bullet_settings.animation]()
     local bullet = Bullet.new{sprites=sprite,
                               x=x_position,
                               y=y_position,
@@ -47,7 +48,8 @@ function BulletsController.new()
                               follow_owner=bullet_settings.follow_owner,
                               destroy_on_impact=bullet_settings.destroyable,
                               sprite_scala=scala,
-                              animation=new_bullet_animation(1, 1)}
+                              animation=animation}
+
     table.insert(self.bullets[owner_title], bullet)
     end
   -- check each bullet it it is out of screen so delete it

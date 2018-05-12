@@ -25,8 +25,12 @@ function Weapon.new(args)
     self.actived = false
   end
 
-  function self.change_ammo_to(new_ammo)
-    self.ammo = new_ammo
+  function self.change_delay_to(new_delay)
+    self.delay = new_delay
+  end
+
+  function self.change_ammo_to(new_ammo_name)
+    self.ammo_name = new_ammo_name
   end
 
   function self.update_delay(dt)
@@ -47,7 +51,7 @@ function Weapon.new(args)
     return new_x, new_y
   end
 
-  function self.shoot(x_pos,y_pos, owner, owner_title)
+  function self.shoot(x_pos, y_pos, owner, owner_title)
     if self.can_shoot() then
       x_pos, y_pos = self.correct_position(x_pos, y_pos)
       bullets_controller.create_bullet(x_pos, y_pos, self.direction.x, self.direction.y, self.ammo_name, owner, owner_title)

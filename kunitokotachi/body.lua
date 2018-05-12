@@ -13,8 +13,6 @@ function Body.new(args)
 
   self.invulnerable = false or args.invulnerable
 
-  self.sprites = args.sprites or nil
-
   self.r = 255
   self.g = 255
   self.b = 255

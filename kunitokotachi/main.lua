@@ -31,7 +31,6 @@ function love.load()
 
   load_all_images()
   define_sprites()
-  define_animations()
 
 -- define game icon on top window
   love.window.setIcon(risoto_tomate_icon)

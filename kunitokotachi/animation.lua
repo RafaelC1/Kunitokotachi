@@ -24,6 +24,10 @@ function Animation.new(sprites, frame_per_sec)
     self.can_repeat = false
   end
 
+  function self.repeat_on_end()
+    self.can_repeat = true
+  end
+
   function self.reset_time()
     self.current_time = 0
   end
@@ -45,7 +49,7 @@ function Animation.new(sprites, frame_per_sec)
       self.reset_time()
       self.sprite = self.sprite + 1
     end
-    if self.sprite >= #self.sprites then
+    if self.sprite > #self.sprites then
       if self.can_repeat then
         self.reset_sprite()
       else

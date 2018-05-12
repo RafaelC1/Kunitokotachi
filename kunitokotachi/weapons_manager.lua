@@ -8,8 +8,28 @@ function WeaponsManager.new()
 
   self.weapons = {}
 
-  function self.ammo_of_type(ammo_name)
-    return bullets_controller.bullets_settings[ammo_name]
+  function self.change_delay_of_all_weapons(new_delay)
+    for _, weapon in ipairs(self.weapons) do
+      weapon.change_delay_to(new_delay)
+    end
+  end
+
+  function self.change_ammo_of_all_weapons(new_ammo)
+    for _, weapon in ipairs(self.weapons) do
+      weapon.change_ammo_to(new_ammo)
+    end
+  end
+
+  function self.change_delay_of_weapon(weapon_id, new_delay)
+    if self.weapons[weapon_id] ~= nil then
+      self.weapons[weapon_id].change_delay_to(new_ammo)
+    end
+  end
+
+  function self.change_ammo_of_weapon(weapon_id, new_ammo)
+    if self.weapons[weapon_id] ~= nil then
+      self.weapons[weapon_id].change_ammo_to(new_ammo)
+    end
   end
 
 -- create a "weapon" with position relative the body of ship
