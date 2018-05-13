@@ -31,6 +31,7 @@ function EnemiesController.new()
                             behaviour=enemy_behaviour,
                             ammo_name=enemy_model.bullet_name,
                             animations=animations,
+                            drop=enemy_model.power_drop,
                             owner=self}
     table.insert(self.enemies, enemy)
   end
@@ -56,7 +57,7 @@ function EnemiesController.new()
     if self.enemies[enemy_id].drop == nil then return end
     local x = self.enemies[enemy_id].body.x
     local y = self.enemies[enemy_id].body.y
-    local power_type = self.enemies[enemy_id].drop or 'power'
+    local power_type = self.enemies[enemy_id].drop or 'power_01'
     power_ups_controller.create_power_up(x, y, power_type)
   end
   -- destroy an enemy by id

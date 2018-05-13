@@ -89,7 +89,11 @@ function Ship.new(args)
   end
   -- collect power ups and give it to ships power cell
   function self.collect_power_up(collected_power)
-    if not self.owner.level_exist(self.current_power_level+1) then return end
+    if not self.owner.level_exist(self.current_power_level+1) then
+      -- if player get the last level, all power collected turn in score
+      self.owner.earn_points(collected_power*1000)
+      return
+    end
     self.power = self.power + collected_power
     if self.power >= self.power_per_level_up then
       local amount_of_extra_levels = self.power/self.power_per_level_up

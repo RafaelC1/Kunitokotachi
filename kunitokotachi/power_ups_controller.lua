@@ -12,9 +12,17 @@ function PowerUpsController.new()
     self.power_ups_settings = json_to_table(read_from('res/settings/power_ups_settings.json'))
   end
   function self.create_power_up(x, y, power_up_type)
-    power_up_type = 'power'
     local power_up_settings = self.power_ups_settings[power_up_type]
-    local power_up = PowerUp.new{x=x, y=y, power=power_up_settings.charge_power, power_type='power', radio=30, vanish_on_time=3, speed=50}
+    local animation = power_ups_animations['new_'..power_up_settings.animation..'_animation']()
+    print(power_up_settings.animation)
+    local power_up = PowerUp.new{x=x,
+                                 y=y,
+                                 power=power_up_settings.charge_power,
+                                 power_type='charge_power',
+                                 radio=30,
+                                 vanish_time=4,
+                                 animation=animation,
+                                 speed=50}
     table.insert(self.power_ups, power_up)
   end
   function self.destroy_power_up(power_up_id)
@@ -26,7 +34,7 @@ function PowerUpsController.new()
   function self.update(dt)
     for i, power_up in ipairs(self.power_ups) do
       power_up.update(dt)
-      if not on_screen(power_up.body.x, power_up.body.y) then
+      if not on_screen(power_up.body.x, power_up.body.y) or power_up.vanished() then
         self.destroy_power_up(i)
       end
     end

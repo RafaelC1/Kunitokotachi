@@ -32,6 +32,7 @@ enemy_bullets_image = {}
 
 life_image = {}
 explosion_image = {}
+power_ups_image = {}
 
 eye_enemy_image = {}
 angel_enemy_image = {}
@@ -39,6 +40,15 @@ head_enemy_image = {}
 lung_enemy_image = {}
 
 -- sprites
+power_ups_sprites =
+{
+  power_01 = {},
+  power_02 = {},
+  power_03 = {},
+  power_04 = {},
+  power_05 = {},
+  power_06 = {}
+}
 explosion_sprite =
 {
   quad_01 = {},
@@ -225,6 +235,9 @@ function load_all_images()
 -- loading explosion image
   explosion_image = load_image('res/assets/fx/explosion.png')
 
+  -- power ups image
+  power_ups_image = load_image('res/assets/fx/power_ups.png')
+
 -- loading ships images
   ship_images.ship_01 = load_image('res/assets/ships/shipone.png')
   ship_images.ship_02 = load_image('res/assets/ships/shiptwo.png')
@@ -270,6 +283,18 @@ function define_sprites()
   explosion_sprite.quad_02 = Sprite.new(explosion_image, 100, y, width, height)
   explosion_sprite.quad_03 = Sprite.new(explosion_image, 200, y, width, height)
   explosion_sprite.quad_04 = Sprite.new(explosion_image, 300, y, width, height)
+
+  -- power ups sprites
+  width = 50
+  height = 75
+  x = 0
+  y = 0
+  power_ups_sprites.power_01 = Sprite.new(power_ups_image, 0, y, width, height)
+  power_ups_sprites.power_02 = Sprite.new(power_ups_image, 50, y, width, height)
+  power_ups_sprites.power_03 = Sprite.new(power_ups_image, 100, y, width, height)
+  power_ups_sprites.power_04 = Sprite.new(power_ups_image, 150, y, width, height)
+  power_ups_sprites.power_05 = Sprite.new(power_ups_image, 200, y, width, height)
+  power_ups_sprites.power_06 = Sprite.new(power_ups_image, 300, y, width, height)
 
   -- bullets sprite
   width = 50
@@ -599,6 +624,56 @@ function bullet_animations.new_laser_bullet_animation()
   {
     enemy_bullets_sprites.laser_bullets.quad_01,
     enemy_bullets_sprites.laser_bullets.quad_02
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+power_ups_animations = {}
+
+function power_ups_animations.new_power_01_animation()
+  local sprites =
+  {
+    power_ups_sprites.power_01
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+function power_ups_animations.power_02()
+  local sprites =
+  {
+    power_ups_sprites.power_02
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+function power_ups_animations.power_03()
+  local sprites =
+  {
+    power_ups_sprites.power_03
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+function power_ups_animations.power_04()
+  local sprites =
+  {
+    power_ups_sprites.power_04
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+function power_ups_animations.power_05()
+  local sprites =
+  {
+    power_ups_sprites.power_05
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+function power_ups_animations.power_06()
+  local sprites =
+  {
+    power_ups_sprites.power_06
   }
   return Animation.new(sprites, 0.2)
 end

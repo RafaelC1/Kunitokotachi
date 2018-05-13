@@ -109,10 +109,10 @@ function GameController.new()
     end
   end
   -- this method check if player collected(touched) some power up and collect it
-  function self.check_collect_power_up(player, power_ups)
+  function self.check_collect_power_up(ship, power_ups)
     for i, power_up in ipairs(power_ups) do
-      if touch_each_other(player, power_up) then
-        player.collect_power_up(power_up.power)
+      if touch_each_other(ship, power_up) then
+        ship.collect_power_up(power_up.power)
         power_ups_controller.destroy_power_up(i)
         i = i-1
       end
