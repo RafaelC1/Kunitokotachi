@@ -34,6 +34,7 @@ function EnemiesController.new()
                             owner=self}
     table.insert(self.enemies, enemy)
   end
+
   function self.create_asteroid(x, y, asteroid_type)
     x = x or 100
     y = y or -30
@@ -42,6 +43,7 @@ function EnemiesController.new()
     local asteroid = Asteroid.new{x=x, y=y, speed=asteroid_model.speed, radio=asteroid_model.radio, max_hp=asteroid_model.max_hp, defense=asteroid_model.defense}
     table.insert(self.asteroids, asteroid)
   end
+
   function self.enemy_on_screen(enemy)
     if inside_screen_width(enemy.body.x) and inside_screen_height(enemy.body.y) then
       return true
@@ -62,6 +64,7 @@ function EnemiesController.new()
     explosions_controller.create_explosion(self.enemies[enemy_id].body.x, self.enemies[enemy_id].body.y)
     table.remove(self.enemies, enemy_id)
   end
+
   function self.destroy_asteroid(asteroid_id)
     table.remove(self.asteroids, asteroid_id)
   end
@@ -69,27 +72,35 @@ function EnemiesController.new()
   function self.destroy_all_enemies()
     self.enemies = {}
   end
+
   function self.destroy_all_asteroids()
     self.asteroids = {}
   end
+
   function self.has_enemies()
     return #self.enemies > 0
   end
+
   function self.has_asteroids()
     return #self.asteroids > 0
   end
+
   function self.all_enemy_names()
     return self.enemies_characteristics.enemy_names
   end
+
   function self.all_asteroid_names()
     return self.asteroids_characteristics.asteroid_names
   end
+
   function self.update(dt)
     for i, enemy in ipairs(self.enemies) do
       enemy.update(dt)
       if not enemy.is_alive() then
-        self.spawn_power_up(i)
-        self.destroy_enemy(i)
+        if enemy.dead_animation_ended() then
+          self.spawn_power_up(i)
+          self.destroy_enemy(i)
+        end
       end
       if not above_bottom(enemy.body.y) then
         self.destroy_enemy(i)
@@ -105,6 +116,7 @@ function EnemiesController.new()
       end
     end
   end
+
   function self.draw()
     for i, enemy in ipairs(self.enemies) do
       enemy.draw()

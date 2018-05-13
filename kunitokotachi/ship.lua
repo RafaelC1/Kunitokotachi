@@ -189,10 +189,10 @@ function Ship.new(args)
     if self.blink then
     else
       self.current_sprite().draw{x=self.body.x,
-                                      y=self.body.y,
-                                      scala_x=1,
-                                      scala_y=1,
-                                      rot=0}
+                                 y=self.body.y,
+                                 scala_x=1,
+                                 scala_y=1,
+                                 rot=0}
     end
   end
 
@@ -205,6 +205,8 @@ function Ship.new(args)
 
   self.change_ammo_of_all_weapons(self.current_ammo().bullet_name)
   self.change_delay_of_all_weapons(self.current_ammo().delay)
+
+  self.invulnerable_time = 2
 
   return self
 end

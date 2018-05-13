@@ -6,9 +6,11 @@ function Settings.new()
   local self = {}
   self.apllication_settings = {}
   self.players_settings = {}
+
   function self.set_song_volum(new_volum)
     self.apllication_settings.song_volum = new_volum
   end
+
   function self.set_music_volum(new_volum)
     self.apllication_settings.music_volum = new_volum
   end
@@ -22,6 +24,7 @@ function Settings.new()
   function self.read_settings_of(file_name)
     return json_to_table(read_from(file_name))
   end
+
   function self.create_setting_file(file_name, default_values)
     write_values_to(file_name, table_to_json(default_values))
   end
@@ -43,6 +46,7 @@ function Settings.new()
     end
     return 'pt'
   end
+
   function self.next_language(jump)
     local current_language = self.current_language_id()
     local amount_of_languages = table.getn(self.apllication_settings.languages)

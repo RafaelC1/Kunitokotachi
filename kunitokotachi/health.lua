@@ -5,7 +5,7 @@ function Health.new(args)
 
   self.max_hp = args.max_hp or 100
   self.current_hp = self.max_hp
-  self.invulnerable_time = 2 -- max time of ivulnerability
+  self.invulnerable_time = 0 -- max time of ivulnerability
   self.invulnerable = false
 
   self.defense = args.defense or 10

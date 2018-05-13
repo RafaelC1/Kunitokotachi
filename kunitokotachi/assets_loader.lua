@@ -28,6 +28,7 @@ level_background_images =
   level_02 = {}
 }
 player_bullets_image = {}
+enemy_bullets_image = {}
 
 life_image = {}
 explosion_image = {}
@@ -110,6 +111,25 @@ player_bullets_sprites =
     quad_01 = {},
     quad_02 = {},
     quad_03 = {}
+  }
+}
+
+enemy_bullets_sprites =
+{
+  small_bullets =
+  {
+    quad_01 = {},
+    quad_02 = {}
+  },
+  medium_bullets =
+  {
+    quad_01 = {},
+    quad_02 = {}
+  },
+  laser_bullets =
+  {
+    quad_01 = {},
+    quad_02 = {}
   }
 }
 
@@ -215,6 +235,7 @@ function load_all_images()
 
   -- load all bulet images
   player_bullets_image = load_image('res/assets/bullets/player_bullets.png')
+  enemy_bullets_image = load_image('res/assets/bullets/enemy_bullets.png')
 
   -- loading image of enemies
   eye_enemy_image = load_image('res/assets/enemies/eye.png')
@@ -278,9 +299,22 @@ function define_sprites()
   player_bullets_sprites.player_level_05_sprites.quad_04 = Sprite.new(player_bullets_image, 0, y, width, height)
   player_bullets_sprites.player_level_05_sprites.quad_05 = Sprite.new(player_bullets_image, 50, y, width, height)
   player_bullets_sprites.player_level_05_sprites.quad_06 = Sprite.new(player_bullets_image, 100, y, width , height)
-
   y = y + height
   player_bullets_sprites.player_level_06_sprites.quad_01 = Sprite.new(player_bullets_image, 0, y, width, height)
+
+-- enemy bullets
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  enemy_bullets_sprites.small_bullets.quad_01 = Sprite.new(enemy_bullets_image, 0, y, width , height)
+  enemy_bullets_sprites.small_bullets.quad_02 = Sprite.new(enemy_bullets_image, 100, y, width , height)
+
+  enemy_bullets_sprites.medium_bullets.quad_01 = Sprite.new(enemy_bullets_image, 200, y, width , height)
+  enemy_bullets_sprites.medium_bullets.quad_02 = Sprite.new(enemy_bullets_image, 300, y, width , height)
+  y = y + height
+  enemy_bullets_sprites.laser_bullets.quad_01 = Sprite.new(enemy_bullets_image, 0, y, width , height)
+  enemy_bullets_sprites.laser_bullets.quad_02 = Sprite.new(enemy_bullets_image, 100, y, width , height)
 
 -- ship sprites
   width = 150
@@ -333,13 +367,13 @@ function define_sprites()
   angel_enemy_sprite.die.quad_01 = Sprite.new(angel_enemy_image, 0, y, width, height)
 
 -- -- head
-  width = 90
-  height = 90
+  width = 100
+  height = 100
   x = 0
   y = 0
   head_enemy_sprite.normal.quad_01 = Sprite.new(head_enemy_image, 0, y, width, height)
-  head_enemy_sprite.normal.quad_02 = Sprite.new(head_enemy_image, 90, y, width, height)
-  head_enemy_sprite.normal.quad_03 = Sprite.new(head_enemy_image, 180, y, width, height)
+  head_enemy_sprite.normal.quad_02 = Sprite.new(head_enemy_image, 100, y, width, height)
+  head_enemy_sprite.normal.quad_03 = Sprite.new(head_enemy_image, 200, y, width, height)
   y = y + height
   head_enemy_sprite.attack.quad_01 = Sprite.new(head_enemy_image, 0, y, width, height)
   y = y + height
@@ -540,6 +574,33 @@ function bullet_animations.new_player_level_06_animation()
     player_bullets_sprites.player_level_06_sprites.quad_01
   }
   return Animation.new(sprites, 1)
+end
+
+function bullet_animations.new_small_bullet_animation()
+  local sprites =
+  {
+    enemy_bullets_sprites.small_bullets.quad_01,
+    enemy_bullets_sprites.small_bullets.quad_02
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+function bullet_animations.new_medium_bullet_animation()
+  local sprites =
+  {
+    enemy_bullets_sprites.medium_bullets.quad_01,
+    enemy_bullets_sprites.medium_bullets.quad_02
+  }
+  return Animation.new(sprites, 0.2)
+end
+
+function bullet_animations.new_laser_bullet_animation()
+  local sprites =
+  {
+    enemy_bullets_sprites.laser_bullets.quad_01,
+    enemy_bullets_sprites.laser_bullets.quad_02
+  }
+  return Animation.new(sprites, 0.2)
 end
 
 -- load all fonts

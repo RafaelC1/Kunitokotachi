@@ -38,6 +38,9 @@ function GameController.new()
 
   self.levels_of_player_settings = json_to_table(read_from('res/settings/player_levels_settings.json'))
 
+  self.go_to_menu_delay = 3
+  self.go_to_menu_current_delay = 0
+
 -- go to next level
   function self.nex_level()
     if self.current_level+1 < #self.levels_settings.levels_names then
@@ -168,9 +171,11 @@ function GameController.new()
     -- when game is ended, all players must be destroyed and yours scores saved
     -- after this method be called, should be show players score
   end
+
   function self.go_to_menu()
     CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
   end
+
   function self.lose_message()
     messages =
     {
@@ -241,7 +246,12 @@ function GameController.new()
     end
     if not anyone_alive then
       explosions_controller.destroy_all_explosions()
-      self.go_to_menu()
+      self.go_to_menu_delay = 3
+      self.go_to_menu_current_delay = self.go_to_menu_current_delay + dt
+      if self.go_to_menu_current_delay > self.go_to_menu_delay then
+        self.go_to_menu_current_delay = 0
+        self.go_to_menu()
+      end
     end
 
     self.check_level_script()

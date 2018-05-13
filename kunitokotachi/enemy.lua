@@ -67,13 +67,12 @@ function Enemy.new(args)
     return bonus
   end
   -- enemy need to overwrite this method since it can only die when animation of dying over
-  function self.is_alive()
-    if self.current_animation == self.animations.die then
-      if self.current_animation_ended() then
-        return self.current_hp > 0
-      end
+  function self.dead_animation_ended()
+    if self.current_animation == self.animations.die and self.current_animation_ended() then
+      return true
+    else
+      return true
     end
-    return true
   end
   -- move enemy acording IA
   function self.move(dt)
@@ -117,6 +116,11 @@ function Enemy.new(args)
   end
 
   function self.update(dt)
+    if not self.is_alive() then
+      self.change_die_animation()
+      self.down(dt)
+      return
+    end
     self.move(dt)
     if self.current_animation ~= nil then
       self.current_animation.update(dt)
