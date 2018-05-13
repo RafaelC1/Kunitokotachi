@@ -114,7 +114,6 @@ function Ship.new(args)
   end
   -- update ship logic
   function self.update(dt)
-    print(self.current_power_level)
     local current_x = 0
     local current_y = 0
     local horizontal_keys_pressend = false

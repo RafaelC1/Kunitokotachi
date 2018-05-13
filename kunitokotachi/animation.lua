@@ -12,7 +12,6 @@ function Animation.new(sprites, frame_per_sec)
   self.time_for_each_frame = frame_per_sec
   self.current_time = 0
   self.loop = true
-  self.
   self.ended = false
 
   function self.start()

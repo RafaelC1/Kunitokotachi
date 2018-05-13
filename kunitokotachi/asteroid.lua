@@ -15,5 +15,7 @@ function Asteroid.new(args)
     self.down(dt)
   end
 
+  self.invulnerable = true
+
   return self
 end

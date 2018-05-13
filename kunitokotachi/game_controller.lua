@@ -98,7 +98,7 @@ function GameController.new()
   function self.objects_collide_against(objects_1, objects_2)
     for i, object_1 in ipairs(objects_1) do
       for j, object_2 in ipairs(objects_2) do
-        if touch_each_other(object_1, object_2) and not object_1.invulnerable and not object_2.invulnerable then
+        if touch_each_other(object_1, object_2) and not object_1.is_invulnerable() and not object_2.is_invulnerable() then
           object_1.apply_damage(object_2.current_hp)
           object_2.apply_damage(object_1.current_hp)
         end
@@ -264,7 +264,6 @@ function GameController.new()
       love.graphics.print(text, pos.x+screen_distance*(i-1), HEIGHT-60)
       -- draw lives on bottom of screen
       for i=1, player.lives do
-        print((pos.x+screen_distance*(i-1)))
         life_sprite.draw{x=(pos.x+screen_distance*(i-1)),
                          y=HEIGHT-35}
       end

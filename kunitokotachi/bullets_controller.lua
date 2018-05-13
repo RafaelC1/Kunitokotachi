@@ -61,9 +61,11 @@ function BulletsController.new()
       end
     end
   end
+
   function self.has_player_bullets()
     return #self.bullets.player > 0
   end
+
   function self.has_enemy_bullets()
     return #self.bullets.enemy > 0
   end
@@ -78,6 +80,7 @@ function BulletsController.new()
     self.bullets.player = {}
     self.bullets.enemy = {}
   end
+
   function self.destroy_all_bullets_by_owner(bullets, owner)
     for i, bullet in ipairs(bullets) do
       if bullet.owner == owner then
@@ -98,7 +101,7 @@ function BulletsController.new()
       for i, bullet in ipairs(self.bullets.enemy) do
         bullet.update(dt)
       end
-      self.check_bullets_position(self.bullets.enemys)
+      self.check_bullets_position(self.bullets.enemy)
     end
   end
 

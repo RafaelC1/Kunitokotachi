@@ -333,13 +333,13 @@ function define_sprites()
   angel_enemy_sprite.die.quad_01 = Sprite.new(angel_enemy_image, 0, y, width, height)
 
 -- -- head
-  width = 100
-  height = 100
+  width = 90
+  height = 90
   x = 0
   y = 0
   head_enemy_sprite.normal.quad_01 = Sprite.new(head_enemy_image, 0, y, width, height)
-  head_enemy_sprite.normal.quad_02 = Sprite.new(head_enemy_image, 100, y, width, height)
-  head_enemy_sprite.normal.quad_03 = Sprite.new(head_enemy_image, 200, y, width, height)
+  head_enemy_sprite.normal.quad_02 = Sprite.new(head_enemy_image, 90, y, width, height)
+  head_enemy_sprite.normal.quad_03 = Sprite.new(head_enemy_image, 180, y, width, height)
   y = y + height
   head_enemy_sprite.attack.quad_01 = Sprite.new(head_enemy_image, 0, y, width, height)
   y = y + height
@@ -374,7 +374,8 @@ end
 
 -- animatiosn of enemies should return all animationss on the following order and way
 -- as this method bellow does
-function new_eye_animations()
+enemies_animations = {}
+function enemies_animations.new_eye_animations()
   local all_animations = {}
   local normal_sprites =
   {
@@ -395,11 +396,14 @@ function new_eye_animations()
   all_animations.attack = Animation.new(attack_sprites, 0.1)
   all_animations.die = Animation.new(die_sprites, 0.1)
 
+  all_animations.attack.dont_repeat()
+  all_animations.die.dont_repeat()
+
   return all_animations
 end
 
 -- contie animations
-function new_angel_animations()
+function enemies_animations.new_angel_animations()
   local all_animations = {}
   local normal_sprites =
   {
@@ -418,10 +422,13 @@ function new_angel_animations()
   all_animations.attack = Animation.new(attack_sprites, 0.1)
   all_animations.die = Animation.new(die_sprites, 0.1)
 
+  all_animations.attack.dont_repeat()
+  all_animations.die.dont_repeat()
+
   return all_animations
 end
 
-function new_head_animations()
+function enemies_animations.new_head_animations()
   local all_animations = {}
   local normal_sprites =
   {
@@ -437,14 +444,17 @@ function new_head_animations()
   {
     head_enemy_sprite.die.quad_01
   }
-  all_animations.normal = Animation.new(normal_sprites, 0.1)
-  all_animations.attack = Animation.new(attack_sprites, 0.1)
+  all_animations.normal = Animation.new(normal_sprites, 0.3)
+  all_animations.attack = Animation.new(attack_sprites, 0.2)
   all_animations.die = Animation.new(die_sprites, 0.1)
+
+  all_animations.attack.dont_repeat()
+  all_animations.die.dont_repeat()
 
   return all_animations
 end
 
-function new_lung_animations()
+function enemies_animations.new_lung_animations()
   local all_animations = {}
   local normal_sprites =
   {
@@ -460,8 +470,10 @@ function new_lung_animations()
   local die_sprites = nil
 
   all_animations.normal = Animation.new(normal_sprites, 0.15)
-  all_animations.attack = Animation.new(attack_sprites, 0.15)
+  all_animations.attack = Animation.new(attack_sprites, 0.2)
   all_animations.die = nil
+
+  all_animations.attack.dont_repeat()
 
   return all_animations
 end

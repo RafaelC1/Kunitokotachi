@@ -15,12 +15,12 @@ function EnemiesController.new()
 
   self.enemies_behaviours = json_to_table(read_from('res/settings/enemies_behaviours.json'))
 
-  function self.create_enemy(x, y, enemy_type, behaviour)
+  function self.create_enemy(x, y, enemy_name, behaviour)
     x = x or 100
     y = y or -30
-    local animations = new_lung_animations()
-    enemy_type = enemy_type or 'eye'
-    local enemy_model = self.enemies_characteristics.enemy[enemy_type]
+    local animations = enemies_animations['new_'..enemy_name..'_animations']()
+    enemy_name = enemy_name or 'eye'
+    local enemy_model = self.enemies_characteristics.enemy[enemy_name]
     local enemy_behaviour = self.enemies_behaviours[behaviour]
     local enemy = Enemy.new{x=x,
                             y=y,
