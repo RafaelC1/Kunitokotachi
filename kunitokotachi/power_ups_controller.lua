@@ -14,13 +14,12 @@ function PowerUpsController.new()
   function self.create_power_up(x, y, power_up_type)
     local power_up_settings = self.power_ups_settings[power_up_type]
     local animation = power_ups_animations['new_'..power_up_settings.animation..'_animation']()
-    print(power_up_settings.animation)
     local power_up = PowerUp.new{x=x,
                                  y=y,
                                  power=power_up_settings.charge_power,
                                  power_type='charge_power',
-                                 radio=30,
-                                 vanish_time=4,
+                                 radio=25,
+                                 vanish_time=5,
                                  animation=animation,
                                  speed=50}
     table.insert(self.power_ups, power_up)

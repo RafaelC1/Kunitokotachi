@@ -152,7 +152,7 @@ function GameController.new()
     end
   end
   -- start a game
-  function self.start_game(amountOfPlayers)
+  function self.start_game(amount_of_players)
     -- reset controllers
     enemies_controller.destroy_all_enemies()
     enemies_controller.destroy_all_asteroids()
@@ -161,7 +161,7 @@ function GameController.new()
     self.current_level = 1
     self.update_current_level()
     -- when game is started anything most be reseted
-    for i=1, amountOfPlayers do
+    for i=1, amount_of_players do
       self.create_player(i, {x=self.spawn_pos[string.format("player%d",i)].x, y=self.spawn_pos[string.format("player%d",i)].y})
     end
     -- self.current_level_settings = self.levels_settings[string.format("level%02d",self.current_level)]

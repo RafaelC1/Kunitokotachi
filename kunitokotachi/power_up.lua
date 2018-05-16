@@ -19,10 +19,10 @@ function PowerUp.new(args)
   self.time_to_decrease_blink = 1
   self.curent_time_to_decrease_blink = 0
 
-  self.blink = false -- true mean that animation should show up, false is the oposite
+  self.blink = true -- true mean that animation should show up, false is the oposite
 
-  self.blink_on_time = 0.75 -- time that animation be on
-  self.blink_off_time = 0.15 -- time that atnimation be off
+  self.blink_on_time = 0.3 -- time that animation be on
+  self.blink_off_time = 0.1 -- time that atnimation be off
 
   self.current_blink_time = 0 -- current blink time to both, on and off
 
@@ -64,7 +64,9 @@ function PowerUp.new(args)
   end
 
   function self.update(dt)
-    self.manager_blink(dt)
+    if self.vanish_time < 2 then
+      self.manager_blink(dt)
+    end
     self.count_down_life_time(dt)
     self.down(dt)
   end

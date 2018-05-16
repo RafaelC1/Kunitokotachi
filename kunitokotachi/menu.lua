@@ -1,4 +1,4 @@
-suit = require "ext/suit"
+local suit = require "ext/suit"
 require "helpers"
 require "conf"
 

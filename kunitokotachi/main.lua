@@ -15,13 +15,13 @@ require "splash_screen"
 require "history_screen"
 require "settings"
 require "ext/suit"
+require "select_ship_menu"
 moan = require "ext/Moan/Moan"
 
 --menus
 local main_menu = {}
 local sub_menu = {}
 local settings_menu = {}
-local teste = {}
 
 -- screens
 local splash_screen = {}
@@ -34,6 +34,8 @@ function love.load()
 
 -- define game icon on top window
   love.window.setIcon(risoto_tomate_icon)
+
+
 
   --load settings
   settings = Settings.new()
@@ -88,14 +90,12 @@ function love.load()
     end,
     function() -- multiplayer co-op
       CURRENT_SCREEN = SCREENS.GAME_SCREEN
-      game_controller.start_game(2)
+      game_controller.start_game()
     end,
     function() CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN end
   }
-  sub_menu = Menu.new{ x=WIDTH/2, y=HEIGHT/2 }
-  sub_menu.add_label('game_options_04')
-  sub_menu.add_button('game_options_01', methods[1])
-  sub_menu.add_button('game_options_02', methods[2])
+  sub_menu = SelectShipMenu.new{ x=WIDTH/2, y=HEIGHT/2 }
+  -- sub_menu.add_button('game_options_02', methods[2])
   sub_menu.add_button('game_options_03', methods[3])
 
 
@@ -137,7 +137,7 @@ function love.keypressed(key)
   elseif CURRENT_SCREEN == SCREENS.MAIN_MENU_SCREEN then
 
   elseif CURRENT_SCREEN == SCREENS.PRE_GAME_MENU_SCREEN then
-
+    sub_menu.key_events(key)
   elseif CURRENT_SCREEN == SCREENS.GAME_SCREEN then
     
   elseif CURRENT_SCREEN == SCREENS.SETTINGS_MENU_SCREEN then

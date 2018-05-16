@@ -17,6 +17,8 @@ HEIGHT = 600
 TITLE = "Kunitokotachi"
 VERSION = 2.0
 
+PLAYER_LIMIT = 2
+
 -- game settings
 SCREENS =
 {

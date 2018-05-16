@@ -10,7 +10,7 @@ function Player.new(player, keys, levels_of_player_settings)
   self.score = 0
   self.ship = {}
   self.keys = keys
-  self.ship_model = ship_model or 'ship01'
+  self.ship_model = ship_model or 'ship_01'
   self.player = player or 1
   self.level_settings = levels_of_player_settings or {}
 
