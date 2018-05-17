@@ -55,7 +55,7 @@ function Bullet.new(args)
     self.animation.update(dt)
   end
   function self.draw()
-    self.draw_test()
+    -- self.draw_test()
     local rot = self.direction_of(self.xv, self.yv)
     -- print(self.xv, self.yv)
     self.animation.draw{x=self.body.x, y=self.body.y, x_scala=1, y_scala=1, rot=0}

@@ -40,6 +40,11 @@ head_enemy_image = {}
 lung_enemy_image = {}
 
 -- sprites
+level_background_sprites =
+{
+  level_01_sprites = {},
+  level_02_sprites = {}
+}
 power_ups_sprites =
 {
   power_01 = {},
@@ -267,6 +272,9 @@ function define_sprites()
   local x = 0
   local y = 0
 
+  -- background sprites
+  level_background_sprites.level_01_sprites = define_back_ground_sprites(level_background_images.level_01)
+
   -- life sprites
   width = 25
   height = 25
@@ -417,6 +425,35 @@ function define_sprites()
   lung_enemy_sprite.attack.quad_01 = Sprite.new(lung_enemy_image, 0, y, width, height)
 
   return true
+end
+
+function define_back_ground_sprites(image)
+  local sprites = {}
+
+  local image_width, image_height = image:getDimensions()
+  local extra_sprite_height = image_height % HEIGHT
+  local amount_of_sprites = (image_height - extra_sprite_height) / HEIGHT
+
+  local current_height = HEIGHT
+
+  for i=1, amount_of_sprites do
+    local new_sprite = Sprite.new(image, 0, (current_height*i), WIDTH, HEIGHT)
+    sprites[i] = new_sprite
+  end
+
+  if extra_sprite_height > 0 then
+    current_height = current_height+extra_sprite_height
+    local new_sprite = Sprite.new(image, current_height, 0, WIDTH, extra_sprite_height)
+    table.insert(sprites, new_sprite)
+  end
+
+  local reverse_sprites = {}
+
+  for i=amount_of_sprites, 1, -1 do
+    reverse_sprites[#reverse_sprites+1] = sprites[i]
+  end
+
+  return sprites
 end
 
 -- from here are defined all methods to create animations

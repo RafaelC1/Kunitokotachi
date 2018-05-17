@@ -35,8 +35,6 @@ function love.load()
 -- define game icon on top window
   love.window.setIcon(risoto_tomate_icon)
 
-
-
   --load settings
   settings = Settings.new()
 
@@ -174,12 +172,15 @@ function love.draw()
   elseif CURRENT_SCREEN == SCREENS.HISTORY_SCREEN then
     history_screen.draw()
   elseif CURRENT_SCREEN == SCREENS.MAIN_MENU_SCREEN then
+    level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     main_menu.draw()
   elseif CURRENT_SCREEN == SCREENS.PRE_GAME_MENU_SCREEN then
+    level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     sub_menu.draw()
   elseif CURRENT_SCREEN == SCREENS.GAME_SCREEN then
     game_controller.draw()
   elseif CURRENT_SCREEN == SCREENS.SETTINGS_MENU_SCREEN then
+    level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     settings_menu.draw()
   end
   moan.draw()

@@ -54,7 +54,7 @@ function GameController.new()
     self.current_level_settings = {}
     self.current_level_settings.name = self.levels_settings.levels_names[self.current_level]
     self.current_level_settings.current_script = self.levels_settings[self.current_level_settings.name]
-    self.current_level_settings.current_position = HEIGHT - level_background_images[self.current_level_settings.name]:getHeight()
+    self.current_level_settings.current_position = 0
     -- reset all events to they become unwsed
     for i, script in ipairs(self.current_level_settings.current_script.triggers) do
       script[6] = false
@@ -189,6 +189,18 @@ function GameController.new()
   function self.inscrease_position(dt)
     self.current_level_settings.current_position = self.current_level_settings.current_position + self.cenary_speed*dt
   end
+
+  function self.show_back_ground_sprite(sprite_start_y, sprite_end_y)
+    if sprite_start_y >= 0 and sprite_start_y <= HEIGHT or
+       sprite_end_y >= 0 and sprite_end_y <= HEIGHT then
+       return true
+     end
+  end
+
+  function self.convert_position_to_sprite()
+    return WIDTH/2, self.current_level_settings.current_position + HEIGHT/2
+  end
+
   function self.update(dt)
     local ships = {}
     local anyone_alive = false
@@ -241,9 +253,8 @@ function GameController.new()
       self.check_bullet_hit(bullets_controller.bullets.enemy, enemies_controller.asteroids)
     end
 
-    if self.current_level_settings.current_position <= 0 then
-      self.inscrease_position(dt)
-    end
+    self.inscrease_position(dt)
+
     if not anyone_alive then
       explosions_controller.destroy_all_explosions()
       self.go_to_menu_delay = 3
@@ -256,9 +267,17 @@ function GameController.new()
 
     self.check_level_script()
   end
+
   function self.draw()
-    -- draw background
-    -- love.graphics.draw(level_background_images[self.current_level_settings.name] , 0, self.current_level_settings.current_position)
+    local back_current_y = 0
+    local x, y = self.convert_position_to_sprite()
+    for i=1, 10 do
+      local teste = level_background_sprites.level_01_sprites[i].quad_height
+      back_current_y = back_current_y + teste
+      if self.show_back_ground_sprite(back_current_y*i, back_current_y*i-teste) then
+        level_background_sprites.level_01_sprites[i].draw{x=x, y=(y+back_current_y), scala_x=1, scala_y=1, rot=0}
+      end
+    end
     enemies_controller.draw()
     bullets_controller.draw()
     power_ups_controller.draw()
