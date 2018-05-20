@@ -450,10 +450,11 @@ function define_back_ground_sprites(image)
   local reverse_sprites = {}
 
   for i=amount_of_sprites, 1, -1 do
+    print(sprites[i].start_y)
     reverse_sprites[#reverse_sprites+1] = sprites[i]
   end
 
-  return sprites
+  return reverse_sprites
 end
 
 -- from here are defined all methods to create animations

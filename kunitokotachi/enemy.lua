@@ -131,7 +131,7 @@ function Enemy.new(args)
   end
 
   function self.draw()
-    self.draw_test()
+    -- self.draw_test()
     if self.current_animation ~= nil then
       self.current_animation.draw{x=self.body.x, y=self.body.y, scala_x=1, scala_y=1, rot=0}
     end

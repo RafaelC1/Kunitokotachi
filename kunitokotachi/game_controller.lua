@@ -13,7 +13,7 @@ function GameController.new()
 
   self.levels_settings = json_to_table(read_from('res/settings/levels_script.json'))
 
-  self.cenary_speed = 5
+  self.cenary_speed = 100
   self.current_level = 1
   self.current_level_settings = {}
 
@@ -52,19 +52,19 @@ function GameController.new()
   -- update current_level_settings informations based on current level
   function self.update_current_level()
     self.current_level_settings = {}
-    self.current_level_settings.name = self.levels_settings.levels_names[self.current_level]
-    self.current_level_settings.current_script = self.levels_settings[self.current_level_settings.name]
-    self.current_level_settings.current_position = 0
+    self.current_level_settings.name      = self.levels_settings.levels_names[self.current_level]
+    self.current_level_settings.script    = self.levels_settings[self.current_level_settings.name].script.enemy_triggers
+    self.current_level_settings.position  = HEIGHT
+    self.current_level_settings.length    = self.levels_settings[self.current_level_settings.name].length
     -- reset all events to they become unwsed
-    for i, script in ipairs(self.current_level_settings.current_script.triggers) do
+    for i, script in ipairs(self.current_level_settings.script) do
       script[6] = false
     end
   end
 -- this method check if in the current position controller should spawn something
   function self.check_level_script()
-    local correct_position = level_background_images[self.current_level_settings.name]:getHeight() + self.current_level_settings.current_position
-    -- print(correct_position)
-    for i, script in ipairs(self.current_level_settings.current_script.triggers) do
+    local correct_position = level_background_images[self.current_level_settings.name]:getHeight() + self.current_level_settings.position
+    for i, script in ipairs(self.current_level_settings.script) do
       -- if the iteration get a line with a posiiton trigget highets than the current, stop iteration
       if script[1] > correct_position then return end
         -- check if event was not actived already
@@ -185,9 +185,14 @@ function GameController.new()
     }
     show_dialog{name='Higuchi', messages=messages, action=self.go_to_menu}
   end
+  function self.current_level_get_to_the_end()
+    return self.current_level_settings.position < self.current_level_settings.length
+  end
   -- move map
   function self.inscrease_position(dt)
-    self.current_level_settings.current_position = self.current_level_settings.current_position + self.cenary_speed*dt
+    local new_position = self.current_level_settings.position + self.cenary_speed*dt
+    self.current_level_settings.position = new_position
+    return new_position
   end
 
   function self.show_back_ground_sprite(sprite_start_y, sprite_end_y)
@@ -197,8 +202,11 @@ function GameController.new()
      end
   end
 
-  function self.convert_position_to_sprite()
-    return WIDTH/2, self.current_level_settings.current_position + HEIGHT/2
+  function self.update_level(dt)
+    if self.current_level_get_to_the_end() then
+      self.inscrease_position(dt)
+      self.check_level_script()
+    end
   end
 
   function self.update(dt)
@@ -253,8 +261,6 @@ function GameController.new()
       self.check_bullet_hit(bullets_controller.bullets.enemy, enemies_controller.asteroids)
     end
 
-    self.inscrease_position(dt)
-
     if not anyone_alive then
       explosions_controller.destroy_all_explosions()
       self.go_to_menu_delay = 3
@@ -264,20 +270,44 @@ function GameController.new()
         self.go_to_menu()
       end
     end
+    self.update_level(dt)
+  end
 
-    self.check_level_script()
+  function self.back_ground_can_be_draw(back_ground, correct_position)
+    local can_draw = false
+    -- the extra "WIDTH" add and subtract is to allow that multiple sprites (3) as showed at
+    -- same time to make as it was a single sprite with all image but, on the reallity are just
+    -- rendering 3 images, one before the correct, the correct and 1 after it
+    if (back_ground.start_y) >= correct_position - WIDTH and
+       correct_position + WIDTH >= (back_ground.start_y - back_ground.quad_height) then
+       can_draw = true
+    end
+    return can_draw
   end
 
   function self.draw()
-    local back_current_y = 0
-    local x, y = self.convert_position_to_sprite()
-    for i=1, 10 do
-      local teste = level_background_sprites.level_01_sprites[i].quad_height
-      back_current_y = back_current_y + teste
-      if self.show_back_ground_sprite(back_current_y*i, back_current_y*i-teste) then
-        level_background_sprites.level_01_sprites[i].draw{x=x, y=(y+back_current_y), scala_x=1, scala_y=1, rot=0}
+
+    local back_current_y = self.current_level_settings.position
+    for i, sprite in ipairs(level_background_sprites.level_01_sprites) do
+      local back_current_x = sprite.quad_width/2
+
+      local width, height = sprite.image:getDimensions()
+
+      -- this correct position is the inverse of the current possition acording the
+      -- map size or the image size (wich shoud be the same size)
+      local correct_position = height - self.current_level_settings.position
+
+      -- this check grante that only 3 sprites are renderized to avoid extra video memory consum
+      if self.back_ground_can_be_draw(sprite, correct_position) then
+        sprite.draw{x=back_current_x,
+                        y=back_current_y,
+                        scala_x=1,
+                        scala_y=1,
+                        rot=0}
       end
+        back_current_y = back_current_y - sprite.quad_height
     end
+
     enemies_controller.draw()
     bullets_controller.draw()
     power_ups_controller.draw()
@@ -299,7 +329,11 @@ function GameController.new()
       -- draw player score
       local scoreText = string.format("%s score: %010d", player.name, player.score)
       local text = love.graphics.newText(fonts.black, scoreText)
-      love.graphics.draw(text, screenDistance, screenDistance)
+      love.graphics.draw(text, screen_distance, screen_distance)
+      -- TESTE
+      screen_distance = screen_distance + 300
+      text = love.graphics.newText(fonts.black, 'map_position'..self.current_level_settings.position)
+      love.graphics.draw(text, screen_distance, screen_distance-300)
     end
   end
 

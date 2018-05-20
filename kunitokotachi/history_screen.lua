@@ -54,17 +54,17 @@ function HistoryScreen.new()
   end
 
   function self.update(dt)
-    if not self.text.message_is_going then
-      self.next_message()
-      if self.text.current_text > #self.text.history_parts then
-        self.go_to_main_menu()
-        self.reset_histories()
-        return
-      end
-      self.show_message(self.text.current_text)
-      self.message_started()
-    end
-    explosions_controller.update(dt)
+    -- if not self.text.message_is_going then
+    --   self.next_message()
+    --   if self.text.current_text > #self.text.history_parts then
+    --     self.go_to_main_menu()
+    --     self.reset_histories()
+    --     return
+    --   end
+    --   self.show_message(self.text.current_text)
+    --   self.message_started()
+    -- end
+    -- explosions_controller.update(dt)
   end
 
   function self.draw()
