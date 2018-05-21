@@ -20,6 +20,10 @@ function ShipInformation.new(args)
 
   self.ready = false
 
+  function self.current_model_name()
+    return self.ships_informations[self.current_ship].type
+  end
+
   function self.current_sprite()
     return self.ships_informations[self.current_ship].sprite
   end

@@ -61,13 +61,20 @@ function SelectShipMenu.new(args)
     end
   end
 
+  function self.go_to_game_screen()
+    CURRENT_SCREEN = SCREENS.GAME_SCREEN
+  end
+
   function self.play()
     if self.all_players_ready() then
-      CURRENT_SCREEN = SCREENS.GAME_SCREEN
-      game_controller.start_game(1)
+      for i, ship_information in ipairs(self.ship_informations) do
+        game_controller.create_player(i, ship_information.current_model_name())
+      end
+      game_controller.start_game()
     else
 
     end
+    self.go_to_game_screen()
   end
 
   function self.selected_ship_of_player(player)
@@ -121,6 +128,7 @@ function SelectShipMenu.new(args)
   end
 
   function self.update()
+    love.graphics.setFont(fonts.normal)
     local button_heigh = 40
     local buttons_width = 120
     local button_space = 5

@@ -23,7 +23,8 @@ function Player.new(player, keys, levels_of_player_settings)
                         keys=self.keys,
                         owner=self,
                         self_controller=true,
-                        max_hp=ship_model.max_hp}
+                        max_hp=ship_model.max_hp,
+                        ship_model_name=self.ship_model}
     spawn_pos_x = game_controller.spawn_pos['player'..self.player].x
     spawn_pos_y = game_controller.spawn_pos['player'..self.player].y
     self.ship.teleport_to(spawn_pos_x, spawn_pos_y)

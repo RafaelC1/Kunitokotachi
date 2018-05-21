@@ -13,7 +13,6 @@ function GameController.new()
 
   self.levels_settings = json_to_table(read_from('res/settings/levels_script.json'))
 
-  self.cenary_speed = 100
   self.current_level = 1
   self.current_level_settings = {}
 
@@ -53,9 +52,11 @@ function GameController.new()
   function self.update_current_level()
     self.current_level_settings = {}
     self.current_level_settings.name      = self.levels_settings.levels_names[self.current_level]
-    self.current_level_settings.script    = self.levels_settings[self.current_level_settings.name].script.enemy_triggers
-    self.current_level_settings.position  = HEIGHT
-    self.current_level_settings.length    = self.levels_settings[self.current_level_settings.name].length
+    local name_to_find_by                 = self.current_level_settings.name
+    self.current_level_settings.speed     = self.levels_settings[name_to_find_by].speed
+    self.current_level_settings.script    = self.levels_settings[name_to_find_by].script.enemy_triggers
+    self.current_level_settings.position  = HEIGHT -- set 1X width to make sure that the first back sprite appear
+    self.current_level_settings.length    = self.levels_settings[name_to_find_by].length
     -- reset all events to they become unwsed
     for i, script in ipairs(self.current_level_settings.script) do
       script[6] = false
@@ -136,11 +137,12 @@ function GameController.new()
     end
   end
   -- generate players
-  function self.create_player(player, args)
+  function self.create_player(player, ship_model)
     local keys = settings['players_settings']['player'..player]
     local x = self.spawn_pos['player'..player].x
     local y = self.spawn_pos['player'..player].y
     local character = Player.new(player, keys, self.levels_of_player_settings)
+    character.ship_model = ship_model
     table.insert(self.players, character)
     character.create_ship()
     character.ship.teleport_to(x, y)
@@ -152,7 +154,7 @@ function GameController.new()
     end
   end
   -- start a game
-  function self.start_game(amount_of_players)
+  function self.start_game()
     -- reset controllers
     enemies_controller.destroy_all_enemies()
     enemies_controller.destroy_all_asteroids()
@@ -161,9 +163,6 @@ function GameController.new()
     self.current_level = 1
     self.update_current_level()
     -- when game is started anything most be reseted
-    for i=1, amount_of_players do
-      self.create_player(i, {x=self.spawn_pos[string.format("player%d",i)].x, y=self.spawn_pos[string.format("player%d",i)].y})
-    end
     -- self.current_level_settings = self.levels_settings[string.format("level%02d",self.current_level)]
   end
   -- end a game
@@ -190,7 +189,7 @@ function GameController.new()
   end
   -- move map
   function self.inscrease_position(dt)
-    local new_position = self.current_level_settings.position + self.cenary_speed*dt
+    local new_position = self.current_level_settings.position + self.current_level_settings.speed*dt
     self.current_level_settings.position = new_position
     return new_position
   end
@@ -285,18 +284,37 @@ function GameController.new()
     return can_draw
   end
 
-  function self.draw()
+  function self.draw_player_gui(player)
+    -- draw player
+    player.draw()
 
+    local screen_distance = 30
+    local pos = self.player_gui_pos['player'..player.player]
+    local text = 'power:'..(player.ship.power or 0)
+    love.graphics.print(text, pos.x+screen_distance, HEIGHT-(screen_distance*3))
+    -- draw lives on bottom of screen
+    for i=1, player.lives do
+      life_sprite.draw{x=(pos.x+screen_distance*i), y=HEIGHT-screen_distance*1.5}
+    end
+    -- draw player score
+    local scoreText = string.format("%s score: %010d", player.name, player.score)
+    local text = love.graphics.newText(fonts.black, scoreText)
+    love.graphics.draw(text, screen_distance, screen_distance)
+    -- TESTE
+    screen_distance = screen_distance + 300
+    text = love.graphics.newText(fonts.black, 'map_position'..self.current_level_settings.position)
+    love.graphics.draw(text, screen_distance, screen_distance-300)
+  end
+
+  function self.draw()
+    love.graphics.setFont(fonts.black)
     local back_current_y = self.current_level_settings.position
     for i, sprite in ipairs(level_background_sprites.level_01_sprites) do
       local back_current_x = sprite.quad_width/2
-
       local width, height = sprite.image:getDimensions()
-
       -- this correct position is the inverse of the current possition acording the
       -- map size or the image size (wich shoud be the same size)
       local correct_position = height - self.current_level_settings.position
-
       -- this check grante that only 3 sprites are renderized to avoid extra video memory consum
       if self.back_ground_can_be_draw(sprite, correct_position) then
         sprite.draw{x=back_current_x,
@@ -305,6 +323,7 @@ function GameController.new()
                         scala_y=1,
                         rot=0}
       end
+      -- subtract the current sprite quad height to adjust the position of the next sprite
         back_current_y = back_current_y - sprite.quad_height
     end
 
@@ -312,28 +331,10 @@ function GameController.new()
     bullets_controller.draw()
     power_ups_controller.draw()
     explosions_controller.draw()
-    -- draw player GUI
-    for i, player in ipairs(self.players) do
-      -- draw player
-      player.draw()
 
-      local screen_distance = 25
-      local pos = self.player_gui_pos['player'..player.player]
-      local text = 'power:'..(player.ship.power or 0)
-      love.graphics.print(text, pos.x+screen_distance*(i-1), HEIGHT-60)
-      -- draw lives on bottom of screen
-      for i=1, player.lives do
-        life_sprite.draw{x=(pos.x+screen_distance*(i-1)),
-                         y=HEIGHT-35}
-      end
-      -- draw player score
-      local scoreText = string.format("%s score: %010d", player.name, player.score)
-      local text = love.graphics.newText(fonts.black, scoreText)
-      love.graphics.draw(text, screen_distance, screen_distance)
-      -- TESTE
-      screen_distance = screen_distance + 300
-      text = love.graphics.newText(fonts.black, 'map_position'..self.current_level_settings.position)
-      love.graphics.draw(text, screen_distance, screen_distance-300)
+    -- draw player GUI
+    for _, player in ipairs(self.players) do
+      self.draw_player_gui(player)
     end
   end
 

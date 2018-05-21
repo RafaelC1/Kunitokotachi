@@ -50,6 +50,7 @@ function Menu.new(args)
   end
 
   function self.update()
+    love.graphics.setFont(fonts.normal)
     local button_heigh = 40
     local buttons_width = 120
     local button_space = 5

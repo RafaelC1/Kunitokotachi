@@ -450,7 +450,6 @@ function define_back_ground_sprites(image)
   local reverse_sprites = {}
 
   for i=amount_of_sprites, 1, -1 do
-    print(sprites[i].start_y)
     reverse_sprites[#reverse_sprites+1] = sprites[i]
   end
 
@@ -719,7 +718,7 @@ end
 -- load all fonts
 function load_all_fonts()
   local path = 'res/fonts/'
-  fonts.normal = love.graphics.newFont(path..'roboto-regular.ttf')
-  fonts.black = love.graphics.newFont(path..'roboto-black.ttf')
-  fonts.thin = love.graphics.newFont(path..'roboto-thin.ttf')
+  fonts.normal = love.graphics.newFont(path..'roboto-regular.ttf', 14)
+  fonts.black = love.graphics.newFont(path..'roboto-black.ttf', 18)
+  fonts.thin = love.graphics.newFont(path..'roboto-thin.ttf', 14)
 end

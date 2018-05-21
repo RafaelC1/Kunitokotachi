@@ -35,7 +35,7 @@ function Ship.new(args)
   self.blink_time = self.default_blink_time or 0.02
   self.blink = false
 
-  self.current_ship = 1            -- ship of ship
+  self.current_ship = args.ship_model_name or 'ship_01'            -- ship of ship
   self.current_ship_position = 'center'          -- current position of ship (left, right or normal)
   self.time_turning = 0.08
   self.current_time_turning = 0
@@ -114,7 +114,7 @@ function Ship.new(args)
   end
   -- return the current ship sprite besed on it's current moviment
   function self.current_sprite()
-    return self.sprites['ship_0'..self.current_ship][self.current_ship_position]
+    return self.sprites[self.current_ship][self.current_ship_position]
   end
   -- update ship logic
   function self.update(dt)
@@ -189,7 +189,7 @@ function Ship.new(args)
   end
   -- draw ship
   function self.draw()
-    self.draw_test()
+    -- self.draw_test()
     if self.blink then
     else
       self.current_sprite().draw{x=self.body.x,

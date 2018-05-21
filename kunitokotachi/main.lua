@@ -83,7 +83,6 @@ function love.load()
   methods =
   {
     function() -- single player
-      CURRENT_SCREEN = SCREENS.GAME_SCREEN
       game_controller.start_game(1)
     end,
     function() -- multiplayer co-op

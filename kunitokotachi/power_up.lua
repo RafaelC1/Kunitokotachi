@@ -72,8 +72,6 @@ function PowerUp.new(args)
   end
 
   function self.draw()
-    love.graphics.setColor(self.r, self.g, self.b)
-    love.graphics.circle('fill', self.body.x, self.body.y, self.body.radio)
     -- animation shoul only apear when blink is true
     if self.blink then
       self.animation.draw{x=self.body.x, y=self.body.y, scala_x=1, scala_y=1, rot=0}
