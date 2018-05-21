@@ -74,6 +74,7 @@ function SelectShipMenu.new(args)
     else
 
     end
+    self.reset_players()
     self.go_to_game_screen()
   end
 
@@ -121,6 +122,12 @@ function SelectShipMenu.new(args)
                                                  x=x,
                                                  y=y}
     table.insert(self.ship_informations, ship_information)
+  end
+
+  function self.reset_players()
+    self.ship_informations[1].ready = false
+    self.ship_informations[1].current_ship = 1
+    self.ship_informations[2] = nil
   end
 
   function self.add_player(player)

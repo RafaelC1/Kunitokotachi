@@ -167,8 +167,7 @@ function GameController.new()
   end
   -- end a game
   function self.end_game()
-    -- when game is ended, all players must be destroyed and yours scores saved
-    -- after this method be called, should be show players score
+    self.players = {}
   end
 
   function self.go_to_menu()
@@ -266,6 +265,7 @@ function GameController.new()
       self.go_to_menu_current_delay = self.go_to_menu_current_delay + dt
       if self.go_to_menu_current_delay > self.go_to_menu_delay then
         self.go_to_menu_current_delay = 0
+        self.end_game()
         self.go_to_menu()
       end
     end
