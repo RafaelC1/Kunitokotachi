@@ -13,6 +13,7 @@ function PowerUpsController.new()
   end
   function self.create_power_up(x, y, power_up_type)
     local power_up_settings = self.power_ups_settings[power_up_type]
+    print('new_'..power_up_settings.animation..'_animation')
     local animation = power_ups_animations['new_'..power_up_settings.animation..'_animation']()
     local power_up = PowerUp.new{x=x,
                                  y=y,
@@ -24,12 +25,19 @@ function PowerUpsController.new()
                                  speed=50}
     table.insert(self.power_ups, power_up)
   end
+
+  function self.destroy_all_power_ups()
+    self.power_ups = {}
+  end
+
   function self.destroy_power_up(power_up_id)
     table.remove(self.power_ups, power_up_id)
   end
+
   function self.has_power_ups()
     return #self.power_ups > 0
   end
+
   function self.update(dt)
     for i, power_up in ipairs(self.power_ups) do
       power_up.update(dt)

@@ -24,13 +24,15 @@ function SelectShipMenu.new(args)
   self.ship_informations = {}
 
   function self.key_events(key)
-    if key == 'space' and #self.ship_informations < PLAYER_LIMIT then
-      self.add_player('player_02')
-      return
-    end
-
     local player_one_info = self.ship_informations[1]
     local player_two_info = self.ship_informations[2]
+
+    if key == 'space' then
+      if not player_two_info.is_player_active() then
+        player_two_info.active_player()
+        return
+      end
+    end
 
     if player_one_info ~= nil then
       if not player_one_info.ready then
@@ -61,21 +63,18 @@ function SelectShipMenu.new(args)
     end
   end
 
-  function self.go_to_game_screen()
-    CURRENT_SCREEN = SCREENS.GAME_SCREEN
-  end
-
   function self.play()
     if self.all_players_ready() then
       for i, ship_information in ipairs(self.ship_informations) do
-        game_controller.create_player(i, ship_information.current_model_name())
+        if ship_information.player_active then
+          game_controller.create_player(i, ship_information.current_model_name())
+        end
       end
-      game_controller.start_game()
-    else
 
+      self.reset_players()
+      game_controller.start_game()
+      go_to_game_screen()
     end
-    self.reset_players()
-    self.go_to_game_screen()
   end
 
   function self.selected_ship_of_player(player)
@@ -88,8 +87,14 @@ function SelectShipMenu.new(args)
   end
 
   function self.all_players_ready()
-    for _, ship_information in ipairs(self.ship_informations) do
-      if not ship_information.ready then
+    local list_of_players_active = {}
+    for i, ship_information in ipairs(self.ship_informations) do
+      if ship_information.player_active then
+        list_of_players_active[i] = ship_information
+      end
+    end
+    for _, active_ship_information in ipairs(list_of_players_active) do
+      if not active_ship_information.ready then
         return false
       end
     end
@@ -125,17 +130,19 @@ function SelectShipMenu.new(args)
   end
 
   function self.reset_players()
-    self.ship_informations[1].ready = false
-    self.ship_informations[1].current_ship = 1
-    self.ship_informations[2] = nil
+    for _, ship_information in ipairs(self.ship_informations) do
+      ship_information.ready = false
+      ship_information.current_ship = 1
+    end
+    self.ship_informations[2].desactivate_player()
   end
 
   function self.add_player(player)
     self.add_player_information_menu(player)
   end
 
-  function self.update()
-    love.graphics.setFont(fonts.normal)
+  function self.update(dt)
+    
     local button_heigh = 40
     local buttons_width = 120
     local button_space = 5
@@ -175,6 +182,10 @@ function SelectShipMenu.new(args)
   end
 
   self.add_player('player_01')
+  self.add_player('player_02')
+
+  self.ship_informations[1].active_player()
+  self.ship_informations[2].desactivate_player()
 
   -- add the title of this menu
   self.add_label('game_options_04')

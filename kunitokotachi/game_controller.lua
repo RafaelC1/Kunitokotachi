@@ -1,12 +1,16 @@
+require "assets_loader"
+require "helpers"
 require "player"
 require "ship"
-require "helpers"
-require "assets_loader"
+local suit = require "ext/suit"
 
 GameController = {}
 
 function GameController.new()
   local self = {}
+
+  self.ui = suit.new()
+
   self.players = {}
   self.back_menu_time = 0
   self.levels_settings = {}
@@ -156,22 +160,23 @@ function GameController.new()
   -- start a game
   function self.start_game()
     -- reset controllers
+    self.current_level = 1
+    self.reset_all_controllers()
+    self.update_current_level()
+  end
+
+  function self.reset_all_controllers()
     enemies_controller.destroy_all_enemies()
     enemies_controller.destroy_all_asteroids()
     bullets_controller.destroy_all_bullets()
-
-    self.current_level = 1
-    self.update_current_level()
-    -- when game is started anything most be reseted
-    -- self.current_level_settings = self.levels_settings[string.format("level%02d",self.current_level)]
+    power_ups_controller.destroy_all_power_ups()
+    explosions_controller.destroy_all_explosions()
   end
   -- end a game
   function self.end_game()
+    self.reset_all_controllers()
     self.players = {}
-  end
-
-  function self.go_to_menu()
-    CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
+    go_to_main_menu_screen()
   end
 
   function self.lose_message()
@@ -208,6 +213,7 @@ function GameController.new()
   end
 
   function self.update(dt)
+    set_game_font_to('black', 'normal')
     local ships = {}
     local anyone_alive = false
     for i, player in ipairs(self.players) do
@@ -260,13 +266,10 @@ function GameController.new()
     end
 
     if not anyone_alive then
-      explosions_controller.destroy_all_explosions()
-      self.go_to_menu_delay = 3
       self.go_to_menu_current_delay = self.go_to_menu_current_delay + dt
       if self.go_to_menu_current_delay > self.go_to_menu_delay then
         self.go_to_menu_current_delay = 0
         self.end_game()
-        self.go_to_menu()
       end
     end
     self.update_level(dt)
@@ -285,29 +288,30 @@ function GameController.new()
   end
 
   function self.draw_player_gui(player)
+    local button_heigh = 40
+    local buttons_width = 120
     -- draw player
     player.draw()
 
     local screen_distance = 30
     local pos = self.player_gui_pos['player'..player.player]
     local text = 'power:'..(player.ship.power or 0)
-    love.graphics.print(text, pos.x+screen_distance, HEIGHT-(screen_distance*3))
+    self.ui:Label(text, pos.x+screen_distance, HEIGHT-(screen_distance*3), buttons_width, button_heigh)
     -- draw lives on bottom of screen
     for i=1, player.lives do
       life_sprite.draw{x=(pos.x+screen_distance*i), y=HEIGHT-screen_distance*1.5}
     end
     -- draw player score
     local scoreText = string.format("%s score: %010d", player.name, player.score)
-    local text = love.graphics.newText(fonts.black, scoreText)
-    love.graphics.draw(text, screen_distance, screen_distance)
+    self.ui:Label(scoreText, screen_distance, screen_distance, buttons_width, button_heigh)
     -- TESTE
     screen_distance = screen_distance + 300
-    text = love.graphics.newText(fonts.black, 'map_position'..self.current_level_settings.position)
-    love.graphics.draw(text, screen_distance, screen_distance-300)
+    text = 'map_position'..self.current_level_settings.position
+    self.ui:Label(scoreText, screen_distance, screen_distance-300, buttons_width, button_heigh)
   end
 
   function self.draw()
-    love.graphics.setFont(fonts.black)
+
     local back_current_y = self.current_level_settings.position
     for i, sprite in ipairs(level_background_sprites.level_01_sprites) do
       local back_current_x = sprite.quad_width/2
@@ -318,10 +322,10 @@ function GameController.new()
       -- this check grante that only 3 sprites are renderized to avoid extra video memory consum
       if self.back_ground_can_be_draw(sprite, correct_position) then
         sprite.draw{x=back_current_x,
-                        y=back_current_y,
-                        scala_x=1,
-                        scala_y=1,
-                        rot=0}
+                    y=back_current_y,
+                    scala_x=1,
+                    scala_y=1,
+                    rot=0}
       end
       -- subtract the current sprite quad height to adjust the position of the next sprite
         back_current_y = back_current_y - sprite.quad_height
@@ -330,12 +334,14 @@ function GameController.new()
     enemies_controller.draw()
     bullets_controller.draw()
     power_ups_controller.draw()
-    explosions_controller.draw()
 
     -- draw player GUI
     for _, player in ipairs(self.players) do
       self.draw_player_gui(player)
     end
+
+    explosions_controller.draw()
+    self.ui:draw()
   end
 
   return self

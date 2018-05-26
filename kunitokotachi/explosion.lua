@@ -1,19 +1,21 @@
 Explosion = {}
 
-function Explosion.new(animation, x, y, down_speed)
+function Explosion.new(animation, x, y, vertial_speed, horizontal_speed)
   local self = Class.new()
   self.animation = animation
   self.finished = false
-  self.speed = down_speed
+  self.horizontal_speed = horizontal_speed
+  self.vertial_speed = vertial_speed
   self.x = x
   self.y = y
 
-  function self.move_down(dt)
-    self.y = self.y + self.speed*dt
+  function self.move(dt)
+    self.x = self.x + self.horizontal_speed * dt
+    self.y = self.y + self.vertial_speed * dt
   end
 
   function self.update(dt)
-    self.move_down(dt)
+    self.move(dt)
     self.animation.update(dt)
     self.finished = self.animation.ended
   end

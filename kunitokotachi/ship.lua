@@ -106,11 +106,16 @@ function Ship.new(args)
   end
   -- change the ship's ammo to a high ammo
   function self.increase_power_level(amount_of_levels)
+    self.show_charger_animation()
     self.current_power_level = self.current_power_level + amount_of_levels
     -- if there is no more leves to gain, reduce by one to avoid problems with null level
     if not self.owner.level_exist(self.current_power_level) then
       self.current_power_level = self.current_power_level - 1
     end
+  end
+  -- show the charger animation
+  function self.show_charger_animation()
+    explosions_controller.create_charger_explosion(self.body.x, self.body.y)
   end
   -- return the current ship sprite besed on it's current moviment
   function self.current_sprite()

@@ -30,7 +30,7 @@ function SplashScreen.new()
   function self.update(dt)
     self.update_time(dt)
     if self.time.current_time > self.time.max_time then
-      CURRENT_SCREEN = SCREENS.HISTORY_SCREEN
+      go_to_history_screen()
     end
   end
   function self.draw()

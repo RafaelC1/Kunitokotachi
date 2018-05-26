@@ -12,8 +12,16 @@ fonts =
   black = {},
   thin = {}
 }
+font_sizes =
+{
+  tiny = 10,
+  normal = 14,
+  big = 18,
+  extra_big = 22
+}
 
 -- images
+debris_image = {}
 explosion_image = {}
 ship_images =
 {
@@ -32,6 +40,7 @@ enemy_bullets_image = {}
 
 life_image = {}
 explosion_image = {}
+charger_image = {}
 power_ups_image = {}
 
 eye_enemy_image = {}
@@ -40,6 +49,30 @@ head_enemy_image = {}
 lung_enemy_image = {}
 
 -- sprites
+charger_sprites =
+{
+  left =
+  {
+    quad_01,
+    quad_02,
+  },
+  right =
+  {
+    quad_01,
+    quad_02,
+  }
+}
+
+debris_sprites =
+{
+  debri_01 = {},
+  debri_02 = {},
+  debri_03 = {},
+  debri_04 = {},
+  debri_05 = {},
+  debri_06 = {},
+  debri_07 = {}
+}
 level_background_sprites =
 {
   level_01_sprites = {},
@@ -231,6 +264,9 @@ end
 function load_all_images()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  -- load debris
+  debris_image = load_image('res/assets/debris/debris.png')
+
   -- load gui images
   life_image = load_image('res/assets/HUD/life_image.png')
 
@@ -239,6 +275,9 @@ function load_all_images()
 
 -- loading explosion image
   explosion_image = load_image('res/assets/fx/explosion.png')
+
+-- load charger image
+  charger_image = load_image('res/assets/fx/charge.png')
 
   -- power ups image
   power_ups_image = load_image('res/assets/fx/power_ups.png')
@@ -423,6 +462,41 @@ function define_sprites()
   lung_enemy_sprite.normal.quad_04 = Sprite.new(lung_enemy_image, 300, y, width, height)
   y = y + height
   lung_enemy_sprite.attack.quad_01 = Sprite.new(lung_enemy_image, 0, y, width, height)
+
+-- define all debris sprites
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  debris_sprites.debri_01 = Sprite.new(debris_image, x, y, width, height)
+  x = x + width
+  debris_sprites.debri_02 = Sprite.new(debris_image, x, y, width, height)
+  x = x + width
+  debris_sprites.debri_03 = Sprite.new(debris_image, x, y, width, height)
+  x = x + width
+  debris_sprites.debri_04 = Sprite.new(debris_image, x, y, width, height)
+  x = x + width
+  debris_sprites.debri_05 = Sprite.new(debris_image, x, y, width, height)
+  x = x + width
+  debris_sprites.debri_06 = Sprite.new(debris_image, x, y, width, height)
+  x = x + width
+  debris_sprites.debri_07 = Sprite.new(debris_image, x, y, width, height)
+
+  -- define all chargers sprite
+  width = 90
+  height = 90
+  x = 0
+  y = 0
+
+  charger_sprites.right.quad_01 = Sprite.new(charger_image, x, y, width, height)
+  x = x + width
+  charger_sprites.right.quad_02 = Sprite.new(charger_image, x, y, width, height)
+  x = 0
+  y = y + height
+  charger_sprites.left.quad_01 = Sprite.new(charger_image, x, y, width, height)
+  x = x + width
+  charger_sprites.left.quad_02 = Sprite.new(charger_image, x, y, width, height)
+
 
   return true
 end
@@ -675,7 +749,7 @@ function power_ups_animations.new_power_01_animation()
   return Animation.new(sprites, 0.2)
 end
 
-function power_ups_animations.power_02()
+function power_ups_animations.new_power_02_animation()
   local sprites =
   {
     power_ups_sprites.power_02
@@ -683,7 +757,7 @@ function power_ups_animations.power_02()
   return Animation.new(sprites, 0.2)
 end
 
-function power_ups_animations.power_03()
+function power_ups_animations.new_power_03_animation()
   local sprites =
   {
     power_ups_sprites.power_03
@@ -691,7 +765,7 @@ function power_ups_animations.power_03()
   return Animation.new(sprites, 0.2)
 end
 
-function power_ups_animations.power_04()
+function power_ups_animations.new_power_04_animation()
   local sprites =
   {
     power_ups_sprites.power_04
@@ -699,7 +773,7 @@ function power_ups_animations.power_04()
   return Animation.new(sprites, 0.2)
 end
 
-function power_ups_animations.power_05()
+function power_ups_animations.new_power_05_animation()
   local sprites =
   {
     power_ups_sprites.power_05
@@ -707,7 +781,7 @@ function power_ups_animations.power_05()
   return Animation.new(sprites, 0.2)
 end
 
-function power_ups_animations.power_06()
+function power_ups_animations.new_power_06_animation()
   local sprites =
   {
     power_ups_sprites.power_06
@@ -715,10 +789,39 @@ function power_ups_animations.power_06()
   return Animation.new(sprites, 0.2)
 end
 
+function new_debris_animation(debri)
+  local sprites =
+  {
+    debris_sprites[debri]
+  }
+  return Animation.new(sprites, 0.1)
+end
+
+function new_left_charger_animation()
+  local sprites =
+  {
+    charger_sprites.left.quad_01,
+    charger_sprites.left.quad_02
+  }
+  return Animation.new(sprites, 0.05)
+end
+
+function new_right_charger_animation()
+  local sprites =
+  {
+    charger_sprites.right.quad_01,
+    charger_sprites.right.quad_02
+  }
+  return Animation.new(sprites, 0.05)
+end
+
 -- load all fonts
 function load_all_fonts()
   local path = 'res/fonts/'
-  fonts.normal = love.graphics.newFont(path..'roboto-regular.ttf', 14)
-  fonts.black = love.graphics.newFont(path..'roboto-black.ttf', 18)
-  fonts.thin = love.graphics.newFont(path..'roboto-thin.ttf', 14)
+
+  for size_name, size in pairs(font_sizes) do
+    fonts.normal[size_name] = love.graphics.newFont(path..'roboto-regular.ttf', size)
+    fonts.black[size_name] = love.graphics.newFont(path..'roboto-black.ttf', size)
+    fonts.thin[size_name] = love.graphics.newFont(path..'roboto-thin.ttf', size)
+  end
 end

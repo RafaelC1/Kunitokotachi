@@ -12,6 +12,7 @@ function ShipInformation.new(args)
 
   self.ships_informations = args.ships_informations
   self.current_ship = 1 -- #self.ships_informations
+
   self.labels = {}
 
   self.current_informations = {}
@@ -19,6 +20,33 @@ function ShipInformation.new(args)
   self.owner = args.owner or 'player_01'
 
   self.ready = false
+  self.player_active = false
+
+  self.empty_player_message_blink = false
+  self.empty_player_message_blink_time = 0.2
+  self.current_empty_player_message_blink_time = 0
+
+  function self.is_player_active()
+    return self.player_active
+  end
+
+  function self.update_empty_player_message_blink_time(dt)
+    self.current_empty_player_message_blink_time = self.current_empty_player_message_blink_time + dt
+    if self.current_empty_player_message_blink_time >= self.empty_player_message_blink_time then
+      self.reset_empty_player_message_blink_time()
+      self.empty_player_message_blink = not self.empty_player_message_blink
+    end
+  end
+
+  function self.reset_empty_player_message_blink_time()
+    self.current_empty_player_message_blink_time = 0
+  end
+
+  function self.ship_corret_position()
+    local correct_x = self.x + self.current_sprite().quad_width / 2
+    local correct_y = self.y + self.current_sprite().quad_height / 2
+    return correct_x, correct_y
+  end
 
   function self.current_model_name()
     return self.ships_informations[self.current_ship].type
@@ -42,6 +70,14 @@ function ShipInformation.new(args)
 
   function self.update_current_informations(new_informations)
     self.current_informations = new_informations
+  end
+
+  function self.active_player()
+    self.player_active = true
+  end
+
+  function self.desactivate_player()
+    self.player_active = false
   end
 
   function self.back_ship()
@@ -91,7 +127,8 @@ function ShipInformation.new(args)
     widget.text = translation_of_key(widget.key)
   end
 
-  function self.update(dt)
+  function self.draw_ship_informations()
+    set_game_font_to('normal', 'big')
     local correct_x = self.x
     local correct_y = self.y + self.current_sprite().quad_height
     local label_width = 100
@@ -114,10 +151,10 @@ function ShipInformation.new(args)
     end
   end
 
-  function self.draw()
-    local correct_x = self.x + self.current_sprite().quad_width / 2
-    local correct_y = self.y + self.current_sprite().quad_height / 2
-    self.ui:draw()
+  function self.draw_ship()
+    local correct_x = 0
+    local correct_y = 0
+    correct_x, correct_y = self.ship_corret_position()
     if self.current_sprite() ~= nil then
       self.current_sprite().draw{x=correct_x,
                                  y=correct_y,
@@ -125,6 +162,36 @@ function ShipInformation.new(args)
                                  scala_y=1,
                                  rot=0}
     end
+  end
+
+  function self.draw_empty_player_message()
+    set_game_font_to('black', 'extra_big')
+    local correct_x = 0
+    local correct_y = 0
+    local label_width = 200
+    local label_height = 20
+    correct_x, correct_y = self.ship_corret_position()
+    correct_x = correct_x - label_width/2
+    local text = translation_of_key('game_options_09')
+    self.ui:Label(text, correct_x, correct_y, label_width, label_height)
+  end
+
+  function self.update(dt)
+    if self.player_active then
+      self.draw_ship_informations()
+    else
+      self.update_empty_player_message_blink_time(dt)
+      if not self.empty_player_message_blink then
+        self.draw_empty_player_message()
+      end
+    end
+  end
+
+  function self.draw()
+    if self.player_active then
+      self.draw_ship()
+    end
+    self.ui:draw()
   end
 
   self.labels =

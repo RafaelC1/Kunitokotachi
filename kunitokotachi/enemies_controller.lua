@@ -39,9 +39,16 @@ function EnemiesController.new()
   function self.create_asteroid(x, y, asteroid_type)
     x = x or 100
     y = y or -30
-    asteroid_type = asteroid_type or 'asteroid_01'
-    local asteroid_model = self.asteroids_characteristics.asteroid[asteroid_type]
-    local asteroid = Asteroid.new{x=x, y=y, speed=asteroid_model.speed, radio=asteroid_model.radio, max_hp=asteroid_model.max_hp, defense=asteroid_model.defense}
+    print(asteroid_type)
+    local asteroid_model = self.asteroids_characteristics.asteroids[asteroid_type]
+    local animations = new_debris_animation(asteroid_model.animation)
+    local asteroid = Asteroid.new{x=x,
+                                  y=y,
+                                  speed=asteroid_model.speed,
+                                  radio=asteroid_model.radio,
+                                  max_hp=asteroid_model.max_hp,
+                                  animations=animations,
+                                  defense=asteroid_model.defense}
     table.insert(self.asteroids, asteroid)
   end
 

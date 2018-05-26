@@ -11,6 +11,7 @@ require "bullets_controller"
 require "enemies_controller"
 require "power_ups_controller"
 require "explosions_controller"
+require "secrets"
 require "splash_screen"
 require "history_screen"
 require "settings"
@@ -63,9 +64,12 @@ function love.load()
   -- creating main menu
   local methods =
   {
-    function() CURRENT_SCREEN = SCREENS.PRE_GAME_MENU_SCREEN  end,
-    function() CURRENT_SCREEN = SCREENS.HISTORY_SCREEN  end,
-    function() CURRENT_SCREEN = SCREENS.SETTINGS_MENU_SCREEN  end,
+    function()
+      go_to_pre_game_screen()
+      sub_menu.reset_players()
+     end,
+    function() go_to_history_screen() end,
+    function() go_to_settings_menu_screen() end,
     function()
       if game_started then
         love.event.quit()
@@ -80,21 +84,13 @@ function love.load()
   main_menu.add_button('menu_options_04', methods[4])
 
 -- creating sub_menu or pre game menu
+  sub_menu = SelectShipMenu.new{ x=WIDTH/2, y=HEIGHT/2 }
   methods =
   {
-    function() -- single player
-      game_controller.start_game(1)
-    end,
-    function() -- multiplayer co-op
-      CURRENT_SCREEN = SCREENS.GAME_SCREEN
-      game_controller.start_game()
-    end,
-    function() CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN end
+    function() go_to_main_menu_screen() end
   }
-  sub_menu = SelectShipMenu.new{ x=WIDTH/2, y=HEIGHT/2 }
   -- sub_menu.add_button('game_options_02', methods[2])
-  sub_menu.add_button('game_options_03', methods[3])
-
+  sub_menu.add_button('game_options_03', methods[1])
 
   -- creating settings menu
   methods =
@@ -105,7 +101,10 @@ function love.load()
       sub_menu.update_all()
       settings_menu.update_all()
     end, --change translations
-    function() CURRENT_SCREEN=SCREENS.MAIN_MENU_SCREEN;write_values_to('applicationSettings.json', table_to_json(settings.apllication_settings)) end, --back
+    function()
+      go_to_main_menu_screen()
+      write_values_to('applicationSettings.json', table_to_json(settings.apllication_settings))
+    end, --back
     settings.set_song_volum,
     settings.set_music_volum
   }
@@ -120,65 +119,75 @@ function love.load()
 end
 
 function love.keypressed(key)
-  if CURRENT_SCREEN == SCREENS.SPLASH_SCREEN then
+  if is_current_screen(SCREENS.SPLASH_SCREEN) then
     if key == 'space' then
       moan.clearMessages()
       splash_screen.end_time()
     end
-  elseif CURRENT_SCREEN == SCREENS.LOAD_SCREEN then
+  elseif is_current_screen(SCREENS.LOAD_SCREEN) then
 
-  elseif CURRENT_SCREEN == SCREENS.HISTORY_SCREEN then
+  elseif is_current_screen(SCREENS.HISTORY_SCREEN) then
     if key == 'space' then
-      history_screen.go_to_main_menu()
+      go_to_main_menu_screen()
     end
-  elseif CURRENT_SCREEN == SCREENS.MAIN_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.MAIN_MENU_SCREEN) then
 
-  elseif CURRENT_SCREEN == SCREENS.PRE_GAME_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.PRE_GAME_MENU_SCREEN) then
     sub_menu.key_events(key)
-  elseif CURRENT_SCREEN == SCREENS.GAME_SCREEN then
-    
-  elseif CURRENT_SCREEN == SCREENS.SETTINGS_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.GAME_SCREEN) then
+
+  elseif is_current_screen(SCREENS.SETTINGS_MENU_SCREEN) then
+
   end
+
+  if love.keyboard.isDown('escape') and debbuger_mode then
+    close_game()
+  end
+
+  listen_secrets(key)
+
   moan.keypressed(key)
 end
 
 function love.update(dt)
-  if love.keyboard.isDown('escape')   then close_game() end
 
-  if CURRENT_SCREEN == SCREENS.SPLASH_SCREEN then
+  if is_current_screen(SCREENS.SPLASH_SCREEN) then
     splash_screen.update(dt)
-  elseif CURRENT_SCREEN == SCREENS.LOAD_SCREEN then
+  elseif is_current_screen(SCREENS.LOAD_SCREEN) then
 
-  elseif CURRENT_SCREEN == SCREENS.HISTORY_SCREEN then
+  elseif is_current_screen(SCREENS.HISTORY_SCREEN) then
     history_screen.update(dt)
-  elseif CURRENT_SCREEN == SCREENS.MAIN_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.MAIN_MENU_SCREEN) then
     main_menu.update()
-  elseif CURRENT_SCREEN == SCREENS.PRE_GAME_MENU_SCREEN then
-    sub_menu.update()
-  elseif CURRENT_SCREEN == SCREENS.GAME_SCREEN then
+  elseif is_current_screen(SCREENS.PRE_GAME_MENU_SCREEN) then
+    sub_menu.update(dt)
+  elseif is_current_screen(SCREENS.GAME_SCREEN) then
     game_controller.update(dt)
-  elseif CURRENT_SCREEN == SCREENS.SETTINGS_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.SETTINGS_MENU_SCREEN) then
     settings_menu.update()
   end
+
+  update_secret(dt)
+
   moan.update(dt)
 end
 
 function love.draw()
-  if CURRENT_SCREEN == SCREENS.SPLASH_SCREEN then
+  if is_current_screen(SCREENS.SPLASH_SCREEN) then
     splash_screen.draw()
-  elseif CURRENT_SCREEN == SCREENS.LOAD_SCREEN then
+  elseif is_current_screen(SCREENS.LOAD_SCREEN) then
 
-  elseif CURRENT_SCREEN == SCREENS.HISTORY_SCREEN then
+  elseif is_current_screen(SCREENS.HISTORY_SCREEN) then
     history_screen.draw()
-  elseif CURRENT_SCREEN == SCREENS.MAIN_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.MAIN_MENU_SCREEN) then
     level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     main_menu.draw()
-  elseif CURRENT_SCREEN == SCREENS.PRE_GAME_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.PRE_GAME_MENU_SCREEN) then
     level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     sub_menu.draw()
-  elseif CURRENT_SCREEN == SCREENS.GAME_SCREEN then
+  elseif is_current_screen(SCREENS.GAME_SCREEN) then
     game_controller.draw()
-  elseif CURRENT_SCREEN == SCREENS.SETTINGS_MENU_SCREEN then
+  elseif is_current_screen(SCREENS.SETTINGS_MENU_SCREEN) then
     level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     settings_menu.draw()
   end
@@ -186,5 +195,3 @@ function love.draw()
 end
 
 --helpers mover para fora depos
-
-

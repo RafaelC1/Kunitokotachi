@@ -1,4 +1,5 @@
-  json = require "ext/json/json"
+json = require "ext/json/json"
+  
 --files helpers
 function close_game()
   love.event.quit()
@@ -78,3 +79,58 @@ function show_dialog(args)
   args.action = args.action or nil
   moan.speak(args.name, args.messages, {x=10, y=10, oncomplete=args.action})
 end
+
+-- moviment by screen helpers
+function go_to_splash_screen()
+  CURRENT_SCREEN = SCREENS.SPLASH_SCREEN
+end
+
+function go_to_load_screen()
+  CURRENT_SCREEN = SCREENS.LOAD_SCREEN
+end
+
+function go_to_history_screen()
+  CURRENT_SCREEN = SCREENS.HISTORY_SCREEN
+end
+
+function go_to_main_menu_screen()
+  CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
+end
+
+function go_to_settings_menu_screen()
+  CURRENT_SCREEN = SCREENS.SETTINGS_MENU_SCREEN
+end
+
+function go_to_pre_game_screen()
+  CURRENT_SCREEN = SCREENS.PRE_GAME_MENU_SCREEN
+end
+
+function go_to_game_screen()
+  CURRENT_SCREEN = SCREENS.GAME_SCREEN
+end
+
+function go_to_score_screen()
+  CURRENT_SCREEN = SCREENS.SCORE_SCREEN
+end
+
+function is_current_screen(screen)
+  return CURRENT_SCREEN == screen
+end
+
+-- font helpers
+
+function set_game_font_to(new_font_name, size)
+  local new_font = fonts.normal
+  if new_font_name == 'normal' then
+    new_font = fonts.normal[size]
+  elseif new_font_name == 'black' then
+    new_font = fonts.black[size]
+  elseif new_font_name == 'thin' then
+    new_font = fonts.thin[size]
+  else
+    print("font: "..new_font_name.." doesn't exit")
+  end
+  love.graphics.setFont(new_font)
+end
+
+

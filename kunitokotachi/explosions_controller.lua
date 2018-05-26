@@ -18,8 +18,18 @@ function ExplosionsController.new()
 
   function self.create_explosion(x, y)
     local animation = new_explosion_animation() --explosion_animation.copy()
-    local new_explosion = Explosion.new(animation, x, y, self.explosion_speed)
+    local new_explosion = Explosion.new(animation, x, y, self.explosion_speed, 0)
     table.insert(self.explosions, new_explosion)
+  end
+
+  function self.create_charger_explosion(x, y)
+    local charger_side_speed = 200
+    local left_animation = new_left_charger_animation()
+    local right_animation = new_right_charger_animation()
+    local new_left_charger_explosion = Explosion.new(left_animation, x, y, 0, -charger_side_speed)
+    local new_right_charger_explosion = Explosion.new(right_animation, x, y, 0, charger_side_speed)
+    table.insert(self.explosions, new_left_charger_explosion)
+    table.insert(self.explosions, new_right_charger_explosion)
   end
 
   function self.update(dt)

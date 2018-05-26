@@ -1,4 +1,5 @@
 game_started = false
+debbuger_mode = true
 player_two = false
 settings = {} -- game configurations
 translations = {} -- manager all translations
@@ -41,4 +42,3 @@ function love.conf(t)
   t.window.title = TITLE
   t.window.version = VERSION
 end
-

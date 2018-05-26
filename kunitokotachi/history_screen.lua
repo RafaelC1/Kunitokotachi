@@ -22,10 +22,6 @@ function HistoryScreen.new()
     self.position = HEIGHT
   end
 
-  function self.go_to_main_menu()
-    CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
-  end
-
   function self.update_position(dt)
     local new_position = self.position + dt * self.text_speed
     self.position = new_position
@@ -33,8 +29,8 @@ function HistoryScreen.new()
   end
 
   function self.update(dt)
-    love.graphics.setFont(fonts.black)
-    local screen_distance = 100
+    set_game_font_to('black', 'big')
+    local screen_distance = 50
     local label_width = WIDTH - (screen_distance*2)
     local label_height = 50
     local y = self.position
