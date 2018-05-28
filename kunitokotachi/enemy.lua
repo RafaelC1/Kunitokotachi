@@ -34,6 +34,13 @@ function Enemy.new(args)
   self.animations = args.animations or nil
   self.current_animation = self.animations.normal or nil
 
+  self.weapons_settings = args.weapons_settings
+
+-- this still
+  self.blank_blink = false
+  self.blank_blink_time = 0.3
+  self.current_blank_blink_time = 0.2
+
   function self.change_normal_animation()
     self.change_animation('normal')
   end
@@ -115,12 +122,31 @@ function Enemy.new(args)
     end
   end
 
+  function self.blink_blank_by_hit()
+    if not self.blank_blink then
+      self.start_blank_blink()
+    end
+  end
+
+  function self.start_blank_blink()
+    self.blank_blink = true
+  end
+
+  function self.update_current_blank_time(dt)
+    self.current_blank_blink_time = self.current_blank_blink_time + dt
+    if self.current_blank_blink_time > self.blank_blink_time then
+      self.current_blank_blink_time = 0
+      self.blank_blink = false
+    end
+  end
+
   function self.update(dt)
     if not self.is_alive() then
       self.change_die_animation()
       self.down(dt)
       return
     end
+
     self.move(dt)
     if self.current_animation ~= nil then
       self.current_animation.update(dt)
@@ -128,23 +154,44 @@ function Enemy.new(args)
         self.current_animation = self.animations.normal
       end
     end
+
+    if self.blank_blink then
+      self.update_current_blank_time(dt)
+    end
   end
 
   function self.draw()
     -- self.draw_test()
+    local r, g, b, a = love.graphics.getColor()
     if self.current_animation ~= nil then
+      if self.blank_blink then
+        love.graphics.setColor(255, 0, 0, 1)
+      end
       self.current_animation.draw{x=self.body.x, y=self.body.y, scala_x=1, scala_y=1, rot=0}
+      if self.blank_blink then
+        love.graphics.setColor(r, g, b, a)
+      end
+    end
+  end
+
+  function self.prepare_weapons()
+    if self.weapons_settings == nil then
+      return
+    end
+    for w_name, w_settings in pairs(self.weapons_settings) do
+      self.add_weapon{ammo_name=args.ammo_name,
+                      delay=0,
+                      relative_x=0,
+                      relative_y=0,
+                      direction_x=w_settings.direction_x,
+                      direction_y=w_settings.direction_y}
     end
   end
 
   self.current_animation.start()
   self.current_animation.repeat_on_end() -- turn only the normal animation to keep repeting
-  self.add_weapon{ammo_name=args.ammo_name,
-                  delay=0,
-                  relative_x=0,
-                  relative_y=0,
-                  direction_x=0,
-                  direction_y=1}
+
+  self.prepare_weapons()
 
   return self
 end

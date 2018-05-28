@@ -36,6 +36,12 @@ function Bullet.new(args)
     local current_x = 0
     current_x = self.xv * self.speed * dt
     current_y = self.yv * self.speed * dt
+
+    -- reduce the speed if bullet move on diagonal
+    if current_x > 0 and current_y > 0 then
+      current_x = current_x / 2
+      current_y = current_y / 2
+    end
     -- this configuration is for move bullet according its owner if this bullet shoud move according it
     if self.follow_owner and self.owner.ship.body then
       if self.owner.keys ~= nil and self.follow_owner then

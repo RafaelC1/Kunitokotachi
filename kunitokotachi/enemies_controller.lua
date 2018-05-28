@@ -32,6 +32,7 @@ function EnemiesController.new()
                             ammo_name=enemy_model.bullet_name,
                             animations=animations,
                             drop=enemy_model.power_drop,
+                            weapons_settings=enemy_model.weapons_settings,
                             owner=self}
     table.insert(self.enemies, enemy)
   end

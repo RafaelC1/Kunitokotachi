@@ -127,6 +127,11 @@ function GameController.new()
   function self.object_hit_a_bullet(object, bullet_hitted)
     if not object.invulnerable then
       object.apply_damage(bullet_hitted.damage)
+      -- this call is only for enemies that will blink blank for a time if they are attack
+      -- until i discovrey a betther way to do this, it will be in here
+      if object.blink_blank_by_hit ~= nil then
+        object.blink_blank_by_hit()
+      end
       if not object.is_alive() and object.give_bonus and bullet_hitted.owner ~= nil then
         bullet_hitted.who_shooted().earn_points(object.give_bonus())
       end
@@ -290,24 +295,26 @@ function GameController.new()
   function self.draw_player_gui(player)
     local button_heigh = 40
     local buttons_width = 120
-    -- draw player
-    player.draw()
-
     local screen_distance = 30
-    local pos = self.player_gui_pos['player'..player.player]
+    -- draw player
+    local pos = self.player_gui_pos.player1
+    local pos_x = pos.x
+    local pos_y = pos.y
+
+    -- local pos = self.player_gui_pos['player'..player.player]
+    if player.player == 2 then
+      pos_x = WIDTH/2
+    end
+
     local text = 'power:'..(player.ship.power or 0)
-    self.ui:Label(text, pos.x+screen_distance, HEIGHT-(screen_distance*3), buttons_width, button_heigh)
+    self.ui:Label(text, pos_x+screen_distance, HEIGHT-(screen_distance*3), buttons_width, button_heigh)
     -- draw lives on bottom of screen
     for i=1, player.lives do
-      life_sprite.draw{x=(pos.x+screen_distance*i), y=HEIGHT-screen_distance*1.5}
+      life_sprite.draw{x=(pos_x+screen_distance*i), y=HEIGHT-screen_distance*1.5}
     end
     -- draw player score
     local scoreText = string.format("%s score: %010d", player.name, player.score)
-    self.ui:Label(scoreText, screen_distance, screen_distance, buttons_width, button_heigh)
-    -- TESTE
-    screen_distance = screen_distance + 300
-    text = 'map_position'..self.current_level_settings.position
-    self.ui:Label(scoreText, screen_distance, screen_distance-300, buttons_width, button_heigh)
+    self.ui:Label(scoreText, pos_x+screen_distance, screen_distance, buttons_width, button_heigh)
   end
 
   function self.draw()
@@ -338,6 +345,7 @@ function GameController.new()
     -- draw player GUI
     for _, player in ipairs(self.players) do
       self.draw_player_gui(player)
+      player.draw()
     end
 
     explosions_controller.draw()

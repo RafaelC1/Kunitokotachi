@@ -13,7 +13,6 @@ function PowerUpsController.new()
   end
   function self.create_power_up(x, y, power_up_type)
     local power_up_settings = self.power_ups_settings[power_up_type]
-    print('new_'..power_up_settings.animation..'_animation')
     local animation = power_ups_animations['new_'..power_up_settings.animation..'_animation']()
     local power_up = PowerUp.new{x=x,
                                  y=y,
