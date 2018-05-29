@@ -292,6 +292,10 @@ function GameController.new()
     return can_draw
   end
 
+  function self.current_play_charger_hud(player)
+    return hud_bar_sprites['charge_lvl_0'..player.ship.current_power_level]
+  end
+
   function self.draw_player_gui(player)
     local button_heigh = 40
     local buttons_width = 120
@@ -306,8 +310,9 @@ function GameController.new()
       pos_x = WIDTH/2
     end
 
-    local text = 'power:'..(player.ship.power or 0)
-    self.ui:Label(text, pos_x+screen_distance, HEIGHT-(screen_distance*3), buttons_width, button_heigh)
+    -- this should be temporary
+    self.current_play_charger_hud(player).draw{x=(pos_x+screen_distance+self.current_play_charger_hud(player).quad_width/4),
+                                               y=HEIGHT-screen_distance*1.5-life_sprite.quad_height}
     -- draw lives on bottom of screen
     for i=1, player.lives do
       life_sprite.draw{x=(pos_x+screen_distance*i), y=HEIGHT-screen_distance*1.5}

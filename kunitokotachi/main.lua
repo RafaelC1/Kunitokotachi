@@ -193,5 +193,3 @@ function love.draw()
   end
   moan.draw()
 end
-
---helpers mover para fora depos

@@ -41,6 +41,7 @@ enemy_bullets_image = {}
 life_image = {}
 explosion_image = {}
 charger_image = {}
+hud_bar_image = {}
 power_ups_image = {}
 
 eye_enemy_image = {}
@@ -49,6 +50,15 @@ head_enemy_image = {}
 lung_enemy_image = {}
 
 -- sprites
+hud_bar_sprites =
+{
+  charge_lvl_01 = {},
+  charge_lvl_02 = {},
+  charge_lvl_03 = {},
+  charge_lvl_04 = {},
+  charge_lvl_05 = {},
+  charge_lvl_06 = {}
+}
 charger_sprites =
 {
   left =
@@ -266,6 +276,9 @@ function load_all_images()
 
   -- load debris
   debris_image = load_image('res/assets/debris/debris.png')
+
+  -- load hud
+  hud_bar_image = load_image('res/assets/HUD/hud_bar.png')
 
   -- load gui images
   life_image = load_image('res/assets/HUD/life_image.png')
@@ -497,6 +510,23 @@ function define_sprites()
   x = x + width
   charger_sprites.left.quad_02 = Sprite.new(charger_image, x, y, width, height)
 
+  -- define hud sprites
+  width = 150
+  height = 50
+  x = 0
+  y = 0
+
+  hud_bar_sprites.charge_lvl_01 = Sprite.new(hud_bar_image, x, y, width, height)
+  x = x + width
+  hud_bar_sprites.charge_lvl_02 = Sprite.new(hud_bar_image, x, y, width, height)
+  x = x + width
+  hud_bar_sprites.charge_lvl_03 = Sprite.new(hud_bar_image, x, y, width, height)
+  x = x + width
+  hud_bar_sprites.charge_lvl_04 = Sprite.new(hud_bar_image, x, y, width, height)
+  x = x + width
+  hud_bar_sprites.charge_lvl_05 = Sprite.new(hud_bar_image, x, y, width, height)
+  x = x + width
+  hud_bar_sprites.charge_lvl_06 = Sprite.new(hud_bar_image, x, y, width, height)
 
   return true
 end
