@@ -21,6 +21,15 @@ font_sizes =
 }
 
 -- images
+boss_images =
+{
+  boss_01 =
+  {
+    normal = {},
+    attack = {}
+  },
+  boss_02 = {}
+}
 debris_image = {}
 explosion_image = {}
 ship_images =
@@ -50,6 +59,45 @@ head_enemy_image = {}
 lung_enemy_image = {}
 
 -- sprites
+boss_sprites =
+{
+  boss_01 =
+  {
+    attack =
+    {
+      quad_01 = {},
+      quad_02 = {}
+    },
+    normal =
+    {
+      quad_01 = {},
+      quad_02 = {}
+    },
+    die =
+    {
+      quad_01 = {},
+      quad_02 = {}
+    }
+  },
+  boss_02 =
+  {
+    attack =
+    {
+      quad_01 = {},
+      quad_02 = {}
+    },
+    normal =
+    {
+      quad_01 = {},
+      quad_02 = {}
+    },
+    die =
+    {
+      quad_01 = {},
+      quad_02 = {}
+    }
+  }
+}
 hud_bar_sprites =
 {
   charge_lvl_01 = {},
@@ -274,6 +322,10 @@ end
 function load_all_images()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  -- load all bosses images
+  boss_images.boss_01 = load_image('res/assets/enemies/boss_01.png')
+  boss_images.boss_02 = load_image('res/assets/enemies/boss_02.png')
+
   -- load debris
   debris_image = load_image('res/assets/debris/debris.png')
 
@@ -323,6 +375,23 @@ function define_sprites()
   local height = 50
   local x = 0
   local y = 0
+
+  -- define all bosses sprites
+  width = 633
+  height = 450
+  x = 0
+  y = 0
+
+  boss_sprites.boss_01.normal.quad_01 = Sprite.new(boss_images.boss_01, x, y, width, height)
+  x = x + width
+  boss_sprites.boss_01.normal.quad_02 = Sprite.new(boss_images.boss_01, x, y, width, height)
+  x = x + width
+  boss_sprites.boss_01.normal.quad_02 = Sprite.new(boss_images.boss_01, x, y, width, height)
+  x = 0
+  y = y + height
+  boss_sprites.boss_01.attack.quad_01 = Sprite.new(boss_images.boss_01, x, y, width, height)
+  x = x + width
+  boss_sprites.boss_01.attack.quad_02 = Sprite.new(boss_images.boss_01, x, y, width, height)
 
   -- background sprites
   level_background_sprites.level_01_sprites = define_back_ground_sprites(level_background_images.level_01)
@@ -666,6 +735,30 @@ function enemies_animations.new_lung_animations()
   local attack_sprites =
   {
     lung_enemy_sprite.attack.quad_01
+  }
+  local die_sprites = nil
+
+  all_animations.normal = Animation.new(normal_sprites, 0.15)
+  all_animations.attack = Animation.new(attack_sprites, 0.2)
+  all_animations.die = nil
+
+  all_animations.attack.dont_repeat()
+
+  return all_animations
+end
+
+function enemies_animations.new_boss_01_animations()
+  local all_animations = {}
+  local normal_sprites =
+  {
+    boss_sprites.boss_01.normal.quad_01,
+    boss_sprites.boss_01.normal.quad_02,
+    boss_sprites.boss_01.normal.quad_03
+  }
+  local attack_sprites =
+  {
+    boss_sprites.boss_01.attack.quad_01,
+    boss_sprites.boss_01.attack.quad_02,
   }
   local die_sprites = nil
 

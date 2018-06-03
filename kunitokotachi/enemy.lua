@@ -17,10 +17,6 @@ function Enemy.new(args)
 
   self.owner = args.owner or self
 
-  self.r = 255
-  self.g = 255
-  self.b = 0
-
   self.kill_points = 100 -- points for kill this enemy
   self.drop = args.drop or 'power'
   self.IA = -- this is the positions that enemy shoud perform during it's life circle

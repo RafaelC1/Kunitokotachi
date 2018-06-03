@@ -28,6 +28,12 @@ function HistoryScreen.new()
     return new_position
   end
 
+  function self.key_events(key)
+    if key == settings.players_settings.player_01_keys.shoot then
+      go_to_main_menu_screen()
+    end
+  end
+
   function self.update(dt)
     set_game_font_to('black', 'big')
     local screen_distance = 50

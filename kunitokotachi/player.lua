@@ -40,7 +40,7 @@ function Player.new(player, keys, levels_of_player_settings)
   function self.die()
     explosions_controller.create_explosion(self.ship.body.x, self.ship.body.y)
     self.lives = self.lives-1
-    self.ship = {}
+    self.ship = nil
     -- if player have extra lives available, respawn his ship
     if self.has_extra_lives() then
       self.create_ship()
@@ -60,7 +60,7 @@ function Player.new(player, keys, levels_of_player_settings)
   end
 
   function self.ship_is_alive()
-    if self.ship.is_alive and self.ship.is_alive() then
+    if self.ship and self.ship.is_alive() then
       return true
     else
       return false
@@ -68,13 +68,13 @@ function Player.new(player, keys, levels_of_player_settings)
   end
 
   function self.update(dt)
-    if self.ship.update then
+    if self.ship then
       self.ship.update(dt)
     end
   end
 
   function self.draw()
-    if self.ship.draw then
+    if self.ship then
       self.ship.draw()
     end
   end

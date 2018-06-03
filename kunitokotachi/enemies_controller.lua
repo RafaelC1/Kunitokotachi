@@ -15,6 +15,31 @@ function EnemiesController.new()
 
   self.enemies_behaviours = json_to_table(read_from('res/settings/enemies_behaviours.json'))
 
+  function self.create_boss()
+    -- the boss always spawn on center top
+    local x, y = WIDTH/2, -100
+    local new_boss = Boss_01.new
+    x = x or 100
+    y = y or -30
+    local animations = enemies_animations['new_'..enemy_name..'_animations']()
+    enemy_name = 'boss_01'
+    local enemy_model = self.enemies_characteristics.enemy[enemy_name]
+    local enemy_behaviour = self.enemies_behaviours[behaviour]
+    local enemy = Enemy.new{x=x,
+                            y=y,
+                            radio=enemy_model.radio,
+                            speed=enemy_model.speed,
+                            max_hp=enemy_model.max_hp,
+                            defense=enemy_model.defense,
+                            behaviour=enemy_behaviour,
+                            ammo_name=enemy_model.bullet_name,
+                            animations=animations,
+                            drop=enemy_model.power_drop,
+                            weapons_settings=enemy_model.weapons_settings,
+                            owner=self}
+    table.insert(self.enemies, enemy)
+  end
+
   function self.create_enemy(x, y, enemy_name, behaviour)
     x = x or 100
     y = y or -30
@@ -79,7 +104,9 @@ function EnemiesController.new()
   end
   -- destroy all enemies on list
   function self.destroy_all_enemies()
-    self.enemies = {}
+    for i=#self.enemies, 1, -1 do
+      self.destroy_enemy(i)
+    end
   end
 
   function self.destroy_all_asteroids()
@@ -96,6 +123,10 @@ function EnemiesController.new()
 
   function self.all_enemy_names()
     return self.enemies_characteristics.enemy_names
+  end
+
+  function self.all_boss_names()
+    return self.enemies_characteristics.boss_names
   end
 
   function self.all_asteroid_names()

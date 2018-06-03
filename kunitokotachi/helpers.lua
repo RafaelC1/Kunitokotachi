@@ -10,6 +10,27 @@ function around(value)
     return tonumber(string.format("%.0f", value))
 end
 
+-- print all table
+function print_table(args)
+  local table = args.table
+  local spaces = args.spaces or 0
+  for k, v in pairs(table) do
+    if type(v) == 'table' then
+      print(k..':')
+      print('{')
+      print_table{table=v, spaces=(spaces+2)}
+      print('}')
+    else
+      local message = ''
+      for i=1, spaces, 1 do
+        message = message..' '
+      end
+      message = message..k..':'..v..' ('..type(v)..')'
+      print(message)
+    end
+  end
+end
+
 -- this mehod check if value is in array
 function array_include_value(array, value)
   for i, a in ipairs(array) do
@@ -31,7 +52,18 @@ function calculate_damage(damage, defense)
 end
 
 function file_exist(file_name)
-  return love.filesystem.exists(file_name)
+  local file_exist = love.filesystem.getInfo(file_name) ~= nil
+  if debbuger_mode then
+    local message = 'file: '..file_name
+    if file_exist then
+      message = message..' found'
+    else
+      message = message..' not found'
+    end
+    print(message)
+  end
+  
+  return file_exist
 end
 
 --read file and give key values back
@@ -94,7 +126,7 @@ function go_to_history_screen()
 end
 
 function go_to_main_menu_screen()
-  CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
+  CURRENT_SCREEN =SCREENS.MAIN_MENU_SCREEN
 end
 
 function go_to_settings_menu_screen()

@@ -15,7 +15,13 @@ function GameController.new()
   self.back_menu_time = 0
   self.levels_settings = {}
 
-  self.levels_settings = json_to_table(read_from('res/settings/levels_script.json'))
+  local levels_script_path = "levels_script.json"
+  if file_exist(levels_script_path) then
+    self.levels_settings = json_to_table(read_from(levels_script_path))
+  else
+    self.levels_settings = json_to_table(read_from('res/settings/levels_script.json'))
+  end
+
 
   self.current_level = 1
   self.current_level_settings = {}
@@ -55,6 +61,8 @@ function GameController.new()
   -- update current_level_settings informations based on current level
   function self.update_current_level()
     self.current_level_settings = {}
+    self.current_level_settings.boss_spawned = false
+    self.current_level_settings.boss_killed = false
     self.current_level_settings.name      = self.levels_settings.levels_names[self.current_level]
     local name_to_find_by                 = self.current_level_settings.name
     self.current_level_settings.speed     = self.levels_settings[name_to_find_by].speed
@@ -70,18 +78,31 @@ function GameController.new()
   function self.check_level_script()
     local correct_position = level_background_images[self.current_level_settings.name]:getHeight() + self.current_level_settings.position
     for i, script in ipairs(self.current_level_settings.script) do
-      -- if the iteration get a line with a posiiton trigget highets than the current, stop iteration
-      if script[1] > correct_position then return end
+      local position = script[1]
+      local event_name = script[2]
+      local width = script[3]
+      local height = script[4]
+      local behaviour = script[5]
+      local already_activated = script[6]
         -- check if event was not actived already
-        if not script[6] then
+      if not already_activated then
+      -- if the iteration get a line with a posiiton trigget highets than the current, stop iteration
+        if position > correct_position then return end
           local enemy_names = enemies_controller.all_enemy_names()
           local asteroid_names = enemies_controller.all_asteroid_names()
+          local boss_names = enemies_controller.all_boss_names()
         -- check if event name is to spawn a enemy based on event secound value wich, if its a spawn of a enemy, will be its name
-          if array_include_value(enemy_names, script[2]) then
-            enemies_controller.create_enemy(script[3], script[4], script[2], script[5])
-            -- check if event name is to spawn some asteroid
-          elseif array_include_value(asteroid_names, script[2]) then
-            enemies_controller.create_asteroid(script[3], script[4], script[2])
+          -- spawn enemy by checking if event name is one of the enemies name
+            print(event_name)
+          if array_include_value(enemy_names, event_name) then
+            enemies_controller.create_enemy(width, height, event_name, behaviour)
+          -- spawn asteroid by checking if event name is one of the asteroids name
+          elseif array_include_value(asteroid_names, event_name) then
+            enemies_controller.create_asteroid(width, height, event_name)
+          elseif array_include_value(boss_names, event_name) then
+            -- kill all enemies when boss spawn
+            enemies_controller.destroy_all_enemies()
+            enemies_controller.create_enemy(WIDTH/2, -100, event_name, behaviour)
           else
             print("event dont identified")
           end
@@ -147,7 +168,7 @@ function GameController.new()
   end
   -- generate players
   function self.create_player(player, ship_model)
-    local keys = settings['players_settings']['player'..player]
+    local keys = settings['players_settings']['player_0'..player..'_keys']
     local x = self.spawn_pos['player'..player].x
     local y = self.spawn_pos['player'..player].y
     local character = Player.new(player, keys, self.levels_of_player_settings)
@@ -194,20 +215,15 @@ function GameController.new()
     show_dialog{name='Higuchi', messages=messages, action=self.go_to_menu}
   end
   function self.current_level_get_to_the_end()
-    return self.current_level_settings.position < self.current_level_settings.length
+    -- this -HEIGHT/2 is to adjuste the correct position that need to be checked sence we are
+    -- couting from the middle of the screen
+    return self.current_level_settings.position < self.current_level_settings.length - HEIGHT/2
   end
   -- move map
   function self.inscrease_position(dt)
     local new_position = self.current_level_settings.position + self.current_level_settings.speed*dt
     self.current_level_settings.position = new_position
     return new_position
-  end
-
-  function self.show_back_ground_sprite(sprite_start_y, sprite_end_y)
-    if sprite_start_y >= 0 and sprite_start_y <= HEIGHT or
-       sprite_end_y >= 0 and sprite_end_y <= HEIGHT then
-       return true
-     end
   end
 
   function self.update_level(dt)
@@ -232,7 +248,7 @@ function GameController.new()
         if power_ups_controller.has_power_ups then
           self.check_collect_power_up(player.ship, power_ups_controller.power_ups)
         end
-      elseif next(player.ship) then
+      elseif player.ship then
         player.die()
       end
       if player.has_extra_lives() then
@@ -270,6 +286,17 @@ function GameController.new()
       self.check_bullet_hit(bullets_controller.bullets.enemy, enemies_controller.asteroids)
     end
 
+    -- this logic bellow is for check if boss was killed and level ended
+    if self.current_level_settings.boss_spawned then
+      -- after boss spawn, all enemies are destoryed so, the last one is the boss
+      -- and if the enemeis count go zero, it means that boss was killed
+      if not enemies_controller.has_enemies then
+        self.current_level_settings.boss_spawned = false
+        self.current_level_settings.boss_killed = true
+        -- END LEVEL
+      end
+    end
+
     if not anyone_alive then
       self.go_to_menu_current_delay = self.go_to_menu_current_delay + dt
       if self.go_to_menu_current_delay > self.go_to_menu_delay then
@@ -282,18 +309,18 @@ function GameController.new()
 
   function self.back_ground_can_be_draw(back_ground, correct_position)
     local can_draw = false
-    -- the extra "WIDTH" add and subtract is to allow that multiple sprites (3) as showed at
+    -- the extra "HEIGHT" add and subtract is to allow that multiple sprites (3) as showed at
     -- same time to make as it was a single sprite with all image but, on the reallity are just
     -- rendering 3 images, one before the correct, the correct and 1 after it
-    if (back_ground.start_y) >= correct_position - WIDTH and
-       correct_position + WIDTH >= (back_ground.start_y - back_ground.quad_height) then
+    if (back_ground.start_y) >= correct_position - HEIGHT and
+       correct_position + HEIGHT >= (back_ground.start_y - back_ground.quad_height) then
        can_draw = true
     end
     return can_draw
   end
 
   function self.current_play_charger_hud(player)
-    return hud_bar_sprites['charge_lvl_0'..player.ship.current_power_level]
+      return hud_bar_sprites['charge_lvl_0'..player.ship.current_power_level]
   end
 
   function self.draw_player_gui(player)
@@ -311,13 +338,16 @@ function GameController.new()
     end
 
     -- this should be temporary
-    self.current_play_charger_hud(player).draw{x=(pos_x+screen_distance+self.current_play_charger_hud(player).quad_width/4),
-                                               y=HEIGHT-screen_distance*1.5-life_sprite.quad_height}
+    if player.ship ~= nil then
+      self.current_play_charger_hud(player).draw{x=(pos_x+screen_distance+self.current_play_charger_hud(  player).quad_width/4),
+                                                 y=HEIGHT-screen_distance*1.5-life_sprite.quad_height}
+    end
     -- draw lives on bottom of screen
     for i=1, player.lives do
       life_sprite.draw{x=(pos_x+screen_distance*i), y=HEIGHT-screen_distance*1.5}
     end
     -- draw player score
+    set_game_font_to('black', 'big')
     local scoreText = string.format("%s score: %010d", player.name, player.score)
     self.ui:Label(scoreText, pos_x+screen_distance, screen_distance, buttons_width, button_heigh)
   end

@@ -103,7 +103,7 @@ function love.load()
     end, --change translations
     function()
       go_to_main_menu_screen()
-      write_values_to('applicationSettings.json', table_to_json(settings.apllication_settings))
+      write_values_to('application_settings.json', table_to_json(settings.apllication_settings))
     end, --back
     settings.set_song_volum,
     settings.set_music_volum
@@ -120,16 +120,14 @@ end
 
 function love.keypressed(key)
   if is_current_screen(SCREENS.SPLASH_SCREEN) then
-    if key == 'space' then
+    if key == settings.players_settings.player_01_keys.shoot then
       moan.clearMessages()
       splash_screen.end_time()
     end
   elseif is_current_screen(SCREENS.LOAD_SCREEN) then
 
   elseif is_current_screen(SCREENS.HISTORY_SCREEN) then
-    if key == 'space' then
-      go_to_main_menu_screen()
-    end
+    history_screen.key_events(key)
   elseif is_current_screen(SCREENS.MAIN_MENU_SCREEN) then
 
   elseif is_current_screen(SCREENS.PRE_GAME_MENU_SCREEN) then
@@ -140,7 +138,7 @@ function love.keypressed(key)
 
   end
 
-  if love.keyboard.isDown('escape') and debbuger_mode then
+  if key == settings.players_settings.global_keys.back and debbuger_mode then
     close_game()
   end
 

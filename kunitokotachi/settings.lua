@@ -16,13 +16,17 @@ function Settings.new()
   end
   -- reset all configurations and save the skeleton of score and settings on user save directory
   function self.reset_configurations_and_score()
-    love.filesystem.remove('applicationSettings.json')
-    love.filesystem.remove('controllersSettings.json')
+    love.filesystem.remove('application_settings.json')
+    love.filesystem.remove('controllers_settings.json')
     self.initiate_settings()
   end
   -- this method try to find applications already save on this pc, if it doesn't, create one with default
   function self.read_settings_of(file_name)
-    return json_to_table(read_from(file_name))
+    if file_exist(file_name) then
+      return json_to_table(read_from(file_name))
+    else
+      return {}
+    end
   end
 
   function self.create_setting_file(file_name, default_values)
@@ -60,16 +64,19 @@ function Settings.new()
   end
   -- this method get the skelleton of configurations and save it on user default save directory and start to use it to save status
   function self.initiate_settings()
-    local applications_settings_file = 'applicationSettings.json'
-    local controlls_file = 'controllersSettings.json'
+    local applications_settings_file = 'application_settings.json'
+    local controlls_file = 'controllers_settings.json'
+
     if not file_exist(applications_settings_file) then
-      local apllication_settings_default = json_to_table(read_from('configs/applicationSettings_default.json'))
+      local apllication_settings_default = json_to_table(read_from('configs/application_settings_default.json'))
       self.apllication_settings = self.create_setting_file(applications_settings_file, apllication_settings_default)
     end
+
     if not file_exist(controlls_file) then
-      local players_settings_default = json_to_table(read_from('configs/controllersSettings_default.json'))
+      local players_settings_default = json_to_table(read_from('configs/controllers_settings_default.json'))
       self.players_settings = self.create_setting_file(controlls_file, players_settings_default)
     end
+
     self.apllication_settings = self.read_settings_of(applications_settings_file)
     self.players_settings = self.read_settings_of(controlls_file)
   end
