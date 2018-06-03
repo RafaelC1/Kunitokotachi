@@ -34,8 +34,8 @@ function Enemy.new(args)
 
 -- this still
   self.blank_blink = false
-  self.blank_blink_time = 0.3
-  self.current_blank_blink_time = 0.2
+  self.blank_blink_time = 0.05
+  self.current_blank_blink_time = 0
 
   function self.change_normal_animation()
     self.change_animation('normal')
@@ -119,7 +119,7 @@ function Enemy.new(args)
   end
 
   function self.blink_blank_by_hit()
-    if not self.blank_blink then
+    if self.current_blank_blink_time <= 0 then
       self.start_blank_blink()
     end
   end
@@ -129,10 +129,15 @@ function Enemy.new(args)
   end
 
   function self.update_current_blank_time(dt)
-    self.current_blank_blink_time = self.current_blank_blink_time + dt
-    if self.current_blank_blink_time > self.blank_blink_time then
-      self.current_blank_blink_time = 0
-      self.blank_blink = false
+    -- the purpouse of this logic is to prevent the sprite to blink with the "hit color"
+    -- even if the enemy is been attacked with a constante hit such a laser
+    if self.blank_blink then
+      if self.current_blank_blink_time >= self.blank_blink_time then
+        self.blank_blink = false
+      end
+      self.current_blank_blink_time = self.current_blank_blink_time + dt
+    elseif self.current_blank_blink_time > 0 then
+      self.current_blank_blink_time = self.current_blank_blink_time - dt
     end
   end
 
@@ -151,7 +156,7 @@ function Enemy.new(args)
       end
     end
 
-    if self.blank_blink then
+    if self.blank_blink or self.current_blank_blink_time > 0 then
       self.update_current_blank_time(dt)
     end
   end

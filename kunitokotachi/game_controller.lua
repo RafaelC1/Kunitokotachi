@@ -93,7 +93,6 @@ function GameController.new()
           local boss_names = enemies_controller.all_boss_names()
         -- check if event name is to spawn a enemy based on event secound value wich, if its a spawn of a enemy, will be its name
           -- spawn enemy by checking if event name is one of the enemies name
-            print(event_name)
           if array_include_value(enemy_names, event_name) then
             enemies_controller.create_enemy(width, height, event_name, behaviour)
           -- spawn asteroid by checking if event name is one of the asteroids name
@@ -104,7 +103,7 @@ function GameController.new()
             enemies_controller.destroy_all_enemies()
             enemies_controller.create_enemy(WIDTH/2, -100, event_name, behaviour)
           else
-            print("event dont identified")
+            -- print("event dont identified")
           end
       end
       script[6] = true
