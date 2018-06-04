@@ -76,7 +76,7 @@ function GameController.new()
   end
 -- this method check if in the current position controller should spawn something
   function self.check_level_script()
-    local correct_position = level_background_images[self.current_level_settings.name]:getHeight() + self.current_level_settings.position
+    local correct_position = self.current_level_settings.position
     for i, script in ipairs(self.current_level_settings.script) do
       local position = script[1]
       local event_name = script[2]

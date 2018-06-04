@@ -377,8 +377,8 @@ function define_sprites()
   local y = 0
 
   -- define all bosses sprites
-  width = 633
-  height = 450
+  width = 660
+  height = 440
   x = 0
   y = 0
 

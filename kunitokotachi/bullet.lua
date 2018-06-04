@@ -32,16 +32,19 @@ function Bullet.new(args)
   end
 
   function self.update(dt)
-    local current_y = 0
-    local current_x = 0
-    current_x = self.xv * self.speed * dt
-    current_y = self.yv * self.speed * dt
+    local current_x = self.xv
+    local current_y = self.yv
 
     -- reduce the speed if bullet move on diagonal
-    if current_x > 0 and current_y > 0 then
-      current_x = current_x / 2
-      current_y = current_y / 2
-    end
+    -- if current_x ~= 0 and current_y ~= 0 then
+    --   local total = math.abs(current_x) + math.abs(current_y)
+    --   current_x = current_x / total
+    --   current_y = current_y / total
+    -- end
+
+    current_x = current_x * self.speed * dt
+    current_y = current_y * self.speed * dt
+
     -- this configuration is for move bullet according its owner if this bullet shoud move according it
     if self.follow_owner and self.owner.ship.body then
       if self.owner.keys ~= nil and self.follow_owner then
@@ -56,8 +59,10 @@ function Bullet.new(args)
       end
       self.body.x = self.owner.ship.body.x + self.xv*dt
     end
+
     self.body.x = self.body.x + current_x
     self.body.y = self.body.y + current_y
+
     self.animation.update(dt)
   end
   function self.draw()
