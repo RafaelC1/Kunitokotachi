@@ -216,6 +216,7 @@ function Ship.new(args)
   self.change_delay_of_all_weapons(self.current_ammo().delay)
 
   self.invulnerable_time = 2
+  self.invulnerable = true
 
   return self
 end

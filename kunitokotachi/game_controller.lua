@@ -126,7 +126,7 @@ function GameController.new()
   function self.objects_collide_against(objects_1, objects_2)
     for i, object_1 in ipairs(objects_1) do
       for j, object_2 in ipairs(objects_2) do
-        if touch_each_other(object_1, object_2) and not object_1.is_invulnerable() and not object_2.is_invulnerable() then
+        if touch_each_other(object_1, object_2) and not object_1:is_invulnerable() and not object_2:is_invulnerable() then
           object_1.apply_damage(object_2.current_hp)
           object_2.apply_damage(object_1.current_hp)
         end
@@ -145,7 +145,7 @@ function GameController.new()
   end
   -- check of some object hitted a bullet
   function self.object_hit_a_bullet(object, bullet_hitted)
-    if not object.invulnerable then
+    if not object:is_invulnerable() then
       object.apply_damage(bullet_hitted.damage)
       -- this call is only for enemies that will blink blank for a time if they are attack
       -- until i discovrey a betther way to do this, it will be in here

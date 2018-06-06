@@ -14,7 +14,7 @@ function Health.new(args)
     return self.current_hp > 0
   end
 
-  function self.is_invulnerable()
+  function self:is_invulnerable()
     return self.invulnerable or self.invulnerable_time > 0
   end
 
