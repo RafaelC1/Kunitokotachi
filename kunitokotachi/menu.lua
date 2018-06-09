@@ -43,7 +43,7 @@ function Menu.new(args)
     for i, option in ipairs(self.options) do
       if type(option.key) == 'string' then
         self.update_text(option)
-      elseif type(key) == 'function' then
+      elseif type(option.key) == 'function' then
         option.text = option.key()
       end
     end
@@ -70,10 +70,10 @@ function Menu.new(args)
         local label_text = ''
         if type(option.text) == 'string' then
           label_text = option.text
-        elseif type(option.text) == 'function' then
-          label_text = option.text()
+        elseif type(option.key) == 'function' then
+          label_text = option.key()
         end
-        self.ui:Label(option.text, x, y, buttons_width, button_heigh)
+        self.ui:Label(label_text, x, y, buttons_width, button_heigh)
       elseif option.type == 'slider' then
         local status = self.ui:Slider(option, x, y, buttons_width, button_heigh)
         if option.text ~= '' then

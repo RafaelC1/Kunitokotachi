@@ -86,7 +86,7 @@ end
 function translation_of_key(key)
   local translations = translations[settings.apllication_settings.language][key]
   if translations == nil then
-    translations = 'not_found'
+    translations = key
   end
     return translations
 end

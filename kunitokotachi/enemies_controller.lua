@@ -40,7 +40,7 @@ function EnemiesController.new()
     table.insert(self.enemies, enemy)
   end
 
-  function self.create_enemy(x, y, enemy_name, behaviour)
+  function self.create_enemy(x, y, enemy_name, behaviour, drop)
     x = x or 100
     y = y or -30
     local animations = enemies_animations['new_'..enemy_name..'_animations']()
@@ -56,7 +56,7 @@ function EnemiesController.new()
                             behaviour=enemy_behaviour,
                             ammo_name=enemy_model.bullet_name,
                             animations=animations,
-                            drop=enemy_model.power_drop,
+                            drop=drop,
                             weapons_settings=enemy_model.weapons_settings,
                             owner=self}
     table.insert(self.enemies, enemy)
@@ -87,7 +87,9 @@ function EnemiesController.new()
   end
   -- spawn power up when enemy die if it shoul spawn
   function self.spawn_power_up(enemy_id)
-    if self.enemies[enemy_id].drop == nil then return end
+    if self.enemies[enemy_id].drop == nil then
+      return
+    end
     local x = self.enemies[enemy_id].body.x
     local y = self.enemies[enemy_id].body.y
     local power_type = self.enemies[enemy_id].drop or 'power_01'

@@ -68,10 +68,6 @@ function Class.new()
   function self.overwrite(method_name)
     self['super_'..method_name] = self[method_name]
   end
-  -- this method call the "super" of a method with this name
-  function self.super(method_name, params)
-    self['super_'..method_name](params)
-  end
 
   return self
 end

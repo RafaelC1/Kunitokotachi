@@ -94,9 +94,9 @@ function GameController.new()
           -- spawn enemy by checking if event name is one of the enemies name
           if array_include_value(enemy_names, event_name) then
             local width = script[3]
-            local height = script[4]
+            local drop = script[4]
             local behaviour = script[5]
-            enemies_controller.create_enemy(width, height, event_name, behaviour)
+            enemies_controller.create_enemy(width, height, event_name, behaviour, drop)
           -- spawn asteroid by checking if event name is one of the asteroids name
           elseif array_include_value(asteroid_names, event_name) then
             local width = script[3]
@@ -112,7 +112,12 @@ function GameController.new()
             enemies_controller.create_enemy(WIDTH/2, -100, event_name, behaviour)
           elseif event_name == 'message' then
             local title = script[3]
-            local messages = script[4]
+
+            local messages = {}
+            for i, translation in ipairs(script[4]) do
+              messages[#messages+1] = translation_of_key(translation)
+            end
+
             local character = script[5]
             local avatar = avatars[character[1]][character[2]]
             self.pause = true
