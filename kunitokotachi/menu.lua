@@ -19,13 +19,13 @@ function Menu.new(args)
   self.options = {}
 
   function self.add_button(key, method)
-    button = { type='button', text='', key=key, method=method }
+    local button = { type='button', text='', key=key, method=method }
     self.update_text(button)
     table.insert(self.options, button)
   end
 
   function self.add_label(key)
-    label = { type='label', text='', key=key }
+    local label = { type='label', text='', key=key }
     self.update_text(label)
     table.insert(self.options, label)
   end
@@ -34,14 +34,18 @@ function Menu.new(args)
     local args = {...}
     args = unpack(args)
     args.key = args.key
-    slider = { type='slider', min=min, max=max, value=value, method=args.change_method, step=step, key=args.key, text='' }
+    local slider = { type='slider', min=min, max=max, value=value, method=args.change_method, step=step, key=args.key, text='' }
     self.update_text(slider)
     table.insert(self.options, slider)
   end
 
   function self.update_all()
     for i, option in ipairs(self.options) do
-      self.update_text(option)
+      if type(option.key) == 'string' then
+        self.update_text(option)
+      elseif type(key) == 'function' then
+        option.text = option.key()
+      end
     end
   end
 
@@ -63,6 +67,12 @@ function Menu.new(args)
           if option.method ~= nil then option.method() end
         end
       elseif option.type == 'label' then
+        local label_text = ''
+        if type(option.text) == 'string' then
+          label_text = option.text
+        elseif type(option.text) == 'function' then
+          label_text = option.text()
+        end
         self.ui:Label(option.text, x, y, buttons_width, button_heigh)
       elseif option.type == 'slider' then
         local status = self.ui:Slider(option, x, y, buttons_width, button_heigh)

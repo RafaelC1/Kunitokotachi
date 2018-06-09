@@ -1,3 +1,4 @@
+require "menu"
 require "helpers"
 
 Settings = {}
@@ -6,6 +7,12 @@ function Settings.new()
   local self = {}
   self.apllication_settings = {}
   self.players_settings = {}
+
+
+  function self.save_all_settings()
+    write_values_to('application_settings.json', table_to_json(settings.apllication_settings))
+    write_values_to('controllers_settings.json', table_to_json(settings.players_settings))
+  end
 
   function self.set_song_volum(new_volum)
     self.apllication_settings.song_volum = new_volum
@@ -62,6 +69,29 @@ function Settings.new()
     end
     self.apllication_settings.language = self.apllication_settings.languages[current_language]
   end
+  -- methods bellow belongs to player controller, set/get
+  function self.get_player_key(player_owner_of_key, key_name)
+    return self.players_settings[player_owner_of_key..'_keys'][key_name]
+  end
+  -- change player key and, if there is a key using the same value, change it to nil
+  function self.set_player_key(player_owner_of_key, key_name, new_key_value)
+    if self.key_already_used(new_key_value) ~= nil then
+      self.players_settings[player_owner_of_key..'_keys'][self.key_already_used(new_key_value)] = ''
+    end
+    self.players_settings[player_owner_of_key..'_keys'][key_name] = new_key_value
+    print_table{table=self.players_settings}
+  end
+  -- check if some value for a key is already used by another
+  function self.key_already_used(new_key_value)
+    for _, player in ipairs(self.players_settings) do
+      for key, value in ipairs(player) do
+        if value == new_key_value then
+          return key
+        end
+      end
+    end
+    return nil
+  end
   -- this method get the skelleton of configurations and save it on user default save directory and start to use it to save status
   function self.initiate_settings()
     local applications_settings_file = 'application_settings.json'
@@ -79,6 +109,7 @@ function Settings.new()
 
     self.apllication_settings = self.read_settings_of(applications_settings_file)
     self.players_settings = self.read_settings_of(controlls_file)
+    print_table{table=self.players_settings}
   end
 
   self.initiate_settings()

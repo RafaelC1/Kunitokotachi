@@ -84,7 +84,11 @@ function write_values_to(file_name, value)
 end
 
 function translation_of_key(key)
-    return translations[settings.apllication_settings.language][key]
+  local translations = translations[settings.apllication_settings.language][key]
+  if translations == nil then
+    translations = 'not_found'
+  end
+    return translations
 end
 -- calculate damage
 -- check if some object has authorization to touch another

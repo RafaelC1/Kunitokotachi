@@ -21,6 +21,41 @@ font_sizes =
 }
 
 -- images
+avatars =
+{
+  higuchi =
+  {
+    normal = {},
+    speaking = {},
+    angry = {}
+  },
+  himiko =
+  {
+    normal = {},
+    speaking = {},
+    angry = {}
+  },
+  major =
+  {
+    normal = {},
+    speaking = {},
+    angry = {}
+  },
+  no_signal =
+  {
+    normal = {},
+  },
+  secretary =
+  {
+    normal = {},
+  },
+  tomoe =
+  {
+    normal = {},
+    scary = {},
+    crazy = {}
+  }
+}
 boss_images =
 {
   boss_01 =
@@ -321,6 +356,27 @@ end
 -- method taht load all image files
 function load_all_images()
   love.graphics.setDefaultFilter('nearest', 'nearest')
+
+  -- load all avatars
+  avatars.higuchi.normal = load_image('res/assets/portraits/profile/higuchi01.png')
+  avatars.higuchi.speaking = load_image('res/assets/portraits/profile/higuchi02.png')
+  avatars.higuchi.angry = load_image('res/assets/portraits/profile/higuchi03.png')
+
+  avatars.himiko.normal = load_image('res/assets/portraits/profile/himiko01.png')
+  avatars.himiko.speaking = load_image('res/assets/portraits/profile/himiko02.png')
+  avatars.himiko.angry = load_image('res/assets/portraits/profile/himiko03.png')
+
+  avatars.major.normal = load_image('res/assets/portraits/profile/major01.png')
+  avatars.major.speaking = load_image('res/assets/portraits/profile/major02.png')
+  avatars.major.angry = load_image('res/assets/portraits/profile/major03.png')
+
+  avatars.no_signal.normal = load_image('res/assets/portraits/profile/nosignal.png')
+
+  avatars.secretary.normal = load_image('res/assets/portraits/profile/secretary.png')
+
+  avatars.tomoe.normal = load_image('res/assets/portraits/profile/tomoe01.png')
+  avatars.tomoe.scary = load_image('res/assets/portraits/profile/tomoe02.png')
+  avatars.tomoe.crazy = load_image('res/assets/portraits/profile/tomoe03.png')
 
   -- load all bosses images
   boss_images.boss_01 = load_image('res/assets/enemies/boss_01.png')

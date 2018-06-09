@@ -12,6 +12,7 @@ require "enemies_controller"
 require "power_ups_controller"
 require "explosions_controller"
 require "secrets"
+require "settings_menu"
 require "splash_screen"
 require "history_screen"
 require "settings"
@@ -93,6 +94,7 @@ function love.load()
   sub_menu.add_button('game_options_03', methods[1])
 
   -- creating settings menu
+  settings_menu = SettingsMenu.new{ x=WIDTH/2, y=HEIGHT/2 }
   methods =
   {
     function()
@@ -103,16 +105,17 @@ function love.load()
     end, --change translations
     function()
       go_to_main_menu_screen()
-      write_values_to('application_settings.json', table_to_json(settings.apllication_settings))
+      settings.save_all_settings()
     end, --back
     settings.set_song_volum,
-    settings.set_music_volum
+    settings.set_music_volum,
+    settings_menu.edit_player_controllers
   }
-  settings_menu = Menu.new{ x=WIDTH/2, y=HEIGHT/2 }
   settings_menu.add_label('settings_options_05')
   settings_menu.add_button('settings_options_03', methods[1])
   settings_menu.add_slider(0, 100, settings.apllication_settings.song_volum, 10, {key='settings_options_01', change_method=methods[3]})
   settings_menu.add_slider(0, 100, settings.apllication_settings.music_volum, 10, {key='settings_options_02', change_method=methods[4]})
+  settings_menu.add_button('settings_options_06', methods[5])
   settings_menu.add_button('settings_options_04', methods[2])
 
   game_started = true
@@ -133,9 +136,9 @@ function love.keypressed(key)
   elseif is_current_screen(SCREENS.PRE_GAME_MENU_SCREEN) then
     sub_menu.key_events(key)
   elseif is_current_screen(SCREENS.GAME_SCREEN) then
-
+    game_controller.key_events(key)
   elseif is_current_screen(SCREENS.SETTINGS_MENU_SCREEN) then
-
+    settings_menu.key_events(key)
   end
 
   if key == settings.players_settings.global_keys.back and debbuger_mode then

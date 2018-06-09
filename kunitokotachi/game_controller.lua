@@ -8,6 +8,8 @@ GameController = {}
 
 function GameController.new()
   local self = {}
+  self.pause = false
+  self.current_messages_amount = 0
 
   self.ui = suit.new()
 
@@ -80,9 +82,6 @@ function GameController.new()
     for i, script in ipairs(self.current_level_settings.script) do
       local position = script[1]
       local event_name = script[2]
-      local width = script[3]
-      local height = script[4]
-      local behaviour = script[5]
       local already_activated = script[6]
         -- check if event was not actived already
       if not already_activated then
@@ -94,15 +93,31 @@ function GameController.new()
         -- check if event name is to spawn a enemy based on event secound value wich, if its a spawn of a enemy, will be its name
           -- spawn enemy by checking if event name is one of the enemies name
           if array_include_value(enemy_names, event_name) then
+            local width = script[3]
+            local height = script[4]
+            local behaviour = script[5]
             enemies_controller.create_enemy(width, height, event_name, behaviour)
           -- spawn asteroid by checking if event name is one of the asteroids name
           elseif array_include_value(asteroid_names, event_name) then
+            local width = script[3]
+            local height = script[4]
+            local behaviour = script[5]
             enemies_controller.create_asteroid(width, height, event_name)
           elseif array_include_value(boss_names, event_name) then
+            local width = script[3]
+            local height = script[4]
+            local behaviour = script[5]
             -- kill all enemies when boss spawn
             enemies_controller.destroy_all_enemies()
             enemies_controller.create_enemy(WIDTH/2, -100, event_name, behaviour)
-          else
+          elseif event_name == 'message' then
+            local title = script[3]
+            local messages = script[4]
+            local character = script[5]
+            local avatar = avatars[character[1]][character[2]]
+            self.pause = true
+            self.current_messages_amount = #messages
+            moan.speak(title, messages, { image=avatar })
             -- print("event dont identified")
           end
       end
@@ -232,7 +247,24 @@ function GameController.new()
     end
   end
 
+  function self.key_events(key)
+    local next_moan_key = 'space'
+    if key == next_moan_key then
+      if self.current_messages_amount > 0 then
+        self.current_messages_amount = self.current_messages_amount - 1
+      end
+      if self.current_messages_amount <= 0 then
+        self.pause = false
+      end
+    end
+  end
+
   function self.update(dt)
+
+    if self.pause then
+      return
+    end
+
     set_game_font_to('black', 'normal')
     local ships = {}
     local anyone_alive = false
@@ -352,7 +384,6 @@ function GameController.new()
   end
 
   function self.draw()
-
     local back_current_y = self.current_level_settings.position
     for i, sprite in ipairs(level_background_sprites.level_01_sprites) do
       local back_current_x = sprite.quad_width/2
