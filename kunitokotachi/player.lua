@@ -2,11 +2,11 @@ require "ship"
 
 Player = {}
 
-function Player.new(player, keys, levels_of_player_settings)
+function Player.new(player, keys, levels_of_player_settings, player_name)
   local self = {}
-  self.name = 'rafael'
+  self.name = player_name
   self.title = 'player'
-  self.lives = 99
+  self.lives = 3
   self.score = 0
   self.ship = {}
   self.keys = keys

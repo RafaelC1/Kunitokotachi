@@ -99,7 +99,14 @@ function love.load()
       go_to_history_screen()
       history_screen.reset_histories()
     end,
-    function() go_to_settings_menu_screen() end,
+    function()
+      go_to_settings_menu_screen()
+    end,
+    function()
+      score_screen.prepare_old_records()
+      score_screen.organize_all_records_positions()
+      go_to_score_screen()
+    end,
     function()
       if game_started then
         love.event.quit()
@@ -111,7 +118,8 @@ function love.load()
   main_menu.add_button('menu_options_01', methods[1])
   main_menu.add_button('menu_options_02', methods[2])
   main_menu.add_button('menu_options_03', methods[3])
-  main_menu.add_button('menu_options_04', methods[4])
+  main_menu.add_button('menu_options_06', methods[4])
+  main_menu.add_button('menu_options_04', methods[5])
 
 -- creating sub_menu or pre game menu
   sub_menu = SelectShipMenu.new{ x=WIDTH/2, y=HEIGHT/2 }
@@ -133,21 +141,38 @@ function love.load()
       settings_menu.update_all()
     end, --change translations
     function()
-      go_to_main_menu_screen()
       settings.save_all_settings()
       local sound_volum = settings.get_song_volum()
       local music_volum = settings.get_music_volum()
       sfx_controller.update_volumes(sound_volum, music_volum)
+
+      go_to_main_menu_screen()
     end, --back
     settings.set_song_volum,
     settings.set_music_volum,
-    settings_menu.edit_player_controllers
+    settings_menu.edit_player_controllers,
+    function ()
+      settings.reset_configurations()
+      settings.reset_player_score()
+      settings.save_all_settings()
+
+      main_menu.update_all()
+      sub_menu.update_all()
+      settings_menu.update_all()
+
+      local sound_volum = settings.get_song_volum()
+      local music_volum = settings.get_music_volum()
+      sfx_controller.update_volumes(sound_volum, music_volum)
+
+      love.event.quit("restart")
+    end
   }
   settings_menu.add_label('settings_options_05')
   settings_menu.add_button('settings_options_03', methods[1])
   settings_menu.add_slider(0, 100, settings.apllication_settings.song_volum, 10, {key='settings_options_01', change_method=methods[3]})
   settings_menu.add_slider(0, 100, settings.apllication_settings.music_volum, 10, {key='settings_options_02', change_method=methods[4]})
   settings_menu.add_button('settings_options_06', methods[5])
+  settings_menu.add_button('settings_options_07', methods[6])
   settings_menu.add_button('settings_options_04', methods[2])
 
   game_started = true
@@ -171,6 +196,8 @@ function love.keypressed(key)
     game_controller.key_events(key)
   elseif is_current_screen(SCREENS.SETTINGS_MENU_SCREEN) then
     settings_menu.key_events(key)
+  elseif is_current_screen(SCREENS.SCORE_SCREEN) then
+    score_screen:key_events(key)
   end
 
   if key == settings.players_settings.global_keys.back and debbuger_mode then
@@ -227,6 +254,7 @@ function love.draw()
     level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     settings_menu.draw()
   elseif is_current_screen(SCREENS.SCORE_SCREEN) then
+    level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     score_screen.draw()
   end
   moan.draw()

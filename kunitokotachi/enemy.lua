@@ -17,7 +17,7 @@ function Enemy.new(args)
 
   self.owner = args.owner or self
 
-  self.kill_points = 100 -- points for kill this enemy
+  self.kill_points = args.kill_points or 100 -- points for kill this enemy
   self.drop = args.drop or nil
   self.IA = -- this is the positions that enemy shoud perform during it's life circle
   {

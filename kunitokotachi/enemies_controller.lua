@@ -52,6 +52,7 @@ function EnemiesController.new()
                             radio=enemy_model.radio,
                             speed=enemy_model.speed,
                             max_hp=enemy_model.max_hp,
+                            kill_points=enemy_model.kill_points,
                             defense=enemy_model.defense,
                             behaviour=enemy_behaviour,
                             ammo_name=enemy_model.bullet_name,

@@ -75,7 +75,7 @@ function GameController.new()
     self.current_level_settings.background_name = self.levels_settings[name_to_find_by].back_ground_image
     self.current_level_settings.length    = self.levels_settings[name_to_find_by].length
     self.current_level_settings.music     = self.levels_settings[name_to_find_by].music
-    sfx_controller.play_sound(self.current_level_settings.music)
+    sfx_controller.play_sound(self.current_level_settings.music, true)
     -- reset all events to they become unwsed
     for i, script in ipairs(self.current_level_settings.script) do
       script[6] = false
@@ -197,7 +197,8 @@ function GameController.new()
     local keys = settings['players_settings']['player_0'..player..'_keys']
     local x = self.spawn_pos['player'..player].x
     local y = self.spawn_pos['player'..player].y
-    local character = Player.new(player, keys, self.levels_of_player_settings)
+    local player_name = ' p'..player
+    local character = Player.new(player, keys, self.levels_of_player_settings, player_name)
     character.ship_model = ship_model
     table.insert(self.players, character)
     character.create_ship()
@@ -213,14 +214,20 @@ function GameController.new()
   function self.start_game()
     -- reset controllers
     self.current_level = 1
+    self.pause = false
     self.reset_all_controllers()
     self.update_current_level()
   end
   -- end a game
   function self.end_game()
-    score_screen.add_player_to_score(self.players[1])
-    score_screen.add_player_to_score(self.players[2])
+    score_screen.prepare_old_records()
+    for _, player in ipairs(self.players) do
+      score_screen.add_player_to_score(player)
+    end
+    score_screen.organize_all_records_positions()
+
     self.players = {}
+
     go_to_score_screen()
   end
 
@@ -261,7 +268,9 @@ function GameController.new()
   function self.update_level(dt)
     if not self.current_level_get_to_the_end() then
       self.inscrease_position(dt)
-      self.check_level_script()
+      if self.any_player_alive() then
+        self.check_level_script()
+      end
     end
   end
 
@@ -277,7 +286,11 @@ function GameController.new()
     end
     if not self.any_player_alive() and self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
       self.reset_go_to_menu_delay()
+      sfx_controller.stop_all_sounds()
+      sfx_controller.play_sound(self.current_level_settings.music, true)
       self.reset_player_lifes_and_reset_score()
+      self.start_game()
+      self.pause = false
     end
   end
 
@@ -308,6 +321,21 @@ function GameController.new()
   end
 
   function self.update(dt)
+    if not self.any_player_alive() then
+      if self.go_to_menu_current_delay == self.go_to_menu_delay then
+        sfx_controller.stop_all_sounds()
+        sfx_controller.play_sound('continue')
+      end
+      self.go_to_menu_current_delay = self.go_to_menu_current_delay - dt
+      if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
+        self.draw_continue_message()
+      end
+      if self.go_to_menu_current_delay <= 0 then
+        self.reset_go_to_menu_delay()
+        self.end_game()
+      end
+    end
+
     if self.pause then
       return
     end
@@ -373,19 +401,6 @@ function GameController.new()
       end
     end
 
-    if not self.any_player_alive() then
-      if self.go_to_menu_current_delay == self.go_to_menu_delay then
-        sfx_controller.play_sound('continue')
-      end
-      self.go_to_menu_current_delay = self.go_to_menu_current_delay - dt
-      if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
-        self.draw_continue_message()
-      end
-      if self.go_to_menu_current_delay <= 0 then
-        self.reset_go_to_menu_delay()
-        self.end_game()
-      end
-    end
     self.update_level(dt)
 
     -- go to the next stage logic
