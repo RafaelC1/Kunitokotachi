@@ -1,24 +1,28 @@
 print("\n--Game Started--\n")
 
 --requires
-require "helpers"
-require "player"
-require "menu"
-require "position_helpers"
-require "game_controller"
 require "assets_loader"
 require "bullets_controller"
 require "enemies_controller"
-require "power_ups_controller"
+require "ext/suit"
 require "explosions_controller"
+require "final_score_screen"
+require "game_controller"
+require "helpers"
+require "menu"
+require "player"
+require "position_helpers"
+require "power_ups_controller"
 require "secrets"
 require "settings_menu"
+require "sfx_controller"
 require "splash_screen"
 require "history_screen"
 require "settings"
-require "ext/suit"
 require "select_ship_menu"
 moan = require "ext/Moan/Moan"
+
+russian_on = false
 
 --menus
 local main_menu = {}
@@ -40,10 +44,28 @@ function love.load()
   --load settings
   settings = Settings.new()
 
+  -- load sfx
+  sfx_controller = SfxController.new()
+
+  sfx_controller.add_sound('explosion', 'explosion.wav')
+  sfx_controller.add_sound('laser_01', 'laser_fire_01.ogg')
+  sfx_controller.add_sound('continue', 'continue.mp3')
+  sfx_controller.add_sound('intro', 'intro.mp3')
+  sfx_controller.add_sound('lvl01', 'lvl01.wav')
+  sfx_controller.add_sound('boss_them', 'boss_them.mp3')
+
+  sfx_controller.add_music('russian', 'russian_athem.mp3')
+
+  local sound_volum = settings.get_song_volum()
+  local music_volum = settings.get_music_volum()
+  sfx_controller.update_volumes(sound_volum, music_volum)
+
+  -- sfx_controller.play_music('russian')
+
   -- load list of translations
   translations.pt = json_to_table(read_from('res/translations/all_pt.json'))
   translations.eng = json_to_table(read_from('res/translations/all_eng.json'))
-  translations.esp = json_to_table(read_from('res/translations/all_esp.json'))
+  -- translations.esp = json_to_table(read_from('res/translations/all_esp.json'))
 
   -- load controllers
   game_controller = GameController.new()
@@ -61,15 +83,22 @@ function love.load()
   -- load screens
   splash_screen = SplashScreen.new()
   history_screen = HistoryScreen.new()
+  score_screen = FinalScoreScreen.new()
 
   -- creating main menu
   local methods =
   {
     function()
+      if russian_on then
+        error(translation_of_key('communism_error_message'))
+      end
       go_to_pre_game_screen()
       sub_menu.reset_players()
      end,
-    function() go_to_history_screen() end,
+    function()
+      go_to_history_screen()
+      history_screen.reset_histories()
+    end,
     function() go_to_settings_menu_screen() end,
     function()
       if game_started then
@@ -106,6 +135,9 @@ function love.load()
     function()
       go_to_main_menu_screen()
       settings.save_all_settings()
+      local sound_volum = settings.get_song_volum()
+      local music_volum = settings.get_music_volum()
+      sfx_controller.update_volumes(sound_volum, music_volum)
     end, --back
     settings.set_song_volum,
     settings.set_music_volum,
@@ -166,8 +198,11 @@ function love.update(dt)
     game_controller.update(dt)
   elseif is_current_screen(SCREENS.SETTINGS_MENU_SCREEN) then
     settings_menu.update()
+  elseif is_current_screen(SCREENS.SCORE_SCREEN) then
+    score_screen.update(dt)
   end
 
+  sfx_controller.update(dt)
   update_secret(dt)
 
   moan.update(dt)
@@ -191,6 +226,8 @@ function love.draw()
   elseif is_current_screen(SCREENS.SETTINGS_MENU_SCREEN) then
     level_background_sprites.level_01_sprites[4].draw{x=WIDTH/2, y=HEIGHT/2, scala_x=1, scala_y=1, rot=0}
     settings_menu.draw()
+  elseif is_current_screen(SCREENS.SCORE_SCREEN) then
+    score_screen.draw()
   end
   moan.draw()
 end

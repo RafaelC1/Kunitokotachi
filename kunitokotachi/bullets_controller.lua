@@ -36,6 +36,8 @@ function BulletsController.new()
 
     local scala = 1.5
     local animation = bullet_animations['new_'..bullet_settings.animation]()
+    local sound_effect_name = bullet_settings.sound_effect
+
     local bullet = Bullet.new{sprites=sprite,
                               x=x_position,
                               y=y_position,
@@ -49,6 +51,8 @@ function BulletsController.new()
                               destroy_on_impact=bullet_settings.destroyable,
                               sprite_scala=scala,
                               animation=animation}
+
+    sfx_controller.play_sound(sound_effect_name)
 
     table.insert(self.bullets[owner_title], bullet)
     end

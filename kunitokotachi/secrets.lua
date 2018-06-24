@@ -1,12 +1,15 @@
 -- this file contain all the screets and hacks of the game
 
-time_to_reset_secret = 2
+time_to_reset_secret = 0.5
 current_time_to_reset_secret = 0
 -- hack keys
 turn_debbuger_on = 'f1'
 -- hack passwords
 current_secret = ''
-power_one_level = 'asd'
+power_up_level = 'power'
+russian_secret = 'secret'
+
+allow_keys = 'abcdefghijklmnopqrstuvwxyz'
 
 function update_secret(dt)
   current_time_to_reset_secret = current_time_to_reset_secret + dt
@@ -31,15 +34,31 @@ function listen_keys(key)
 end
 
 function listen_secret(key)
-  current_secret = current_secret..key
+  local allowed = false
+  for i=1, #allow_keys, 1 do
+    if key ==  allow_keys:sub(i,i) then
+      allowed = true
+      break
+    end
+  end
+  if allowed then
+    current_secret = current_secret..key
+    reset_secret_time()
+  else
+    reset_secret()
+  end
 end
 
 function check_password()
   local secret_found = false
 
-  if current_secret == power_one_level then
+  if current_secret == power_up_level then
     secret_found = true
-    print('extra power secret')
+    game_controller.give_free_power_to_players()
+  elseif current_secret == russian_secret then
+    secret_found = true
+    russian_on = true
+    sfx_controller.play_sound('russian', true)
   end
 
   if secret_found then

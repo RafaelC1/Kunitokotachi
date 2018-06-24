@@ -21,6 +21,7 @@ font_sizes =
 }
 
 -- images
+cut_scenes_images = {}
 avatars =
 {
   higuchi =
@@ -94,6 +95,7 @@ head_enemy_image = {}
 lung_enemy_image = {}
 
 -- sprites
+cut_scenes_sprites = {}
 boss_sprites =
 {
   boss_01 =
@@ -357,6 +359,20 @@ end
 function load_all_images()
   love.graphics.setDefaultFilter('nearest', 'nearest')
 
+  -- load all cut scenes
+  local cut_scenes_images_ids_group = {6, 5, 1, 4, 1, 2, 1, 3, 3}
+  for group_id=1, #cut_scenes_images_ids_group, 1 do
+
+    cut_scenes_images[group_id] = {}
+    for image_id=1, cut_scenes_images_ids_group[group_id], 1 do
+      local path = string.format("res/assets/cut_scenes/%02d/%02d.jpg",
+                                  group_id,
+                                  image_id)
+      cut_scenes_images[group_id][image_id] = load_image(path)
+    end
+
+  end
+
   -- load all avatars
   avatars.higuchi.normal = load_image('res/assets/portraits/profile/higuchi01.png')
   avatars.higuchi.speaking = load_image('res/assets/portraits/profile/higuchi02.png')
@@ -431,6 +447,27 @@ function define_sprites()
   local height = 50
   local x = 0
   local y = 0
+
+  -- define all cut scenes sprites
+  local cut_scenes_images_ids_group = {6, 5, 1, 4, 1, 2, 1, 3, 3}
+  for group_id=1, #cut_scenes_images_ids_group, 1 do
+
+    cut_scenes_sprites[group_id] = {}
+    for image_id=1, cut_scenes_images_ids_group[group_id], 1 do
+      local path = string.format("res/assets/cut_scenes/%02d/%02d.jpg",
+                                  group_id,
+                                  image_id)
+      local start_x, start_y = 0, 0
+      local cut_scene_width, cut_scene_height = 800, 300
+      local new_sprite = Sprite.new(cut_scenes_images[group_id][image_id],
+                                    start_x,
+                                    start_y,
+                                    cut_scene_width,
+                                    cut_scene_height)
+      cut_scenes_sprites[group_id][image_id] = new_sprite
+    end
+
+  end
 
   -- define all bosses sprites
   width = 660

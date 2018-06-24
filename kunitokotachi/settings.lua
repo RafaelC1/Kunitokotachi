@@ -18,8 +18,16 @@ function Settings.new()
     self.apllication_settings.song_volum = new_volum
   end
 
+  function self.get_song_volum()
+    return self.apllication_settings.song_volum
+  end
+
   function self.set_music_volum(new_volum)
     self.apllication_settings.music_volum = new_volum
+  end
+
+  function self.get_music_volum()
+    return self.apllication_settings.music_volum
   end
   -- reset all configurations and save the skeleton of score and settings on user save directory
   function self.reset_configurations_and_score()

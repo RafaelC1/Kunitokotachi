@@ -157,10 +157,6 @@ function Ship.new(args)
           end
         end
       end
-      -- hack
-      if love.keyboard.isDown(string.format('1')) then
-        self.collect_power_up(10)
-      end
     end
 
     if horizontal_keys_pressend then

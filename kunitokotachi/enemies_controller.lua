@@ -95,6 +95,10 @@ function EnemiesController.new()
     local power_type = self.enemies[enemy_id].drop or 'power_01'
     power_ups_controller.create_power_up(x, y, power_type)
   end
+  -- remove enemy but dont spawm animation/sounds
+  function self.remove_enemy(enemy_id)
+    table.remove(self.enemies, enemy_id)
+  end
   -- destroy an enemy by id
   function self.destroy_enemy(enemy_id)
     explosions_controller.create_explosion(self.enemies[enemy_id].body.x, self.enemies[enemy_id].body.y)
@@ -103,6 +107,12 @@ function EnemiesController.new()
 
   function self.destroy_asteroid(asteroid_id)
     table.remove(self.asteroids, asteroid_id)
+  end
+  -- just remove all enemies with no animation/soun
+  function self.remove_all_enemies()
+    for i=#self.enemies, 1, -1 do
+      self.remove_enemy(i)
+    end
   end
   -- destroy all enemies on list
   function self.destroy_all_enemies()
@@ -145,7 +155,7 @@ function EnemiesController.new()
         end
       end
       if not above_bottom(enemy.body.y) then
-        self.destroy_enemy(i)
+        self.remove_enemy(i)
       end
     end
     for i, asteroid in ipairs(self.asteroids) do

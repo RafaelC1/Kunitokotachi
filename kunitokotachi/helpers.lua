@@ -130,7 +130,7 @@ function go_to_history_screen()
 end
 
 function go_to_main_menu_screen()
-  CURRENT_SCREEN =SCREENS.MAIN_MENU_SCREEN
+  CURRENT_SCREEN = SCREENS.MAIN_MENU_SCREEN
 end
 
 function go_to_settings_menu_screen()

@@ -1,52 +1,52 @@
-history_part_01:3512 - Yomotsukuni
-history_part_02:- Acreditava-se que não existiam sobreviventes para a grande tragédia de 3512
-history_part_03:Ninguêm havia voltado de lá atá hoje. E agora, os que voltaram, chegaram sem vida.
-history_part_04:Apenas trazendo consigo o que pode ser uma esperança para a aliança Kagutsushi
-history_part_05:na guerra contra o desconhecido.
-history_part_06:O elemento químico da esfera era desconhecido para todos da aliança.
-history_part_07:O seu produto era não maleável, não cortava ou quebrava também.
-history_part_08:Tudo sobre ela permaneceu em segredo.
-history_part_09:Até que no décimo dia de sua presenção em nossos laboratorios...
-history_part_10:Completamente limpa e aparentemente sem nenhum problema físico, ela surgiu.
-history_part_11:Parecia uma humana comum.
-history_part_12:Mas suas capacidades de comunicação pareciam bastante reduzidas.
-history_part_13:Nos tentamos aprender com ela daonde ela veio, o que era a esfera,
-history_part_14:mas ela parecia estar com a mente em branco.
-history_part_15:Nos a acolhemos no laboratorio para tentarmos descobrir qualquer coisa sobre ela.
-history_part_16:A dêmos o nome de Himiko.
-history_part_17:Logo num primeiro exame,
-history_part_18:descobrimos que duas esferas menores estavam dentro de seu corpo no lugar de orgãos comuns.
-history_part_19:não conseguimos saber porém como funcionavam alí.
-history_part_20:Enquanto faziamos as pesquisas, tentavamos educa-la como uma criança comum.
-history_part_21:Ciência, historia, matematica... E durante a noite, a prendiamos em um quarto solitario.
-history_part_22:Eu tentava porem, amenizar seu sofrimento ao da-la compania,
-history_part_23:conversar com ela,
-history_part_24:trata-la como uma amiga,
-history_part_25:ou talvez uma... mae.
-history_part_26:Enquanto isso,
-history_part_27:tentava convencer os cientistas do laboratorio sobre a pressao psicológica que poderiamos estar causando a garota.
-history_part_28:"Aquela materia dentro dela e ate mesmo suas possiveis memórias
-history_part_29: podem ser nossa unica chance contra aquele exercito alienigena!"
-history_part_30:Minha esperança quanto a vida da garota so diminuia. Até que em um ano de sua estadia...
-history_part_31:Percebemos num novo exame que aquelas materias ali se atraiam com um pouco de força,
-history_part_32:mas constantemente! E que isso havia embaralhado seu sistema fisiologico.
-history_part_33:Era notavel tambem que a consistencia da materia ja não era mais a mesma.
-history_part_34:Decidimos retirar uma das materias e substitui-la por um orgao artificial.
-part_35:A materia agora era bastante maleavel, podendo se expandir de forma consideravel quando exposta ao calor e history_ficando nada volatil ao ser :congelada.
-history_part_36:Fizemos um canhão experimental de plasma com a materia como principal componente
-history_part_37:e o resultado fora um sucesso. Destruia praticamente tudo, menos a propria materia.
-history_part_38:O proximo passo fora o de construir uma nave de combate espacial envolta pela materia,
-history_part_39:como forma de protecao no combate aos aliens.
-history_part_40:Mas ai um impecilho viria a aparecer:
-history_part_41:Percebeu-se que a materia ficava mais fragil a cada segundo longe de Himiko.
-history_part_42:Se retraindo para seu nucleo.
-history_part_43:O laboratorio chegou a absurda ideia de construir a nave definitiva envolta de Himiko.
-history_part_44:E eu não pude impedir.
-history_part_45:Descobrimos porem,
-history_part_46:que durante a constrção que meu corpo havia desenvolvido a materia no mesmo local que Himiko,
-history_part_57:de forma desconhecida. A unica explicação plausivel foi a do grande tempo no qual passamos juntas.
-history_part_58:Eu poderia manter a nave em sua forma original.
-history_part_59:Foi então que propus aos doutores que me deixassem pilotar, e a deixassem aqui.
-history_part_60:Dessa vez,
-history_part_61:fui bem sucedida, e em pouco tempo,
-history_part_62:iria a combate. 
+"history_part_01": "3512 - Yomotsukuni"
+"history_part_02": "- Acreditava-se que não existiam sobreviventes para a grande tragédia de 3512"
+"history_part_03": "Ninguêm havia voltado de lá atá hoje. E agora, os que voltaram, chegaram sem vida."
+"history_part_04": "Apenas trazendo consigo o que pode ser uma esperança para a aliança Kagutsushi"
+"history_part_05": "na guerra contra o desconhecido."
+"history_part_06": "O elemento químico da esfera era desconhecido para todos da aliança."
+"history_part_07": "O seu produto era não maleável, não cortava ou quebrava também."
+"history_part_08": "Tudo sobre ela permaneceu em segredo."
+"history_part_09": "Até que no décimo dia de sua presenção em nossos laboratorios..."
+"history_part_10": "Completamente limpa e aparentemente sem nenhum problema físico, ela surgiu."
+"history_part_11": "Parecia uma humana comum."
+"history_part_12": "Mas suas capacidades de comunicação pareciam bastante reduzidas."
+"history_part_13": "Nos tentamos aprender com ela daonde ela veio, o que era a esfera,"
+"history_part_14": "mas ela parecia estar com a mente em branco."
+"history_part_15": "Nos a acolhemos no laboratorio para tentarmos descobrir qualquer coisa sobre ela."
+"history_part_16": "A dêmos o nome de Himiko."
+"history_part_17": "Logo num primeiro exame,"
+"history_part_18": "descobrimos que duas esferas menores estavam dentro de seu corpo no lugar de orgãos comuns."
+"history_part_19": "não conseguimos saber porém como funcionavam alí."
+"history_part_20": "Enquanto faziamos as pesquisas, tentavamos educa-la como uma criança comum."
+"history_part_21": "Ciência, historia, matematica... E durante a noite, a prendiamos em um quarto solitario."
+"history_part_22": "Eu tentava porem, amenizar seu sofrimento ao da-la compania,"
+"history_part_23": "conversar com ela,"
+"history_part_24": "trata-la como uma amiga,"
+"history_part_25": "ou talvez uma... mae."
+"history_part_26": "Enquanto isso,"
+"history_part_27": "tentava convencer os cientistas do laboratorio sobre a pressao psicológica que poderiamos estar causando a garota."
+"history_part_28": ""Aquela materia dentro dela e ate mesmo suas possiveis memórias"
+"history_part_29": " podem ser nossa unica chance contra aquele exercito alienigena!""
+"history_part_30": "Minha esperança quanto a vida da garota so diminuia. Até que em um ano de sua estadia..."
+"history_part_31": "Percebemos num novo exame que aquelas materias ali se atraiam com um pouco de força,"
+"history_part_32": "mas constantemente! E que isso havia embaralhado seu sistema fisiologico."
+"history_part_33": "Era notavel tambem que a consistencia da materia ja não era mais a mesma."
+"history_part_34": "Decidimos retirar uma das materias e substitui-la por um orgao artificial."
+part_35:A materia agora era bastante maleavel, podendo se expandir de forma consideravel quando exposta ao calor e history_ficando nada "volatil"  "ao ser :congelada."
+"history_part_36": "Fizemos um canhão experimental de plasma com a materia como principal componente"
+"history_part_37": "e o resultado fora um sucesso. Destruia praticamente tudo, menos a propria materia."
+"history_part_38": "O proximo passo fora o de construir uma nave de combate espacial envolta pela materia,"
+"history_part_39": "como forma de protecao no combate aos aliens."
+"history_part_40": "Mas ai um impecilho viria a aparecer:"
+"history_part_41": "Percebeu-se que a materia ficava mais fragil a cada segundo longe de Himiko."
+"history_part_42": "Se retraindo para seu nucleo."
+"history_part_43": "O laboratorio chegou a absurda ideia de construir a nave definitiva envolta de Himiko."
+"history_part_44": "E eu não pude impedir."
+"history_part_45": "Descobrimos porem,"
+"history_part_46": "que durante a constrção que meu corpo havia desenvolvido a materia no mesmo local que Himiko,"
+"history_part_57": "de forma desconhecida. A unica explicação plausivel foi a do grande tempo no qual passamos juntas."
+"history_part_58": "Eu poderia manter a nave em sua forma original."
+"history_part_59": "Foi então que propus aos doutores que me deixassem pilotar, e a deixassem aqui."
+"history_part_60": "Dessa vez,"
+"history_part_61": "fui bem sucedida, e em pouco tempo,"
+"history_part_62": "iria a combate. "

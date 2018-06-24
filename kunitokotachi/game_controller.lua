@@ -17,13 +17,7 @@ function GameController.new()
   self.back_menu_time = 0
   self.levels_settings = {}
 
-  local levels_script_path = "levels_script.json"
-  if file_exist(levels_script_path) then
-    self.levels_settings = json_to_table(read_from(levels_script_path))
-  else
-    self.levels_settings = json_to_table(read_from('res/settings/levels_script.json'))
-  end
-
+  self.levels_settings = json_to_table(read_from('res/settings/levels_script.json'))
 
   self.current_level = 1
   self.current_level_settings = {}
@@ -49,15 +43,23 @@ function GameController.new()
 
   self.levels_of_player_settings = json_to_table(read_from('res/settings/player_levels_settings.json'))
 
-  self.go_to_menu_delay = 3
-  self.go_to_menu_current_delay = 0
+  self.go_to_menu_delay = 12
+  self.go_to_menu_current_delay = self.go_to_menu_delay
+  self.minimum_time_to_not_accepte_continue = 2
+
+  function self.reset_go_to_menu_delay()
+    self.go_to_menu_current_delay = self.go_to_menu_delay
+  end
 
 -- go to next level
-  function self.nex_level()
-    if self.current_level+1 < #self.levels_settings.levels_names then
+  function self.next_level()
+    self.reset_all_controllers()
+    sfx_controller.stop_all_sounds()
+    if self.current_level < #self.levels_settings.levels_names then
       self.current_level = self.current_level + 1
+      self.update_current_level()
     else
-      print('you reach the last level')
+      self.end_game()
     end
   end
   -- update current_level_settings informations based on current level
@@ -70,7 +72,10 @@ function GameController.new()
     self.current_level_settings.speed     = self.levels_settings[name_to_find_by].speed
     self.current_level_settings.script    = self.levels_settings[name_to_find_by].script.enemy_triggers
     self.current_level_settings.position  = HEIGHT -- set 1X width to make sure that the first back sprite appear
+    self.current_level_settings.background_name = self.levels_settings[name_to_find_by].back_ground_image
     self.current_level_settings.length    = self.levels_settings[name_to_find_by].length
+    self.current_level_settings.music     = self.levels_settings[name_to_find_by].music
+    sfx_controller.play_sound(self.current_level_settings.music)
     -- reset all events to they become unwsed
     for i, script in ipairs(self.current_level_settings.script) do
       script[6] = false
@@ -110,6 +115,8 @@ function GameController.new()
             -- kill all enemies when boss spawn
             enemies_controller.destroy_all_enemies()
             enemies_controller.create_enemy(WIDTH/2, -100, event_name, behaviour)
+            sfx_controller.stop_all_sounds()
+            sfx_controller.play_sound('boss_them', true)
           elseif event_name == 'message' then
             local title = script[3]
 
@@ -209,19 +216,25 @@ function GameController.new()
     self.reset_all_controllers()
     self.update_current_level()
   end
+  -- end a game
+  function self.end_game()
+    score_screen.add_player_to_score(self.players[1])
+    score_screen.add_player_to_score(self.players[2])
+    self.players = {}
+    go_to_score_screen()
+  end
+
+  function self.level_ended()
+  -- this include the boss as a enemy
+    return not enemies_controller.has_enemies() and self.current_level_get_to_the_end()
+  end
 
   function self.reset_all_controllers()
-    enemies_controller.destroy_all_enemies()
+    enemies_controller.remove_all_enemies()
     enemies_controller.destroy_all_asteroids()
     bullets_controller.destroy_all_bullets()
     power_ups_controller.destroy_all_power_ups()
     explosions_controller.destroy_all_explosions()
-  end
-  -- end a game
-  function self.end_game()
-    self.reset_all_controllers()
-    self.players = {}
-    go_to_main_menu_screen()
   end
 
   function self.lose_message()
@@ -236,7 +249,7 @@ function GameController.new()
   function self.current_level_get_to_the_end()
     -- this -HEIGHT/2 is to adjuste the correct position that need to be checked sence we are
     -- couting from the middle of the screen
-    return self.current_level_settings.position < self.current_level_settings.length - HEIGHT/2
+    return self.current_level_settings.position >= self.current_level_settings.length - HEIGHT/2
   end
   -- move map
   function self.inscrease_position(dt)
@@ -246,7 +259,7 @@ function GameController.new()
   end
 
   function self.update_level(dt)
-    if self.current_level_get_to_the_end() then
+    if not self.current_level_get_to_the_end() then
       self.inscrease_position(dt)
       self.check_level_script()
     end
@@ -262,17 +275,45 @@ function GameController.new()
         self.pause = false
       end
     end
+    if not self.any_player_alive() and self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
+      self.reset_go_to_menu_delay()
+      self.reset_player_lifes_and_reset_score()
+    end
+  end
+
+  function self.give_free_power_to_players()
+    for i, player in ipairs(self.players) do
+      if player.ship_is_alive() then
+        player.ship.collect_power_up(400)
+      end
+    end
+  end
+
+  function self.reset_player_lifes_and_reset_score()
+    for i, player in ipairs(self.players) do
+      player.lives = 3
+      player.score = 0
+    end
+  end
+
+  function self.any_player_alive()
+    local any_alive = false
+    for i, player in ipairs(self.players) do
+      if player.has_extra_lives() then
+        any_alive = true
+        break
+      end
+    end
+    return any_alive
   end
 
   function self.update(dt)
-
     if self.pause then
       return
     end
 
     set_game_font_to('black', 'normal')
     local ships = {}
-    local anyone_alive = false
     for i, player in ipairs(self.players) do
       player.update(dt)
       -- check if player is alive to make logic
@@ -286,9 +327,8 @@ function GameController.new()
         end
       elseif player.ship then
         player.die()
-      end
-      if player.has_extra_lives() then
-        anyone_alive = true
+      elseif player.has_extra_lives() then
+        player.create_ship()
       end
     end
 
@@ -333,14 +373,25 @@ function GameController.new()
       end
     end
 
-    if not anyone_alive then
-      self.go_to_menu_current_delay = self.go_to_menu_current_delay + dt
-      if self.go_to_menu_current_delay > self.go_to_menu_delay then
-        self.go_to_menu_current_delay = 0
+    if not self.any_player_alive() then
+      if self.go_to_menu_current_delay == self.go_to_menu_delay then
+        sfx_controller.play_sound('continue')
+      end
+      self.go_to_menu_current_delay = self.go_to_menu_current_delay - dt
+      if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
+        self.draw_continue_message()
+      end
+      if self.go_to_menu_current_delay <= 0 then
+        self.reset_go_to_menu_delay()
         self.end_game()
       end
     end
     self.update_level(dt)
+
+    -- go to the next stage logic
+    if self.level_ended() then
+      self.next_level()
+    end
   end
 
   function self.back_ground_can_be_draw(back_ground, correct_position)
@@ -388,9 +439,26 @@ function GameController.new()
     self.ui:Label(scoreText, pos_x+screen_distance, screen_distance, buttons_width, button_heigh)
   end
 
+  function self.draw_continue_message()
+    local label_width = 300
+    local label_height = 100
+
+    local x = WIDTH/2 - label_width/2
+    local y = HEIGHT/2 - label_height/2
+
+    local translation = translation_of_key("press_any_key_to_continue")
+    local time_to_give_up = self.go_to_menu_current_delay-2
+    local continue_message = string.format("%s: %02d", translation, time_to_give_up)
+
+    set_game_font_to('black', 'extra_big')
+    self.ui:Label(continue_message, x, y, label_width, label_height)
+  end
+
   function self.draw()
     local back_current_y = self.current_level_settings.position
-    for i, sprite in ipairs(level_background_sprites.level_01_sprites) do
+    local back_ground_name = self.current_level_settings.background_name
+    local current_level_background_sprite = level_background_sprites[back_ground_name..'_sprites']
+    for i, sprite in ipairs(current_level_background_sprite) do
       local back_current_x = sprite.quad_width/2
       local width, height = sprite.image:getDimensions()
       -- this correct position is the inverse of the current possition acording the

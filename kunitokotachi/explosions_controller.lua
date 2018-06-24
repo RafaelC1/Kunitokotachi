@@ -20,6 +20,12 @@ function ExplosionsController.new()
     local animation = new_explosion_animation() --explosion_animation.copy()
     local new_explosion = Explosion.new(animation, x, y, self.explosion_speed, 0)
     table.insert(self.explosions, new_explosion)
+
+    self.create_explosion_sound_effect()
+  end
+
+  function self.create_explosion_sound_effect()
+    sfx_controller.play_sound('explosion')
   end
 
   function self.create_charger_explosion(x, y)

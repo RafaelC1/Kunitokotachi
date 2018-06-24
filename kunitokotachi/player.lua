@@ -6,7 +6,7 @@ function Player.new(player, keys, levels_of_player_settings)
   local self = {}
   self.name = 'rafael'
   self.title = 'player'
-  self.lives = 3
+  self.lives = 99
   self.score = 0
   self.ship = {}
   self.keys = keys
@@ -42,9 +42,6 @@ function Player.new(player, keys, levels_of_player_settings)
     self.lives = self.lives-1
     self.ship = nil
     -- if player have extra lives available, respawn his ship
-    if self.has_extra_lives() then
-      self.create_ship()
-    end
   end
 
   function self.level_exist(level)
