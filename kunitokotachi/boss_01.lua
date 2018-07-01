@@ -1,8 +1,8 @@
 require "health"
 
-Boss = {}
+Boss01 = {}
 
-function Boss.new(args)
+function Boss01.new(args)
   local self = Class.new()
   self.inherit(Enemy.new(args))
 
@@ -14,7 +14,6 @@ function Boss.new(args)
   self.sprite_position.extra_y = args.extra_y_sprite or 0
 
   function self.draw()
-    -- self.draw_test()
     local r, g, b, a = love.graphics.getColor()
     if self.current_animation ~= nil then
       if self.blank_blink then

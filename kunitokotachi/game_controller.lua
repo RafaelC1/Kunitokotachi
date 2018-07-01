@@ -47,21 +47,18 @@ function GameController.new()
   self.go_to_menu_current_delay = self.go_to_menu_delay
   self.minimum_time_to_not_accepte_continue = 2
 
+  function self.pause_game()
+    self.pause = true
+  end
+
+  function self.unpause_game()
+    self.pause = false
+  end
+
   function self.reset_go_to_menu_delay()
     self.go_to_menu_current_delay = self.go_to_menu_delay
   end
 
--- go to next level
-  function self.next_level()
-    self.reset_all_controllers()
-    sfx_controller.stop_all_sounds()
-    if self.current_level < #self.levels_settings.levels_names then
-      self.current_level = self.current_level + 1
-      self.update_current_level()
-    else
-      self.end_game()
-    end
-  end
   -- update current_level_settings informations based on current level
   function self.update_current_level()
     self.current_level_settings = {}
@@ -114,7 +111,7 @@ function GameController.new()
             local behaviour = script[5]
             -- kill all enemies when boss spawn
             enemies_controller.destroy_all_enemies()
-            enemies_controller.create_enemy(WIDTH/2, -100, event_name, behaviour)
+            enemies_controller.create_boss(event_name, behaviour)
             sfx_controller.stop_all_sounds()
             sfx_controller.play_sound('boss_them', true)
           elseif event_name == 'message' then
@@ -127,10 +124,13 @@ function GameController.new()
 
             local character = script[5]
             local avatar = avatars[character[1]][character[2]]
-            self.pause = true
-            self.current_messages_amount = #messages
-            moan.speak(title, messages, { image=avatar })
-            -- print("event dont identified")
+            self.pause_game()
+            -- self.current_messages_amount = #messages
+            if self.current_level_settings.script[i+1][2] ~= "message" then
+              moan.speak(title, messages, { image=avatar, oncomplete=self.unpause_game})
+            else
+              moan.speak(title, messages, { image=avatar})
+            end
           end
       end
       script[6] = true
@@ -184,14 +184,6 @@ function GameController.new()
       end
     end
   end
-  -- controll player on its spawn
-  function self.controll_player(player, dt)
-    local current_y = -player.ship.speed*dt
-    player.ship.vertical_move(current_y)
-    if player.ship.body.y < 500 then
-      player.ship.self_controller = false
-    end
-  end
   -- generate players
   function self.create_player(player, ship_model)
     local keys = settings['players_settings']['player_0'..player..'_keys']
@@ -204,6 +196,7 @@ function GameController.new()
     character.create_ship()
     character.ship.teleport_to(x, y)
   end
+
   function self.destroy_player(playerID)
     table.remove(self.players, playerID)
     if #self.players <= 0 then
@@ -214,12 +207,29 @@ function GameController.new()
   function self.start_game()
     -- reset controllers
     self.current_level = 1
-    self.pause = false
+    self.unpause_game()
     self.reset_all_controllers()
     self.update_current_level()
   end
+-- go to next level
+  function self.next_level()
+    self.reset_all_controllers()
+    sfx_controller.stop_all_sounds()
+
+    if self.current_level < #self.levels_settings.levels_names then
+      self.current_level = self.current_level + 1
+      self.update_current_level()
+
+      for i, player in ipairs(self.players) do
+        player.set_ship_to_bottom_position()
+      end
+    else
+      self.end_game()
+    end
+  end
   -- end a game
   function self.end_game()
+    self.unpause_game()
     score_screen.prepare_old_records()
     for _, player in ipairs(self.players) do
       score_screen.add_player_to_score(player)
@@ -244,14 +254,23 @@ function GameController.new()
     explosions_controller.destroy_all_explosions()
   end
 
-  function self.lose_message()
-    messages =
+  function self.show_lose_message()
+    self.pause_game()
+    local messages =
     {
-      translation_of_key('Higuchi_dying_message_01'),
-      translation_of_key('Higuchi_dying_message_02'),
-      translation_of_key('Higuchi_dying_message_03')
+      translation_of_key('mission_failed_100'),
+      translation_of_key('mission_failed_200'),
+      translation_of_key('mission_failed_300'),
+      translation_of_key('mission_failed_400'),
+      translation_of_key('mission_failed_500')
     }
-    show_dialog{name='Higuchi', messages=messages, action=self.go_to_menu}
+    -- self.current_messages_amount = #messages
+    -- show_dialog{name='Higuchi', messages=messages}
+    local title = translation_of_key('history_narrator')
+    moan.speak(title, messages, {oncomplete=function()
+      self.reset_go_to_menu_delay()
+      self.end_game()
+    end})
   end
   function self.current_level_get_to_the_end()
     -- this -HEIGHT/2 is to adjuste the correct position that need to be checked sence we are
@@ -276,21 +295,29 @@ function GameController.new()
 
   function self.key_events(key)
     local next_moan_key = 'space'
-    if key == next_moan_key then
-      if self.current_messages_amount > 0 then
-        self.current_messages_amount = self.current_messages_amount - 1
-      end
-      if self.current_messages_amount <= 0 then
-        self.pause = false
-      end
+
+    -- if key == next_moan_key then
+    --   if self.current_messages_amount > 0 then
+    --     self.current_messages_amount = self.current_messages_amount - 1
+    --   end
+    --   if self.current_messages_amount <= 0 then
+    --     self.unpause_game()
+    --   end
+    -- end
+
+    if self.pause then
+      return
     end
-    if not self.any_player_alive() and self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
-      self.reset_go_to_menu_delay()
-      sfx_controller.stop_all_sounds()
-      sfx_controller.play_sound(self.current_level_settings.music, true)
-      self.reset_player_lifes_and_reset_score()
-      self.start_game()
-      self.pause = false
+
+    if not self.any_player_alive() then
+      if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
+        self.reset_go_to_menu_delay()
+        sfx_controller.stop_all_sounds()
+        sfx_controller.play_sound(self.current_level_settings.music, true)
+        self.reset_player_lifes_and_reset_score()
+        self.start_game()
+        self.unpause_game()
+      end
     end
   end
 
@@ -321,43 +348,45 @@ function GameController.new()
   end
 
   function self.update(dt)
-    if not self.any_player_alive() then
-      if self.go_to_menu_current_delay == self.go_to_menu_delay then
-        sfx_controller.stop_all_sounds()
-        sfx_controller.play_sound('continue')
-      end
-      self.go_to_menu_current_delay = self.go_to_menu_current_delay - dt
-      if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
-        self.draw_continue_message()
-      end
-      if self.go_to_menu_current_delay <= 0 then
-        self.reset_go_to_menu_delay()
-        self.end_game()
-      end
-    end
+    set_game_font_to('black', 'normal')
+    local ships = {}
 
     if self.pause then
       return
     end
 
-    set_game_font_to('black', 'normal')
-    local ships = {}
-    for i, player in ipairs(self.players) do
-      player.update(dt)
-      -- check if player is alive to make logic
-      if player.ship_is_alive() then
-        ships[#ships+1] = player.ship
-        if player.ship.self_controller then
-          self.controll_player(player, dt)
+    if self.any_player_alive() then
+      for i, player in ipairs(self.players) do
+        player.update(dt)
+        -- check if player is alive to make logic
+        if player.ship_is_alive() then
+
+          ships[#ships+1] = player.ship
+          if power_ups_controller.has_power_ups then
+            self.check_collect_power_up(player.ship, power_ups_controller.power_ups)
+          end
+
+        elseif player.ship then
+          player.die()
+        elseif player.has_extra_lives() then
+          player.create_ship()
         end
-        if power_ups_controller.has_power_ups then
-          self.check_collect_power_up(player.ship, power_ups_controller.power_ups)
-        end
-      elseif player.ship then
-        player.die()
-      elseif player.has_extra_lives() then
-        player.create_ship()
       end
+    else
+      if self.go_to_menu_current_delay == self.go_to_menu_delay then
+        sfx_controller.stop_all_sounds()
+        sfx_controller.play_sound('continue')
+      end
+
+      if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
+        self.draw_continue_message()
+      end
+
+      if self.go_to_menu_current_delay <= 0 then
+        self.show_lose_message()
+      end
+
+      self.go_to_menu_current_delay = self.go_to_menu_current_delay - dt
     end
 
     bullets_controller.update(dt)
@@ -402,10 +431,32 @@ function GameController.new()
     end
 
     self.update_level(dt)
-
     -- go to the next stage logic
     if self.level_ended() then
-      self.next_level()
+      if not bullets_controller.has_enemy_bullets() then
+        local any_ship_on_screen = false
+        for i, player in ipairs(self.players) do
+          if player.ship_is_alive() then
+            if player.ship.on_screen() then
+              any_ship_on_screen = true
+              break
+            end
+          end
+        end
+
+        -- check if there is any ship on screen after go to next level
+        if not any_ship_on_screen then
+          self.next_level()
+        end
+
+        for i, player in ipairs(self.players) do
+          if player.ship_is_alive() then
+            if not player.ship.self_controller then
+              player.send_ship_to_top()
+            end
+          end
+        end
+      end
     end
   end
 

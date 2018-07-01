@@ -19,11 +19,7 @@ function Health.new(args)
   end
 
   function self.apply_damage(damage)
-    local real_damage = damage - self.defense
-    if real_damage <= 0 then
-      real_damage = 1
-    end
-    self.current_hp = self.current_hp - real_damage
+    self.current_hp = self.current_hp - damage
   end
 
   return self

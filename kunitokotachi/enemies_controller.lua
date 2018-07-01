@@ -1,4 +1,6 @@
 require "enemy"
+require "boss_01"
+require "boss_02"
 require "asteroid"
 require "helpers"
 require "position_helpers"
@@ -15,17 +17,43 @@ function EnemiesController.new()
 
   self.enemies_behaviours = json_to_table(read_from('res/settings/enemies_behaviours.json'))
 
-  function self.create_boss()
+  function self.create_boss(boss, behaviour)
     -- the boss always spawn on center top
+    self['create_'..boss](behaviour)
+  end
+
+  function self.create_boss_01(behaviour)
     local x, y = WIDTH/2, -100
-    local new_boss = Boss_01.new
     x = x or 100
     y = y or -30
-    local animations = enemies_animations['new_'..enemy_name..'_animations']()
     enemy_name = 'boss_01'
+    local animations = enemies_animations.new_boss_01_animations()
     local enemy_model = self.enemies_characteristics.enemy[enemy_name]
     local enemy_behaviour = self.enemies_behaviours[behaviour]
-    local enemy = Enemy.new{x=x,
+    local enemy = Boss01.new{x=x,
+                            y=y,
+                            radio=enemy_model.radio,
+                            speed=enemy_model.speed,
+                            max_hp=enemy_model.max_hp,
+                            defense=enemy_model.defense,
+                            behaviour=enemy_behaviour,
+                            ammo_name=enemy_model.bullet_name,
+                            animations=animations,
+                            drop=enemy_model.power_drop,
+                            weapons_settings=enemy_model.weapons_settings,
+                            owner=self}
+    table.insert(self.enemies, enemy)
+  end
+
+  function self.create_boss_02(behaviour)
+    local x, y = WIDTH/2, -100
+    x = x or 100
+    y = y or -30
+    enemy_name = 'boss_02'
+    local animations = enemies_animations.new_boss_02_animations()
+    local enemy_model = self.enemies_characteristics.enemy[enemy_name]
+    local enemy_behaviour = self.enemies_behaviours[behaviour]
+    local enemy = Boss02.new{x=x,
                             y=y,
                             radio=enemy_model.radio,
                             speed=enemy_model.speed,
@@ -43,6 +71,7 @@ function EnemiesController.new()
   function self.create_enemy(x, y, enemy_name, behaviour, drop)
     x = x or 100
     y = y or -30
+
     local animations = enemies_animations['new_'..enemy_name..'_animations']()
     enemy_name = enemy_name or 'eye'
     local enemy_model = self.enemies_characteristics.enemy[enemy_name]

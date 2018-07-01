@@ -17,6 +17,17 @@ function Body.new(args)
   self.g = 255
   self.b = 255
 
+  function self.on_screen()
+    local x = self.body.x
+    local y = self.body.y
+    local r = self.body.radio/2
+
+    return 0 < x+r and
+           x-r < WIDTH and
+           0 < y+r and
+           y-r < HEIGHT
+  end
+
   function self.up(dt)
     local y = -self.speed*dt
     self.vertical_move(y)

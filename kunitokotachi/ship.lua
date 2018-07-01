@@ -43,11 +43,47 @@ function Ship.new(args)
   self.sprites = args.sprites or nil
 
   self.self_controller = true
+  self.self_controller_target = { x=0, y=0 }
 
   function self.max_time_to_extra_turn()
     return self.current_time_turning >= self.time_turning
   end
 
+  function self.set_self_controll_to(x, y)
+    self.self_controller = true
+    self.self_controller_target.x = x
+    self.self_controller_target.y = y
+  end
+
+  function self.self_move_to_target(dt)
+    local extra = 10
+    local moviment = dt*self.speed
+
+    local moviment_x = 0
+    local moviment_y = 0
+
+    if (self.body.x + extra) < self.self_controller_target.x then
+      moviment_x = moviment
+    elseif (self.body.x - extra) > self.self_controller_target.x then
+      moviment_x = -moviment
+    end
+
+    if (self.body.y + extra) < self.self_controller_target.y then
+      moviment_y = moviment
+    elseif (self.body.y - extra) > self.self_controller_target.y then
+      moviment_y = -moviment
+    end
+
+    return moviment_x, moviment_y
+  end
+
+  function self.get_to_target()
+    local extra = 10
+    return (self.body.x + extra) > self.self_controller_target.x and
+           (self.body.x - extra) < self.self_controller_target.x and
+           (self.body.y + extra) > self.self_controller_target.y and
+           (self.body.y - extra) < self.self_controller_target.y
+  end
   -- this metho count the time that player is turning the ship to change the sprite
   function self.count_time_turning_to_change_sprite(dt)
     if not self.max_time_to_extra_turn() then
@@ -130,7 +166,13 @@ function Ship.new(args)
     self.correct_position_sprite(0)
 
 -- controller of the keys of ship
-    if not self.self_controller then
+    if self.self_controller then
+      if self.get_to_target() then
+        self.self_controller = false
+      else
+        current_x, current_y = self.self_move_to_target(dt)
+      end
+    else
       if love.keyboard.isDown(self.keys.up) then
         current_y = -self.speed*dt
       end
@@ -159,14 +201,14 @@ function Ship.new(args)
       end
     end
 
+    self.horizontal_move(current_x)
+    self.vertical_move(current_y)
+
     if horizontal_keys_pressend then
       self.count_time_turning_to_change_sprite(dt)
     else
       self.current_time_turning = 0
     end
-
-    self.horizontal_move(current_x)
-    self.vertical_move(current_y)
 
     -- blink to show ivulnerability
      if self.invulnerable_time > 0 then

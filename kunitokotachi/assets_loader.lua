@@ -4,7 +4,6 @@
 require "helpers"
 require "sprite"
 require "animation"
-
 -- fonts
 fonts =
 {
@@ -59,11 +58,7 @@ avatars =
 }
 boss_images =
 {
-  boss_01 =
-  {
-    normal = {},
-    attack = {}
-  },
+  boss_01 = {},
   boss_02 = {}
 }
 debris_image = {}
@@ -93,6 +88,10 @@ eye_enemy_image = {}
 angel_enemy_image = {}
 head_enemy_image = {}
 lung_enemy_image = {}
+fish_enemy_image = {}
+romancer_enemy_image = {}
+head2_enemy_image = {}
+mermaid_enemy_image = {}
 
 -- sprites
 cut_scenes_sprites = {}
@@ -118,20 +117,17 @@ boss_sprites =
   },
   boss_02 =
   {
-    attack =
+    level_01 =
     {
-      quad_01 = {},
-      quad_02 = {}
+      attack = {},
+      normal = {},
+      die = {}
     },
-    normal =
+    level_02 =
     {
-      quad_01 = {},
-      quad_02 = {}
-    },
-    die =
-    {
-      quad_01 = {},
-      quad_02 = {}
+      attack = {},
+      normal = {},
+      die = {}
     }
   }
 }
@@ -345,6 +341,41 @@ lung_enemy_sprite =
   }
 }
 
+fish_enemy_sprite = 
+{
+  normal =
+  {
+    quad_01 = {},
+    quad_02 = {},
+  }
+}
+
+head2_enemy_sprite =
+{
+  normal = 
+  {
+    quad_01 ={}
+  }
+}
+
+mermaid_enemy_sprite =
+{
+  normal =
+  {
+    quad_01 = {},
+    quad_02 = {},
+  }
+}
+
+romancer_enemy_sprite =
+{
+  normal =
+  {
+    quad_01 = {}
+  }
+}
+
+
 life_sprite = {}
 
 -- animations
@@ -374,25 +405,26 @@ function load_all_images()
   end
 
   -- load all avatars
-  avatars.higuchi.normal = load_image('res/assets/portraits/profile/higuchi01.png')
-  avatars.higuchi.speaking = load_image('res/assets/portraits/profile/higuchi02.png')
-  avatars.higuchi.angry = load_image('res/assets/portraits/profile/higuchi03.png')
+  local avatar_path = 'res/assets/portraits/profile/'
+  avatars.higuchi.normal = load_image(avatar_path..'higuchi01.png')
+  avatars.higuchi.speaking = load_image(avatar_path..'higuchi02.png')
+  avatars.higuchi.angry = load_image(avatar_path..'higuchi03.png')
 
-  avatars.himiko.normal = load_image('res/assets/portraits/profile/himiko01.png')
-  avatars.himiko.speaking = load_image('res/assets/portraits/profile/himiko02.png')
-  avatars.himiko.angry = load_image('res/assets/portraits/profile/himiko03.png')
+  avatars.himiko.normal = load_image(avatar_path..'himiko01.png')
+  avatars.himiko.speaking = load_image(avatar_path..'himiko02.png')
+  avatars.himiko.angry = load_image(avatar_path..'himiko03.png')
 
-  avatars.major.normal = load_image('res/assets/portraits/profile/major01.png')
-  avatars.major.speaking = load_image('res/assets/portraits/profile/major02.png')
-  avatars.major.angry = load_image('res/assets/portraits/profile/major03.png')
+  avatars.major.normal = load_image(avatar_path..'major01.png')
+  avatars.major.speaking = load_image(avatar_path..'major02.png')
+  avatars.major.angry = load_image(avatar_path..'major03.png')
 
-  avatars.no_signal.normal = load_image('res/assets/portraits/profile/nosignal.png')
+  avatars.no_signal.normal = load_image(avatar_path..'nosignal.png')
 
-  avatars.secretary.normal = load_image('res/assets/portraits/profile/secretary.png')
+  avatars.secretary.normal = load_image(avatar_path..'secretary.png')
 
-  avatars.tomoe.normal = load_image('res/assets/portraits/profile/tomoe01.png')
-  avatars.tomoe.scary = load_image('res/assets/portraits/profile/tomoe02.png')
-  avatars.tomoe.crazy = load_image('res/assets/portraits/profile/tomoe03.png')
+  avatars.tomoe.normal = load_image(avatar_path..'tomoe01.png')
+  avatars.tomoe.scary = load_image(avatar_path..'tomoe02.png')
+  avatars.tomoe.crazy = load_image(avatar_path..'tomoe03.png')
 
   -- load all bosses images
   boss_images.boss_01 = load_image('res/assets/enemies/boss_01.png')
@@ -424,18 +456,23 @@ function load_all_images()
   ship_images.ship_02 = load_image('res/assets/ships/shiptwo.png')
   ship_images.ship_03 = load_image('res/assets/ships/shipthree.png')
 
-  level_background_images.level_01 = load_image('res/assets/back_ground/BACKGROUNDONE.jpg')
-  -- level_background_images.level_01 = load_image('res/assets/back_ground/BACKGROUNDONE.jpg')
+  level_background_images.level_01 = load_image('res/assets/back_ground/level_01_background_v1.jpg')
+  level_background_images.level_02 = load_image('res/assets/back_ground/level_01_background_v1.jpg')
 
   -- load all bulet images
   player_bullets_image = load_image('res/assets/bullets/player_bullets.png')
   enemy_bullets_image = load_image('res/assets/bullets/enemy_bullets.png')
 
   -- loading image of enemies
-  eye_enemy_image = load_image('res/assets/enemies/eye.png')
-  angel_enemy_image = load_image('res/assets/enemies/angel.png')
-  head_enemy_image = load_image('res/assets/enemies/head.png')
-  lung_enemy_image = load_image('res/assets/enemies/lung.png')
+  local enemy_path = 'res/assets/enemies/'
+  eye_enemy_image = load_image(enemy_path..'eye.png')
+  angel_enemy_image = load_image(enemy_path..'angel.png')
+  head_enemy_image = load_image(enemy_path..'head.png')
+  lung_enemy_image = load_image(enemy_path..'lung.png')
+  fish_enemy_image = load_image(enemy_path..'fish.png')
+  romancer_enemy_image = load_image(enemy_path..'romancer.png')
+  head2_enemy_image = load_image(enemy_path..'head_2.png')
+  mermaid_enemy_image = load_image(enemy_path..'mermaid.png')
 
   return true
 end
@@ -470,6 +507,7 @@ function define_sprites()
   end
 
   -- define all bosses sprites
+  -- boss 01
   width = 660
   height = 440
   x = 0
@@ -486,8 +524,25 @@ function define_sprites()
   x = x + width
   boss_sprites.boss_01.attack.quad_02 = Sprite.new(boss_images.boss_01, x, y, width, height)
 
+  -- boss 02
+  width = 650
+  height = 500
+  x = 0
+  y = 0
+
+  boss_sprites.boss_02.level_01.normal.quad_01 = Sprite.new(boss_images.boss_02, x, y, width, height)
+  x = x + width
+  boss_sprites.boss_02.level_01.normal.quad_02 = Sprite.new(boss_images.boss_02, x, y, width, height)
+
+  x = 0
+  y = y + height
+  boss_sprites.boss_02.level_02.normal.quad_01 = Sprite.new(boss_images.boss_02, x, y, width, height)
+  x = x + width
+  boss_sprites.boss_02.level_02.normal.quad_02 = Sprite.new(boss_images.boss_02, x, y, width, height)
+
   -- background sprites
   level_background_sprites.level_01_sprites = define_back_ground_sprites(level_background_images.level_01)
+  level_background_sprites.level_02_sprites = define_back_ground_sprites(level_background_images.level_02)
 
   -- life sprites
   width = 25
@@ -637,6 +692,36 @@ function define_sprites()
   lung_enemy_sprite.normal.quad_04 = Sprite.new(lung_enemy_image, 300, y, width, height)
   y = y + height
   lung_enemy_sprite.attack.quad_01 = Sprite.new(lung_enemy_image, 0, y, width, height)
+
+  -- fish
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  fish_enemy_sprite.normal.quad_01 = Sprite.new(fish_enemy_image, 0, y, width, height)
+  fish_enemy_sprite.normal.quad_02 = Sprite.new(fish_enemy_image, 100, y, width, height)
+
+  -- romancer
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  romancer_enemy_sprite.normal.quad_01 = Sprite.new(romancer_enemy_image, 0, y, width, height)
+
+  -- head 2
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  head2_enemy_sprite.normal.quad_01 = Sprite.new(head2_enemy_image, 0, y, width, height)
+
+  -- mermaid
+  width = 100
+  height = 100
+  x = 0
+  y = 0
+  mermaid_enemy_sprite.normal.quad_01 = Sprite.new(mermaid_enemy_image, 0, y, width, height)
+  mermaid_enemy_sprite.normal.quad_02 = Sprite.new(mermaid_enemy_image, 100, y, width, height)
 
 -- define all debris sprites
   width = 100
@@ -840,6 +925,72 @@ function enemies_animations.new_lung_animations()
   return all_animations
 end
 
+function enemies_animations.new_fish_animations()
+  local all_animations = {}
+  local normal_sprites =
+  {
+    fish_enemy_sprite.normal.quad_01,
+    fish_enemy_sprite.normal.quad_02
+  }
+  local attack_sprites = nil
+  local die_sprites = nil
+
+  all_animations.normal = Animation.new(normal_sprites, 0.15)
+  all_animations.attack = nil
+  all_animations.die = nil
+
+  return all_animations
+end
+
+function enemies_animations.new_romancer_animations()
+  local all_animations = {}
+  local normal_sprites =
+  {
+    romancer_enemy_sprite.normal.quad_01
+  }
+  local attack_sprites = nil
+  local die_sprites = nil
+
+  all_animations.normal = Animation.new(normal_sprites, 0.15)
+  all_animations.attack = nil
+  all_animations.die = nil
+
+  return all_animations
+end
+
+function enemies_animations.new_head2_animations()
+  local all_animations = {}
+  local normal_sprites =
+  {
+    head2_enemy_sprite.normal.quad_01
+  }
+  local attack_sprites = nil
+  local die_sprites = nil
+
+  all_animations.normal = Animation.new(normal_sprites, 0.15)
+  all_animations.attack = nil
+  all_animations.die = nil
+
+  return all_animations
+end
+
+function enemies_animations.new_mermaid_animations()
+  local all_animations = {}
+  local normal_sprites =
+  {
+    mermaid_enemy_sprite.normal.quad_01,
+    mermaid_enemy_sprite.normal.quad_02
+  }
+  local attack_sprites = nil
+  local die_sprites = nil
+
+  all_animations.normal = Animation.new(normal_sprites, 0.15)
+  all_animations.attack = nil
+  all_animations.die = nil
+
+  return all_animations
+end
+
 function enemies_animations.new_boss_01_animations()
   local all_animations = {}
   local normal_sprites =
@@ -862,6 +1013,32 @@ function enemies_animations.new_boss_01_animations()
   all_animations.attack.dont_repeat()
 
   return all_animations
+end
+
+function enemies_animations.new_boss_02_animations()
+  local animations_level = {}
+
+  local normal_sprites_level_01 =
+  {
+    boss_sprites.boss_02.level_01.normal.quad_01,
+    boss_sprites.boss_02.level_01.normal.quad_02
+  }
+  animations_level.level_01 = {}
+  animations_level.level_01.normal = Animation.new(normal_sprites_level_01, 0.15)
+  animations_level.level_01.attack = nil
+  animations_level.level_01.die = nil
+
+  local normal_sprites_level_02 =
+  {
+    boss_sprites.boss_02.level_02.normal.quad_01,
+    boss_sprites.boss_02.level_02.normal.quad_02
+  }
+  animations_level.level_02 = {}
+  animations_level.level_02.normal = Animation.new(normal_sprites_level_02, 0.15)
+  animations_level.level_02.attack = nil
+  animations_level.level_02.die = nil
+
+  return animations_level
 end
 
 

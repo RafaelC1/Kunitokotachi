@@ -22,16 +22,28 @@ function Player.new(player, keys, levels_of_player_settings, player_name)
                         sprites=ship_sprites,
                         keys=self.keys,
                         owner=self,
-                        self_controller=true,
+                        self_controller=false,
                         max_hp=ship_model.max_hp,
                         ship_model_name=self.ship_model}
-    spawn_pos_x = game_controller.spawn_pos['player'..self.player].x
-    spawn_pos_y = game_controller.spawn_pos['player'..self.player].y
-    self.ship.teleport_to(spawn_pos_x, spawn_pos_y)
+    self.set_ship_to_bottom_position()
   end
+
+  function self.send_ship_to_top()
+    local current_x = self.ship.body.x
+    self.ship.set_self_controll_to(current_x, -100)
+  end
+
+  function self.set_ship_to_bottom_position()
+    local spawn_pos_x = game_controller.spawn_pos['player'..self.player].x
+    local spawn_pos_y = game_controller.spawn_pos['player'..self.player].y
+    self.ship.teleport_to(spawn_pos_x, spawn_pos_y)
+    self.ship.set_self_controll_to(spawn_pos_x, 500)
+  end
+
   function self.destroy_ship()
     self.ship = {}
   end
+
   function self.earn_points(score)
     score = score or 1
     self.score = self.score + score
@@ -57,11 +69,7 @@ function Player.new(player, keys, levels_of_player_settings, player_name)
   end
 
   function self.ship_is_alive()
-    if self.ship and self.ship.is_alive() then
-      return true
-    else
-      return false
-    end
+    return self.ship ~= nil and self.ship.is_alive()
   end
 
   function self.update(dt)
