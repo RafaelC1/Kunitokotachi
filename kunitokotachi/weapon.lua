@@ -33,7 +33,7 @@ function Weapon.new(args)
     self.ammo_name = new_ammo_name
   end
 
-  function self.update_delay(dt)
+  function self:update_delay(dt)
     self.current_time = self.current_time+dt
   end
 
@@ -59,9 +59,9 @@ function Weapon.new(args)
     end
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if not self.can_shoot() then
-      self.update_delay(dt)
+      self:update_delay(dt)
     end
   end
 

@@ -14,9 +14,9 @@ function Explosion.new(animation, x, y, vertial_speed, horizontal_speed)
     self.y = self.y + self.vertial_speed * dt
   end
 
-  function self.update(dt)
+  function self:update(dt)
     self.move(dt)
-    self.animation.update(dt)
+    self.animation:update(dt)
     self.finished = self.animation.ended
   end
   function self.draw()

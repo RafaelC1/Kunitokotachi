@@ -31,7 +31,7 @@ function Bullet.new(args)
     return self.owner
   end
 
-  function self.update(dt)
+  function self:update(dt)
     local current_x = self.xv
     local current_y = self.yv
 
@@ -63,7 +63,7 @@ function Bullet.new(args)
     self.body.x = self.body.x + current_x
     self.body.y = self.body.y + current_y
 
-    self.animation.update(dt)
+    self.animation:update(dt)
   end
   function self.draw()
     -- self.draw_test()

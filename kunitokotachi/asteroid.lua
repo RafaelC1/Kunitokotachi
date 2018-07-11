@@ -13,9 +13,9 @@ function Asteroid.new(args)
 
   self.title = 'enemy'  
 
-  function self.update(dt)
+  function self:update(dt)
     self.down(dt)
-    self.animations.update(dt)
+    self.animations:update(dt)
   end
 
   function self.draw()

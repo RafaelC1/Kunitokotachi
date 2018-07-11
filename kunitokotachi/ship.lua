@@ -158,7 +158,7 @@ function Ship.new(args)
     return self.sprites[self.current_ship][self.current_ship_position]
   end
   -- update ship logic
-  function self.update(dt)
+  function self:update(dt)
     local current_x = 0
     local current_y = 0
     local horizontal_keys_pressend = false
@@ -227,7 +227,7 @@ function Ship.new(args)
 
     -- update weapons status
     for _, weapon in ipairs(self.weapons) do
-      weapon.update(dt)
+      weapon:update(dt)
     end
   end
   -- draw ship

@@ -25,7 +25,7 @@ function ExplosionsController.new()
   end
 
   function self.create_explosion_sound_effect()
-    sfx_controller.play_sound('explosion')
+    sfx_controller:play_sound('explosion')
   end
 
   function self.create_charger_explosion(x, y)
@@ -38,9 +38,9 @@ function ExplosionsController.new()
     table.insert(self.explosions, new_right_charger_explosion)
   end
 
-  function self.update(dt)
+  function self:update(dt)
     for i, explosion in ipairs(self.explosions) do
-      explosion.update(dt)
+      explosion:update(dt)
       if explosion.finished then
         self.destroy_explosion(i)
       end

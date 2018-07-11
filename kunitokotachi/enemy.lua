@@ -128,7 +128,7 @@ function Enemy.new(args)
     self.blank_blink = true
   end
 
-  function self.update_current_blank_time(dt)
+  function self:update_current_blank_time(dt)
     -- the purpouse of this logic is to prevent the sprite to blink with the "hit color"
     -- even if the enemy is been attacked with a constante hit such a laser
     if self.blank_blink then
@@ -141,7 +141,7 @@ function Enemy.new(args)
     end
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if not self.is_alive() then
       self.change_die_animation()
       self.down(dt)
@@ -150,14 +150,14 @@ function Enemy.new(args)
 
     self.move(dt)
     if self.current_animation ~= nil then
-      self.current_animation.update(dt)
+      self.current_animation:update(dt)
       if self.current_animation_ended() then
         self.current_animation = self.animations.normal
       end
     end
 
     if self.blank_blink or self.current_blank_blink_time > 0 then
-      self.update_current_blank_time(dt)
+      self:update_current_blank_time(dt)
     end
   end
 

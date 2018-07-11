@@ -37,9 +37,9 @@ function PowerUpsController.new()
     return #self.power_ups > 0
   end
 
-  function self.update(dt)
+  function self:update(dt)
     for i, power_up in ipairs(self.power_ups) do
-      power_up.update(dt)
+      power_up:update(dt)
       if not on_screen(power_up.body.x, power_up.body.y) or power_up.vanished() then
         self.destroy_power_up(i)
       end

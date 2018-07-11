@@ -30,7 +30,7 @@ function ShipInformation.new(args)
     return self.player_active
   end
 
-  function self.update_empty_player_message_blink_time(dt)
+  function self:update_empty_player_message_blink_time(dt)
     self.current_empty_player_message_blink_time = self.current_empty_player_message_blink_time + dt
     if self.current_empty_player_message_blink_time >= self.empty_player_message_blink_time then
       self.reset_empty_player_message_blink_time()
@@ -68,7 +68,7 @@ function ShipInformation.new(args)
     return self.ships_informations[self.current_ship].defense
   end
 
-  function self.update_current_informations(new_informations)
+  function self:update_current_informations(new_informations)
     self.current_informations = new_informations
   end
 
@@ -98,13 +98,13 @@ function ShipInformation.new(args)
 
   function self.add_button(key, method)
     button = { type='button', text='', key=key, method=method }
-    self.update_text(button)
+    self:update_text(button)
     table.insert(self.options, button)
   end
 
   function self.add_label(key)
     label = { type='label', text='', key=key }
-    self.update_text(label)
+    self:update_text(label)
     table.insert(self.information_labels, label)
   end
 
@@ -113,17 +113,17 @@ function ShipInformation.new(args)
     args = unpack(args)
     args.key = args.key
     slider = { type='slider', min=min, max=max, value=value, method=args.change_method, step=step, key=args.key, text='' }
-    self.update_text(slider)
+    self:update_text(slider)
     table.insert(self.options, slider)
   end
 
-  function self.update_all()
+  function self:update_all()
     for i, option in ipairs(self.options) do
-      self.update_text(option)
+      self:update_text(option)
     end
   end
 
-  function self.update_text(widget)
+  function self:update_text(widget)
     widget.text = translation_of_key(widget.key)
   end
 
@@ -176,11 +176,11 @@ function ShipInformation.new(args)
     self.ui:Label(text, correct_x, correct_y, label_width, label_height)
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if self.player_active then
       self.draw_ship_informations()
     else
-      self.update_empty_player_message_blink_time(dt)
+      self:update_empty_player_message_blink_time(dt)
       if not self.empty_player_message_blink then
         self.draw_empty_player_message()
       end

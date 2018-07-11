@@ -72,9 +72,9 @@ function Player.new(player, keys, levels_of_player_settings, player_name)
     return self.ship ~= nil and self.ship.is_alive()
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if self.ship then
-      self.ship.update(dt)
+      self.ship:update(dt)
     end
   end
 

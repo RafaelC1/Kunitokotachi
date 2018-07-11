@@ -175,9 +175,9 @@ function EnemiesController.new()
     return self.asteroids_characteristics.asteroid_names
   end
 
-  function self.update(dt)
+  function self:update(dt)
     for i, enemy in ipairs(self.enemies) do
-      enemy.update(dt)
+      enemy:update(dt)
       if not enemy.is_alive() then
         if enemy.dead_animation_ended() then
           self.spawn_power_up(i)
@@ -189,7 +189,7 @@ function EnemiesController.new()
       end
     end
     for i, asteroid in ipairs(self.asteroids) do
-      asteroid.update(dt)
+      asteroid:update(dt)
       if not asteroid.is_alive() then
         self.destroy_asteroid(i)
       end

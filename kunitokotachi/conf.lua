@@ -1,26 +1,20 @@
-game_started = false
+game_started  = false
 debbuger_mode = true
-player_two = false
-settings = {} -- game configurations
+
+settings     = {} -- game configurations
 translations = {} -- manager all translations
-moan = {}
+moan         = {}
 
 --controllers
-game_controller = {}
-bullets_controller = {}
-enemies_controller = {}
-power_ups_controller = {}
+game_controller       = {}
+bullets_controller    = {}
+enemies_controller    = {}
+power_ups_controller  = {}
 explosions_controller = {}
 
---window settings
-WIDTH = 800
-HEIGHT = 600
-TITLE = "Kunitokotachi"
-VERSION = 2.0
+splash_screen   = {}
+history_screen  = {}
 
-PLAYER_LIMIT = 2
-
--- game settings
 SCREENS =
 {
   SPLASH_SCREEN           = 1,
@@ -35,10 +29,15 @@ SCREENS =
 
 CURRENT_SCREEN = SCREENS.SPLASH_SCREEN
 
+WIDTH   = 800
+HEIGHT  = 600
+TITLE   = "Kunitokotachi"
+VERSION = 2.1
+
 function love.conf(t)
-  t.window.width = WIDTH
-  t.window.height = HEIGHT
-  t.window.resizable = false
-  t.window.title = TITLE
-  t.window.version = VERSION
+  t.window.width      = WIDTH
+  t.window.height     = HEIGHT
+  t.window.resizable  = false
+  t.window.title      = TITLE
+  t.window.version    = VERSION
 end

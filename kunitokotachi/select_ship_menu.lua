@@ -141,7 +141,7 @@ function SelectShipMenu.new(args)
     self.add_player_information_menu(player)
   end
 
-  function self.update(dt)
+  function self:update(dt)
     
     local button_heigh = 40
     local buttons_width = 120
@@ -170,7 +170,7 @@ function SelectShipMenu.new(args)
     end
 
     for _, ship_information in ipairs(self.ship_informations) do
-      ship_information.update(dt)
+      ship_information:update(dt)
     end
   end
 

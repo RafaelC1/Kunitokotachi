@@ -92,7 +92,7 @@ function HistoryScreen.new()
     return self.current_presentation()[self.current_presentation_part_id]
   end
 
-  function self.update_time_to_next_part(dt)
+  function self:update_time_to_next_part(dt)
     self.current_time_to_next_part = self.current_time_to_next_part + dt
   end
 
@@ -133,15 +133,15 @@ function HistoryScreen.new()
 
   function self.key_events(key)
     if key == settings.players_settings.player_01_keys.shoot then
-      sfx_controller.stop_all_sounds()
+      sfx_controller:stop_all_sounds()
       moan.advanceMsg()
       go_to_main_menu_screen()
     end
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if not self.music_started then
-      sfx_controller.play_sound('intro')
+      sfx_controller:play_sound('intro')
       self.music_started = true
     end
     set_game_font_to('black', 'big')
@@ -158,12 +158,12 @@ function HistoryScreen.new()
         end
       else
         self.reset_histories()
-        sfx_controller.stop_all_sounds()
+        sfx_controller:stop_all_sounds()
         go_to_main_menu_screen()
         return
       end
     else
-      self.update_time_to_next_part(dt)
+      self:update_time_to_next_part(dt)
     end
   end
 

@@ -25,7 +25,7 @@ function Boss02.new(args)
     end
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if not self.is_alive() then
       self.change_die_animation()
       self.down(dt)
@@ -34,14 +34,14 @@ function Boss02.new(args)
 
     self.move(dt)
     if self.current_animation ~= nil then
-      self.current_animation.update(dt)
+      self.current_animation:update(dt)
       if self.current_animation_ended() then
         self.current_animation = self.animations.normal
       end
     end
 
     if self.blank_blink or self.current_blank_blink_time > 0 then
-      self.update_current_blank_time(dt)
+      self:update_current_blank_time(dt)
     end
 
     self.current_animation =  self.define_curret_animation()

@@ -52,7 +52,7 @@ function BulletsController.new()
                               sprite_scala=scala,
                               animation=animation}
 
-    sfx_controller.play_sound(sound_effect_name)
+    sfx_controller:play_sound(sound_effect_name)
 
     table.insert(self.bullets[owner_title], bullet)
     end
@@ -94,16 +94,16 @@ function BulletsController.new()
     end
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if #self.bullets.player > 0 then
       for i, bullet in ipairs(self.bullets.player) do
-        bullet.update(dt)
+        bullet:update(dt)
       end
       self.check_bullets_position(self.bullets.player)
     end
     if #self.bullets.enemy > 0 then
       for i, bullet in ipairs(self.bullets.enemy) do
-        bullet.update(dt)
+        bullet:update(dt)
       end
       self.check_bullets_position(self.bullets.enemy)
     end

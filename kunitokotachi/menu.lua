@@ -20,13 +20,13 @@ function Menu.new(args)
 
   function self.add_button(key, method)
     local button = { type='button', text='', key=key, method=method }
-    self.update_text(button)
+    self:update_text(button)
     table.insert(self.options, button)
   end
 
   function self.add_label(key)
     local label = { type='label', text='', key=key }
-    self.update_text(label)
+    self:update_text(label)
     table.insert(self.options, label)
   end
 
@@ -35,25 +35,25 @@ function Menu.new(args)
     args = unpack(args)
     args.key = args.key
     local slider = { type='slider', min=min, max=max, value=value, method=args.change_method, step=step, key=args.key, text='' }
-    self.update_text(slider)
+    self:update_text(slider)
     table.insert(self.options, slider)
   end
 
-  function self.update_all()
+  function self:update_all()
     for i, option in ipairs(self.options) do
       if type(option.key) == 'string' then
-        self.update_text(option)
+        self:update_text(option)
       elseif type(option.key) == 'function' then
         option.text = option.key()
       end
     end
   end
 
-  function self.update_text(widget)
+  function self:update_text(widget)
     widget.text = translation_of_key(widget.key)
   end
 
-  function self.update()
+  function self:update()
     set_game_font_to('normal', 'normal')
     local button_heigh = 40
     local buttons_width = 120

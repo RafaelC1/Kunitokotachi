@@ -94,7 +94,7 @@ function FinalScoreScreen.new()
       organized_score_to_save.score[i].score = new_record.score
     end
 
-    settings.save_player_score(organized_score_to_save)
+    settings:save_player_score(organized_score_to_save)
   end
 
   function self.draw_final_score_of(player, position, x, y)
@@ -141,7 +141,7 @@ function FinalScoreScreen.new()
     self.ui:textinput(t)
   end
 
-  function self.update(dt)
+  function self:update(dt)
 
     do
       set_game_font_to('black', 'extra_big')

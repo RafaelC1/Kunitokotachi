@@ -44,12 +44,12 @@ function SettingsMenu.new(args)
   end
   -- overwrithing
   self.overwrite('update')
-  function self.update()
+  function self:update()
     if self.editing_player_settings then
-      self.player_01_settings_sub_menu.update()
-      self.player_02_settings_sub_menu.update()
+      self.player_01_settings_sub_menu:update()
+      self.player_02_settings_sub_menu:update()
     else
-      self.super_update()
+      self:super_update()
     end
   end
 

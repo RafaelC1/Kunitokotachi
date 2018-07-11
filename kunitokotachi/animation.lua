@@ -40,11 +40,11 @@ function Animation.new(sprites, frame_per_sec)
     return self.sprites[self.sprite]
   end
 
-  function self.update_time(dt)
+  function self:update_time(dt)
     self.current_time = self.current_time + dt
   end
 
-  function self.update_frame()
+  function self:update_frame()
     if self.current_time >= self.time_for_each_frame and not self.ended then
       self.reset_time()
       self.sprite = self.sprite + 1
@@ -59,9 +59,9 @@ function Animation.new(sprites, frame_per_sec)
     end
   end
 
-  function self.update(dt)
-    self.update_time(dt)
-    self.update_frame()
+  function self:update(dt)
+    self:update_time(dt)
+    self:update_frame()
   end
 
   function self.draw(args)

@@ -58,7 +58,7 @@ function check_password()
   elseif current_secret == russian_secret then
     secret_found = true
     russian_on = true
-    sfx_controller.play_sound('russian', true)
+    sfx_controller:play_sound('russian', true)
   end
 
   if secret_found then

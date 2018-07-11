@@ -60,7 +60,7 @@ function GameController.new()
   end
 
   -- update current_level_settings informations based on current level
-  function self.update_current_level()
+  function self:update_current_level()
     self.current_level_settings = {}
     self.current_level_settings.boss_spawned = false
     self.current_level_settings.boss_killed = false
@@ -72,7 +72,7 @@ function GameController.new()
     self.current_level_settings.background_name = self.levels_settings[name_to_find_by].back_ground_image
     self.current_level_settings.length    = self.levels_settings[name_to_find_by].length
     self.current_level_settings.music     = self.levels_settings[name_to_find_by].music
-    sfx_controller.play_sound(self.current_level_settings.music, true)
+    sfx_controller:play_sound(self.current_level_settings.music, true)
     -- reset all events to they become unwsed
     for i, script in ipairs(self.current_level_settings.script) do
       script[6] = false
@@ -112,8 +112,8 @@ function GameController.new()
             -- kill all enemies when boss spawn
             enemies_controller.destroy_all_enemies()
             enemies_controller.create_boss(event_name, behaviour)
-            sfx_controller.stop_all_sounds()
-            sfx_controller.play_sound('boss_them', true)
+            sfx_controller:stop_all_sounds()
+            sfx_controller:play_sound('boss_them', true)
           elseif event_name == 'message' then
             local title = script[3]
 
@@ -209,16 +209,16 @@ function GameController.new()
     self.current_level = 1
     self.unpause_game()
     self.reset_all_controllers()
-    self.update_current_level()
+    self:update_current_level()
   end
 -- go to next level
   function self.next_level()
     self.reset_all_controllers()
-    sfx_controller.stop_all_sounds()
+    sfx_controller:stop_all_sounds()
 
     if self.current_level < #self.levels_settings.levels_names then
       self.current_level = self.current_level + 1
-      self.update_current_level()
+      self:update_current_level()
 
       for i, player in ipairs(self.players) do
         player.set_ship_to_bottom_position()
@@ -284,7 +284,7 @@ function GameController.new()
     return new_position
   end
 
-  function self.update_level(dt)
+  function self:update_level(dt)
     if not self.current_level_get_to_the_end() then
       self.inscrease_position(dt)
       if self.any_player_alive() then
@@ -312,8 +312,8 @@ function GameController.new()
     if not self.any_player_alive() then
       if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
         self.reset_go_to_menu_delay()
-        sfx_controller.stop_all_sounds()
-        sfx_controller.play_sound(self.current_level_settings.music, true)
+        sfx_controller:stop_all_sounds()
+        sfx_controller:play_sound(self.current_level_settings.music, true)
         self.reset_player_lifes_and_reset_score()
         self.start_game()
         self.unpause_game()
@@ -347,7 +347,7 @@ function GameController.new()
     return any_alive
   end
 
-  function self.update(dt)
+  function self:update(dt)
     set_game_font_to('black', 'normal')
     local ships = {}
 
@@ -357,7 +357,7 @@ function GameController.new()
 
     if self.any_player_alive() then
       for i, player in ipairs(self.players) do
-        player.update(dt)
+        player:update(dt)
         -- check if player is alive to make logic
         if player.ship_is_alive() then
 
@@ -374,8 +374,8 @@ function GameController.new()
       end
     else
       if self.go_to_menu_current_delay == self.go_to_menu_delay then
-        sfx_controller.stop_all_sounds()
-        sfx_controller.play_sound('continue')
+        sfx_controller:stop_all_sounds()
+        sfx_controller:play_sound('continue')
       end
 
       if self.go_to_menu_current_delay > self.minimum_time_to_not_accepte_continue then
@@ -389,10 +389,10 @@ function GameController.new()
       self.go_to_menu_current_delay = self.go_to_menu_current_delay - dt
     end
 
-    bullets_controller.update(dt)
-    enemies_controller.update(dt)
-    power_ups_controller.update(dt)
-    explosions_controller.update(dt)
+    bullets_controller:update(dt)
+    enemies_controller:update(dt)
+    power_ups_controller:update(dt)
+    explosions_controller:update(dt)
 
     -- player against bullet
     if bullets_controller.has_player_bullets() then
@@ -430,7 +430,7 @@ function GameController.new()
       end
     end
 
-    self.update_level(dt)
+    self:update_level(dt)
     -- go to the next stage logic
     if self.level_ended() then
       if not bullets_controller.has_enemy_bullets() then

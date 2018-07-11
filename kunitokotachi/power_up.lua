@@ -63,7 +63,7 @@ function PowerUp.new(args)
     self.vanish_time = self.vanish_time - dt
   end
 
-  function self.update(dt)
+  function self:update(dt)
     if self.vanish_time < 2 then
       self.manager_blink(dt)
     end
