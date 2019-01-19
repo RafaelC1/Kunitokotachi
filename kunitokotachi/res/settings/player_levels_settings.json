@@ -1,0 +1,27 @@
+{
+  "level_01":
+  {
+    "bullet_name":"player_bullet_01",
+    "delay":0.10
+  },
+  "level_02":
+  {
+    "bullet_name":"player_bullet_02",
+    "delay":0.10
+  },
+  "level_03":
+  {
+    "bullet_name":"player_bullet_03",
+    "delay":0.10
+  },
+  "level_04":
+  {
+    "bullet_name":"player_bullet_04",
+    "delay":0.1
+  },
+  "level_05":
+  {
+    "bullet_name":"player_bullet_05",
+    "delay":0.05
+  }
+}

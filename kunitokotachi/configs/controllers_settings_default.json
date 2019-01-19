@@ -1,0 +1,22 @@
+{
+  "player_01_keys":
+  {
+    "up":"up",
+    "down":"down",
+    "left":"left",
+    "right":"right",
+    "shoot":"return"
+  },
+  "player_02_keys":
+  {
+    "up":"w",
+    "down":"s",
+    "left":"a",
+    "right":"d",
+    "shoot":"space"
+  },
+  "global_keys":
+  {
+    "back": "escape"
+  }
+}

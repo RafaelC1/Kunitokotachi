@@ -1,0 +1,44 @@
+{
+  "power_01":
+  {
+    "title":"power_up",
+    "description":"rise player power",
+    "charge_power":10,
+    "animation":"power_01"
+  },
+  "power_02":
+  {
+    "title":"power_up",
+    "description":"rise player power",
+    "charge_power":20,
+    "animation":"power_02"
+  },
+  "power_03":
+  {
+    "title":"power_up",
+    "description":"rise player power",
+    "charge_power":30,
+    "animation":"power_03"
+  },
+  "power_04":
+  {
+    "title":"power_up",
+    "description":"rise player power",
+    "charge_power":40,
+    "animation":"power_04"
+  },
+  "power_05":
+  {
+    "title":"power_up",
+    "description":"rise player power",
+    "charge_power":50,
+    "animation":"power_05"
+  },
+  "power_06":
+  {
+    "title":"power_up",
+    "description":"rise player power",
+    "charge_power":60,
+    "animation":"power_06"
+  },
+}

@@ -1,0 +1,23 @@
+{
+  "ship_01":
+  {
+    "max_hp":1,
+    "speed":500,
+    "defense":0,
+    "radio":30
+  },
+  "ship_02":
+  {
+    "max_hp":1,
+    "speed":500,
+    "defense":0,
+    "radio":30
+  },
+  "ship_03":
+  {
+    "max_hp":1,
+    "speed":500,
+    "defense":0,
+    "radio":30
+  }
+}

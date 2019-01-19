@@ -1,0 +1,102 @@
+{
+  "player_bullet_01": {
+    "bullet_name":"player_bullet_01",
+    "animation":"player_level_01_animation",
+    "sound_effect":"laser_01",
+    "damage":8,
+    "speed":800,
+    "radio":8,
+    "follow_owner":false,
+    "destroyable":true,
+    "description":"one single bullet"
+  },
+  "player_bullet_02": {
+    "bullet_name":"player_bullet_02",
+    "animation":"player_level_02_animation",
+    "sound_effect":"laser_01",
+    "damage":15,
+    "speed":800,
+    "radio":10,
+    "follow_owner":false,
+    "destroyable":true,
+    "sprite_scala":2,
+    "description":"two bullets"
+  },
+  "player_bullet_03": {
+    "bullet_name":"player_bullet_03",
+    "animation":"player_level_03_animation",
+    "sound_effect":"laser_01",
+    "damage":20,
+    "speed":800,
+    "radio":14,
+    "follow_owner":false,
+    "destroyable":true,
+    "description":"three bullets"
+  },
+  "player_bullet_04": {
+    "bullet_name":"player_bullet_04",
+    "animation":"player_level_04_animation",
+    "sound_effect":"laser_01",
+    "damage":30,
+    "speed":800,
+    "radio":11,
+    "follow_owner":false,
+    "destroyable":true,
+    "description":"one ball of plasm"
+  },
+  "player_bullet_05": {
+    "bullet_name":"player_bullet_05",
+    "animation":"player_level_05_animation",
+    "sound_effect":"laser_01",
+    "damage":100,
+    "speed":1500,
+    "radio":20,
+    "follow_owner":false,
+    "destroyable":false,
+    "description":"one single laser"
+  },
+  "player_special_01": {
+    "bullet_name":"player_bullet_06",
+    "animation":"player_level_06_animation",
+    "sound_effect":"laser_01",
+    "damage":300,
+    "speed":300,
+    "radio":20,
+    "follow_owner":false,
+    "destroyable":true,
+    "description":"a bomb"
+  },
+  "enemy_small_bullet": {
+    "bullet_name":"small_bullet",
+    "animation":"small_bullet_animation",
+    "sound_effect":"laser_01",
+    "damage":999,
+    "speed":200,
+    "radio":8,
+    "follow_owner":false,
+    "destroyable":true,
+    "description":"small and slow bullet"
+  },
+  "enemy_medium_bullet": {
+    "bullet_name":"medium_bullet",
+    "animation":"medium_bullet_animation",
+    "sound_effect":"laser_01",
+    "damage":999,
+    "speed":200,
+    "radio":10,
+    "follow_owner":false,
+    "destroyable":true,
+    "description":"medium and slow bullet"
+  },
+  "enemy_laser_bullet": {
+    "bullet_name":"laser_bullet",
+    "animation":"laser_bullet_animation",
+    "sound_effect":"laser_01",
+    "damage":1,
+    "speed":400,
+    "radio":10,
+    "follow_owner":false,
+    "destroyable":true,
+    "description":"medium and fast laser"
+  }
+}
